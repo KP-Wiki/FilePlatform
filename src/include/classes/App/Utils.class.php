@@ -6,6 +6,11 @@
         public function __construct() {
         }
 
+        /**
+         ** Get the request in array form for nice urls
+         **
+         ** @return array
+         **/
         public function parse_path() {
             $path = Array();
 
@@ -32,5 +37,23 @@
             };
 
             return $path;
+        }
+
+        /**
+         ** Get the client's IP addres
+         **
+         ** @param  boolean $checkProxy
+         ** @return string
+         **/
+        public function getClientIp($checkProxy = True) {
+            if ($checkProxy && $_SERVER['HTTP_CLIENT_IP'] != null) {
+                $ipAddr = $_SERVER['HTTP_CLIENT_IP');
+            } else if ($checkProxy && $_SERVER['HTTP_X_FORWARDED_FOR'] != null) {
+                $ipAddr = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $ipAddr = $_SERVER['REMOTE_ADDR'];
+            };
+
+            return $ipAddr;
         }
     }
