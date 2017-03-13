@@ -12,10 +12,10 @@
             $mapFile = null;
 
             $selectQuery = 'SELECT ' .
-                           '    `Revisions`.`rev_file_name`, ' .
-                           '    `Revisions`.`rev_file_path`, ' .
                            '    `Files`.`file_pk`, ' .
-                           '    `Files`.`file_downloads` ' .
+                           '    `Files`.`file_downloads`, ' .
+                           '    `Revisions`.`rev_file_name`, ' .
+                           '    `Revisions`.`rev_file_path` ' .
                            'FROM ' .
                            '    `Revisions` ' .
                            'LEFT JOIN ' .
