@@ -112,6 +112,28 @@ CREATE TABLE `Ratings` (
     CONSTRAINT `Ratings_file_fk` FOREIGN KEY (`file_fk`) REFERENCES `Files` (`file_pk`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
+CREATE TABLE `FlagStatus` (
+    `flag_status_pk` TINYINT UNSIGNED NOT NULL,
+    `status` VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL,
+    UNIQUE (`flag_status_pk`),
+    INDEX (`flag_status_pk`),
+    INDEX (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `Flags` (
+    `flag_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `rev_fk` BIGINT UNSIGNED NOT NULL,
+    `flag_status_fk` TINYINT UNSIGNED NOT NULL,
+    `flag_assigned_user_fk` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`flag_pk`),
+    INDEX (`rev_fk`),
+    INDEX (`flag_status_fk`),
+    INDEX (`flag_assigned_user_fk`)
+    CONSTRAINT `Flags_rev_fk` FOREIGN KEY (`rev_fk`) REFERENCES `Revisions` (`rev_pk`),
+    CONSTRAINT `Flags_flag_status_fk` FOREIGN KEY (`flag_status_fk`) REFERENCES `FlagStatus` (`flag_status_pk`),
+    CONSTRAINT `Flags_flag_assigned_user_fk` FOREIGN KEY (`flag_assigned_user_fk`) REFERENCES `Users` (`user_pk`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
+
 -- INSERT INITIAL DATA
 INSERT INTO
     `Groups` (`group_pk`, `group_name`)
@@ -129,3 +151,10 @@ VALUES
     (2, 'Refused'),
     (3, 'Disabled'),
     (4, 'Removed');
+
+INSERT INTO
+    `FlagStatus` (`flag_status_pk`, `status`)
+VALUES
+    (0, 'Open'),
+    (1, 'Assigned'),
+    (2, 'Closed');
