@@ -9,17 +9,26 @@ body {
 }
 
 .footer {
-    position: absolute;
-    bottom: 0;
     width: 100%;
-    /* Set the fixed height of the footer here */
     height: 60px;
     background-color: #f5f5f5;
 }
 
 .footer > .container-fluid > .text-muted {
+    position: absolute;
+    left: 0;
+    width: 100%;
     margin-top: 20px;
     text-align: center;
+    z-index: 100;
+}
+
+.footer > .w3clogo {
+    position: absolute;
+    left: 0;
+    margin-top: 12px;
+    float: left;
+    z-index: 110;
 }
 
 code {
@@ -28,4 +37,29 @@ code {
 
 .filetable > tbody > tr > td {
     word-wrap: break-word;
+}
+
+#slideshow {
+    padding: 0;
+    border-radius: 25px;
+}
+
+.carousel-control.right,
+.carousel-control.left,
+.carousel .item,
+.carousel-inner,
+.carousel-inner > .item > img {
+    border-radius: 25px;
+}
+
+.btn-grey{
+    background-color: #D8D8D8;
+    color: #FFF;
+}
+
+.rating-block{
+    background-color: #FAFAFA;
+    border: 1px solid #EFEFEF;
+    padding: 15px 15px 20px 15px;
+    border-radius: 3px;
 }

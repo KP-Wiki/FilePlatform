@@ -9,9 +9,11 @@
         <meta name="author" content="Thimo Braker - KP-Wiki">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="/css/main.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js" crossorigin="anonymous"></script>
         <script src="/js/main.js"></script>
     </head>
     <body>
@@ -28,7 +30,12 @@
                 </div>
             </div>
         </div>
-        <footer class="footer">
+        <footer class="navbar-default navbar-fixed-bottom footer">
+            <div class="container-fluid w3clogo">
+                <a href="http://validator.w3.org/check?uri=referer;ss=1">
+                    <img src="https://www.w3.org/html/logo/badge/html5-badge-h-css3-semantics.png" width="98px" height="38px" alt="HTML5 Powered with CSS3 / Styling, and Semantics" title="HTML5 Powered with CSS3 / Styling, and Semantics">
+                </a>
+            </div>
             <div class="container-fluid">
                 <p class="text-muted">Proudly created and maintained by KP-Wiki.org</p>
             </div>
