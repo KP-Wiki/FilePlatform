@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     define('APP_ENV',     'dev');
     define('APP_DIR',     dirname(__FILE__));
     define('APP_VERSION', '0.0.1');
