@@ -5,4 +5,6 @@ There will be an API and a web front-end.
 This project is in it's early stages, expect changes!
 
 ## 3rd party
+ * jQuery : [Project page](https://jquery.com/)
  * Bootstrap 3 : [Project page](https://getbootstrap.com/)
+ * Bootstrap Table : [Project page](http://bootstrap-table.wenzhixin.net.cn/)
