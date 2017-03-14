@@ -9,9 +9,25 @@
     Allow from all
 </Files>
 
+<Files apiv1.php>
+    Order Deny,Allow
+    Allow from all
+</Files>
+
+<Files apiv2.php>
+    Order Deny,Allow
+    Allow from all
+</Files>
+
 <IfModule mod_rewrite.c>
-  RewriteEngine on
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^ index.php [L]
+    RewriteCond %{REQUEST_URI} ^/api/v1(.*)$
+    RewriteRule ^ apiv1.php [L]
+
+    RewriteCond %{REQUEST_URI} ^/api/v2(.*)$
+    RewriteRule ^ apiv2.php [L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !pagespeed
+    RewriteRule ^ index.php [L]
 </IfModule>
