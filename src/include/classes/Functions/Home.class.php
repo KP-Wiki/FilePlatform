@@ -10,13 +10,10 @@
             $mapListItems = null;
 
             $query = 'SELECT ' .
+                     '    `Files`.`file_pk`, ' .
                      '    `Files`.`file_name`, ' .
                      '    `Files`.`file_downloads`, ' .
-                     '    `Revisions`.`rev_pk`, ' .
-                     '    `Revisions`.`rev_file_name`, ' .
-                     '    `Revisions`.`rev_file_path`, ' .
-                     '    `Revisions`.`rev_file_version`, ' .
-                     '    `Revisions`.`rev_upload_date`, ' .
+                     '    `Revisions`.`rev_file_description_short`, ' .
                      '    `Users`.`user_name` ' .
                      'FROM ' .
                      '    `Users` ' .
@@ -28,7 +25,7 @@
                      '    `Revisions`.`rev_status_fk` = 1 AND ' .
                      '    `Files`.`file_visible` = 1 ' .
                      'ORDER BY ' .
-                     '    `Revisions`.`rev_upload_date` DESC;';
+                     '    `Files`.`file_name` DESC;';
             $dbHandler -> PrepareAndBind ($query);
             $mapListItems = $dbHandler -> ExecuteAndFetchAll();
 
@@ -37,7 +34,7 @@
                        '                        <table class="table table-striped table-bordered table-hover" ' .
                        'data-toggle="table" ' .
                        'data-search="true" ' .
-                       'data-sort-name="name" ' .
+                       'data-sort-name="rating" ' .
                        'data-sort-order="desc" ' .
                        'data-show-toggle="true" ' .
                        'data-show-columns="true" ' .
@@ -61,12 +58,21 @@
 
             if ($mapListItems != null) {
                 foreach ($mapListItems as $mapItem) {
+                    $ratingQuery = 'SELECT ' .
+                                   '    ROUND(AVG(CAST(`rating_amount` AS DECIMAL(12,2))), 1) AS avg_rating ' .
+                                   'FROM ' .
+                                   '    `Ratings` ' .
+                                   'WHERE ' .
+                                   '    `file_fk` = :fileid;';
+                    $dbHandler -> PrepareAndBind ($ratingQuery, Array('fileid' => $mapItem['file_pk']));
+                    $avgRating = $dbHandler -> ExecuteAndFetch();
+
                     $content .= '                                <tr>' . PHP_EOL .
-                                '                                    <td>Type</td>' . PHP_EOL .
-                                '                                    <td><a href="/filedetails?file=' . $mapItem['rev_pk'] . '">' . $mapItem['file_name'] . '</a></td>' . PHP_EOL .
+                                '                                    <td>Map Type</td>' . PHP_EOL .
+                                '                                    <td><a href="/filedetails?file=' . $mapItem['file_pk'] . '">' . $mapItem['file_name'] . '</a></td>' . PHP_EOL .
                                 '                                    <td>' . $mapItem['user_name'] . '</td>' . PHP_EOL .
-                                '                                    <td>Short description</td>' . PHP_EOL .
-                                '                                    <td>Rating</td>' . PHP_EOL .
+                                '                                    <td>' . $mapItem['rev_file_description_short'] . '</td>' . PHP_EOL .
+                                '                                    <td>' . ($avgRating['avg_rating'] === null ? 'n/a' : $avgRating['avg_rating'] . ' / 5') . '</td>' . PHP_EOL .
                                 '                                    <td style="text-align: right;">' . StrVal($mapItem['file_downloads']) . '</td>' . PHP_EOL .
                                 '                                </tr>' . PHP_EOL;
                 };
