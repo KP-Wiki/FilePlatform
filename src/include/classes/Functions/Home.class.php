@@ -28,6 +28,7 @@
                      '    `Files`.`file_name` DESC;';
             $dbHandler -> PrepareAndBind ($query);
             $mapListItems = $dbHandler -> ExecuteAndFetchAll();
+            $dbHandler -> Clean();
 
             $content = '                    <div class="panel panel-default">' . PHP_EOL .
                        '                        <div class="panel-heading">Knights Province Map database</div>' . PHP_EOL .

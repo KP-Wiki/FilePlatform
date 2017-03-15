@@ -25,6 +25,7 @@
                            '    `Revisions`.`rev_status_fk` = 1;';
             $dbHandler -> PrepareAndBind ($selectQuery, Array('revid' => IntVal($request['query_vars']['file'])));
             $mapFile = $dbHandler -> ExecuteAndFetch();
+            $dbHandler -> Clean();
 
             if ($mapFile === null || Empty($mapFile)) {
                 header('HTTP/1.1 404 Not Found');

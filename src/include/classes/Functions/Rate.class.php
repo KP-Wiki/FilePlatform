@@ -24,6 +24,7 @@
                 $dbHandler -> PrepareAndBind ($spamCheckQuery, Array('ratingip' => $ratingIP,
                                                                      'fileid'   => $request['query_vars']['file']));
                 $ratingCount = $dbHandler -> ExecuteAndFetch();
+                $dbHandler -> Clean();
 
                 if ($ratingCount['rating_count'] >= 1)
                     return 'You have already rated this file.';
