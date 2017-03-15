@@ -13,8 +13,9 @@
     use Data\Files;
     use Functions\Home;
     use Functions\About;
-    use Functions\Download;
     use Functions\FileDetails;
+    use Functions\Download;
+    use Functions\Rate;
 
     $config  = require_once(__DIR__ . '/include/config/' . APP_ENV . '_config.php');
     $request = null;
@@ -50,6 +51,25 @@
                 $this -> renderer -> setValue('about-active', 'class="active"');
 
                 $content = $aboutFunc -> getContent();
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call'] === 'filedetails') {
+                if (Empty($request['query_vars']) || Empty($request['query_vars']['file'])) {
+                    header('HTTP/1.1 404 Not Found');
+                    header('Location: /home');
+                    Exit;
+                };
+
+                $fileDetailFunc = new Functions\FileDetails();
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'File Details');
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $fileDetailFunc -> getContent($this -> dbHandler);
 
                 // Set the content
                 $this -> renderer -> setContent($content);
@@ -89,22 +109,24 @@
 
                 fclose ($fileData);
                 Exit;
-            } elseif ($request['call'] === 'filedetails') {
-                if (Empty($request['query_vars']) || Empty($request['query_vars']['file'])) {
-                    header('HTTP/1.1 404 Not Found');
-                    header('Location: /home');
-                    Exit;
-                };
-
-                $fileDetailFunc = new Functions\FileDetails();
+            } elseif ($request['call'] === 'ratefile') {
+                $rateFunc = new Functions\Rate($this -> utils);
 
                 // Set the page title
-                $this -> renderer -> setValue('title', 'File Details');
+                $this -> renderer -> setValue('title', 'File Rating');
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', 'class="active"');
                 $this -> renderer -> setValue('about-active', '');
 
-                $content = $fileDetailFunc -> getContent($this -> dbHandler);
+                if (Empty($request['query_vars']) ||
+                    Empty($request['query_vars']['file']) ||
+                    Empty($request['query_vars']['score']) ||
+                    (IntVal($request['query_vars']['score']) <= 0) ||
+                    (IntVal($request['query_vars']['score']) >= 6)) {
+                    $content = 'Unable to process rating';
+                } else {
+                    $content = $rateFunc -> getContent($this -> dbHandler);
+                };
 
                 // Set the content
                 $this -> renderer -> setContent($content);
