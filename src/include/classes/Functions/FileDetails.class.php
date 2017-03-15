@@ -11,25 +11,39 @@
 
             $mapItem = null;
 
-            $query = 'SELECT ' .
-                     '    `Files`.`file_name`, ' .
-                     '    `Files`.`file_downloads`, ' .
-                     '    `Revisions`.`rev_pk`, ' .
-                     '    `Revisions`.`rev_file_name`, ' .
-                     '    `Revisions`.`rev_file_path`, ' .
-                     '    `Revisions`.`rev_file_version`, ' .
-                     '    `Revisions`.`rev_upload_date`, ' .
-                     '    `Users`.`user_name` ' .
-                     'FROM ' .
-                     '    `Users` ' .
-                     'LEFT JOIN ' .
-                     '    `Files` ON `Users`.`user_pk` = `Files`.`user_fk` ' .
-                     'LEFT JOIN ' .
-                     '    `Revisions` ON `Files`.`file_pk` = `Revisions`.`file_fk` ' .
-                     'WHERE ' .
-                     '    `Revisions`.`rev_status_fk` = 1 AND ' .
-                     '    `Revisions`.`rev_pk` = :revid;';
-            $dbHandler -> PrepareAndBind ($query, Array('revid' => IntVal($request['query_vars']['file'])));
+            $query1 = 'SET @fileid = :fileid;';
+            $dbHandler -> PrepareAndBind ($query1, Array('fileid' => IntVal($request['query_vars']['file'])));
+            $dbHandler -> Execute();
+
+            $query2 = 'SELECT ' .
+                      '    `Files`.`file_pk`, ' .
+                      '    `Files`.`file_name`, ' .
+                      '    `Files`.`file_downloads`, ' .
+                      '    `Revisions`.`rev_pk`, ' .
+                      '    `Revisions`.`rev_file_name`, ' .
+                      '    `Revisions`.`rev_file_path`, ' .
+                      '    `Revisions`.`rev_file_version`, ' .
+                      '    `Revisions`.`rev_file_description`, ' .
+                      '    `Revisions`.`rev_upload_date`, ' .
+                      '    `Users`.`user_name`, ' .
+                      '    ROUND(AVG(CAST(`Ratings`.`rating_amount` AS DECIMAL(12,2))), 1) AS avg_rating, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 1 AND file_fk = @fileid), 0) AS rating_one, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 2 AND file_fk = @fileid), 0) AS rating_two, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 3 AND file_fk = @fileid), 0) AS rating_three, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 4 AND file_fk = @fileid), 0) AS rating_four, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 5 AND file_fk = @fileid), 0) AS rating_five ' .
+                      'FROM ' .
+                      '    `Users` ' .
+                      'LEFT JOIN ' .
+                      '    `Files` ON `Users`.`user_pk` = `Files`.`user_fk` ' .
+                      'LEFT JOIN ' .
+                      '    `Revisions` ON `Files`.`file_pk` = `Revisions`.`file_fk` ' .
+                      'LEFT JOIN ' .
+                      '    `Ratings` ON `Files`.`file_pk` = `Ratings`.`file_fk` ' .
+                      'WHERE ' .
+                      '    `Revisions`.`rev_status_fk` = 1 AND ' .
+                      '    `Revisions`.`file_fk` = @fileid;';
+            $dbHandler -> PrepareAndBind ($query2);
             $mapItem = $dbHandler -> ExecuteAndFetch();
 
             $content = '<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-3 toppad">' . PHP_EOL .
@@ -40,20 +54,30 @@
                        '        <div class="col-sm-6">' . PHP_EOL .
                        '            <div class="rating-block">' . PHP_EOL .
                        '                <h4>Average user rating</h4>' . PHP_EOL .
-                       '                <h2 class="bold padding-bottom-7">4.3 <small>/ 5</small></h2>' . PHP_EOL .
-                       '                <button type="button" class="btn btn-warning btn-sm" aria-label="Left Align">' . PHP_EOL .
+                       '                <h2 class="bold padding-bottom-7">' . ($mapItem['avg_rating'] === null ? 'n/a' : $mapItem['avg_rating'] . '<small> / 5</small>') . '</h2>' . PHP_EOL .
+                       '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 1 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
+                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       '&score=1\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
-                       '                <button type="button" class="btn btn-warning btn-sm" aria-label="Left Align">' . PHP_EOL .
+                       '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 2 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
+                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       '&score=2\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
-                       '                <button type="button" class="btn btn-warning btn-sm" aria-label="Left Align">' . PHP_EOL .
+                       '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 3 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
+                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       '&score=3\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
-                       '                <button type="button" class="btn btn-default btn-grey btn-sm" aria-label="Left Align">' . PHP_EOL .
+                       '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 4 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
+                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       '&score=4\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
-                       '                <button type="button" class="btn btn-default btn-grey btn-sm" aria-label="Left Align">' . PHP_EOL .
+                       '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 5 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
+                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       '&score=5\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
@@ -71,7 +95,7 @@
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-right" style="margin-left:10px;">1</div>' . PHP_EOL .
+                       '                <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_five'] . '</div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '            <div class="pull-left">' . PHP_EOL .
                        '                <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
@@ -84,7 +108,7 @@
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-right" style="margin-left:10px;">1</div>' . PHP_EOL .
+                       '                <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_four'] . '</div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '            <div class="pull-left">' . PHP_EOL .
                        '                <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
@@ -97,7 +121,7 @@
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-right" style="margin-left:10px;">0</div>' . PHP_EOL .
+                       '                <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_three'] . '</div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '            <div class="pull-left">' . PHP_EOL .
                        '                <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
@@ -110,7 +134,7 @@
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-right" style="margin-left:10px;">0</div>' . PHP_EOL .
+                       '                <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_two'] . '</div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '            <div class="pull-left">' . PHP_EOL .
                        '                <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
@@ -123,30 +147,30 @@
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-right" style="margin-left:10px;">0</div>' . PHP_EOL .
+                       '                <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_one'] . '</div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '        </div>' . PHP_EOL .
                        '        <table class="table table-user-information">' . PHP_EOL .
                        '            <tbody>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
-                       '                    <td><b>Author</b></td>' . PHP_EOL .
-                       '                    <td>' . $mapItem['user_name'] . '</td>' . PHP_EOL .
+                       '                    <td class="col-sm-3"><b>Author</b></td>' . PHP_EOL .
+                       '                    <td class="col-sm-9">' . $mapItem['user_name'] . '</td>' . PHP_EOL .
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
-                       '                    <td><b>Downloads</b></td>' . PHP_EOL .
-                       '                    <td>' . $mapItem['file_downloads'] . '</td>' . PHP_EOL .
+                       '                    <td class="col-sm-3"><b>Downloads</b></td>' . PHP_EOL .
+                       '                    <td class="col-sm-9">' . $mapItem['file_downloads'] . '</td>' . PHP_EOL .
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
-                       '                    <td><b>Version</b></td>' . PHP_EOL .
-                       '                    <td>' . $mapItem['rev_file_version'] . '</td>' . PHP_EOL .
+                       '                    <td class="col-sm-3"><b>Version</b></td>' . PHP_EOL .
+                       '                    <td class="col-sm-9">' . $mapItem['rev_file_version'] . '</td>' . PHP_EOL .
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
-                       '                    <td><b>Last change date</b></td>' . PHP_EOL .
-                       '                    <td>' . $mapItem['rev_upload_date'] . '</td>' . PHP_EOL .
+                       '                    <td class="col-sm-3"><b>Last change date</b></td>' . PHP_EOL .
+                       '                    <td class="col-sm-9">' . $mapItem['rev_upload_date'] . '</td>' . PHP_EOL .
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
-                       '                    <td><b>Description</b></td>' . PHP_EOL .
-                       '                    <td>Some map that let&apos;s you battle AI</td>' . PHP_EOL .
+                       '                    <td class="col-sm-3"><b>Description</b></td>' . PHP_EOL .
+                       '                    <td class="col-sm-9">' . nl2br($mapItem['rev_file_description']) . '</td>' . PHP_EOL .
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
                        '                    <td colspan="2">' . PHP_EOL .
