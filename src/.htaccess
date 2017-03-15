@@ -20,6 +20,9 @@
 </Files>
 
 <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
     RewriteCond %{REQUEST_URI} ^/api/v1(.*)$
     RewriteRule ^ apiv1.php [L]
 
