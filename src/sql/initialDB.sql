@@ -33,6 +33,13 @@ CREATE TABLE `RememberMe` (
     CONSTRAINT `RememberMe_user_fk` FOREIGN KEY (`user_fk`) REFERENCES `Users` (`user_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `FileTypes` (
+    `file_type_pk` TINYINT UNSIGNED NOT NULL,
+    `file_type_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
+    PRIMARY KEY (`file_type_pk`),
+    INDEX (`file_type_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE `Files` (
     `file_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `file_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
@@ -40,11 +47,14 @@ CREATE TABLE `Files` (
     `file_created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `user_fk` BIGINT UNSIGNED NOT NULL,
     `file_downloads` BIGINT UNSIGNED NOT NULL DEFAULT '0',
+    `file_Type_fk` TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (`file_pk`),
     INDEX (`file_name`),
     INDEX (`file_visible`),
     INDEX (`user_fk`),
-    CONSTRAINT `Files_user_fk` FOREIGN KEY (`user_fk`) REFERENCES `Users` (`user_pk`)
+    INDEX (`file_Type_fk`),
+    CONSTRAINT `Files_user_fk` FOREIGN KEY (`user_fk`) REFERENCES `Users` (`user_pk`),
+    CONSTRAINT `Files_file_Type_fk` FOREIGN KEY (`file_Type_fk`) REFERENCES `FileTypes` (`file_Type_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `RevisionStatus` (
@@ -142,6 +152,18 @@ VALUES
     (5, 'Contributor'),
     (9, 'Moderator'),
     (10, 'Administrator');
+
+INSERT INTO
+    `FileTypes` (`file_type_pk`, `file_type_name`)
+VALUES
+    ('0', 'SP Normal Story'),
+    ('1', 'SP Normal Skirmish'),
+    ('2', 'SP Tactic Story'),
+    ('3', 'SP Tactic Skirmish'),
+    ('4', 'MP Normal Story'),
+    ('5', 'MP Normal Skirmish'),
+    ('6', 'MP Tactic Story'),
+    ('7', 'MP Tactic Skirmish');
 
 INSERT INTO
     `RevisionStatus` (`rev_status_pk`, `status`)
