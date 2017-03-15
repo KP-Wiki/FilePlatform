@@ -46,9 +46,9 @@
          ** @return string
          **/
         public function getClientIp($checkProxy = True) {
-            if ($checkProxy && $_SERVER['HTTP_CLIENT_IP'] != null) {
-                $ipAddr = $_SERVER['HTTP_CLIENT_IP');
-            } else if ($checkProxy && $_SERVER['HTTP_X_FORWARDED_FOR'] != null) {
+            if ($checkProxy && isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ipAddr = $_SERVER['HTTP_CLIENT_IP'];
+            } else if ($checkProxy && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $ipAddr = $_SERVER['HTTP_X_FORWARDED_FOR'];
             } else {
                 $ipAddr = $_SERVER['REMOTE_ADDR'];
