@@ -78,6 +78,16 @@
 
                 fclose ($fileData);
                 Exit;
+            } elseif ($request['call_parts'][2] === 'rateMap') {
+                $rateFunc = new Functions\Rate($this -> utils);
+
+                if (Empty($request['call_parts'][3]) ||
+                    Empty($request['query_vars']) ||
+                    Empty($request['query_vars']['score'])) {
+                    $response = 'Unable to process rating';
+                } else {
+                    $response = $rateFunc -> getApiResponse($this -> dbHandler);
+                };
             } else {
                 $response['Status']  = 'ERROR';
                 $response['Message'] = 'Requested function does not exist!';

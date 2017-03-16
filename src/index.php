@@ -73,27 +73,6 @@
 
                 // Set the content
                 $this -> renderer -> setContent($content);
-            } elseif ($request['call'] === 'ratemap') {
-                $rateFunc = new Functions\Rate($this -> utils);
-
-                // Set the page title
-                $this -> renderer -> setValue('title', 'Map Rating');
-                // Set the active tab
-                $this -> renderer -> setValue('home-active', 'class="active"');
-                $this -> renderer -> setValue('about-active', '');
-
-                if (Empty($request['query_vars']) ||
-                    Empty($request['query_vars']['map']) ||
-                    Empty($request['query_vars']['score']) ||
-                    (IntVal($request['query_vars']['score']) <= 0) ||
-                    (IntVal($request['query_vars']['score']) >= 6)) {
-                    $content = 'Unable to process rating';
-                } else {
-                    $content = $rateFunc -> getContent($this -> dbHandler);
-                };
-
-                // Set the content
-                $this -> renderer -> setContent($content);
             } else {
                 $homeFunc = new Functions\Home();
 

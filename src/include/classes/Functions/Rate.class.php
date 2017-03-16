@@ -9,11 +9,18 @@
             $this -> utils = $utilsClass;
         }
 
-        public function getContent(&$dbHandler) {
+        public function getApiResponse(&$dbHandler) {
             global $request;
 
             try {
-                $ratingIP       = ip2long($this -> utils -> getClientIp());
+                $mapID    = IntVal($request['call_parts'][3]);
+                $score    = IntVal($request['query_vars']['score']);
+                $ratingIP = ip2long($this -> utils -> getClientIp());
+
+                if ($mapID === null || $mapID <= 0 ||
+                    $score <= 0 || $score >= 6)
+                    throw new \Exception('Map ID out of acceptable scope');
+
                 $spamCheckQuery = 'SELECT ' .
                                   '    COUNT(*) AS rating_count ' .
                                   'FROM ' .
@@ -22,7 +29,7 @@
                                   '    `rating_ip` = :ratingip AND' .
                                   '    `map_fk` = :mapid';
                 $dbHandler -> PrepareAndBind ($spamCheckQuery, Array('ratingip' => $ratingIP,
-                                                                     'mapid'    => $request['query_vars']['map']));
+                                                                     'mapid'    => $mapID));
                 $ratingCount = $dbHandler -> ExecuteAndFetch();
                 $dbHandler -> Clean();
 
@@ -33,12 +40,12 @@
                                '    `Ratings` (`map_fk`, `rating_amount`, `rating_ip`) ' .
                                'VALUES ' .
                                '    (:mapid, :ratingamount, :ratingip);';
-                $dbHandler -> PrepareAndBind ($insertQuery, Array('mapid'        => IntVal($request['query_vars']['map']),
+                $dbHandler -> PrepareAndBind ($insertQuery, Array('mapid'        => $mapID,
                                                                   'ratingamount' => IntVal($request['query_vars']['score']),
                                                                   'ratingip'     => $ratingIP));
                 $dbHandler -> Execute();
 
-                return 'Thank you for your rating.';
+                return 'Rating processed succesfully';
             } catch (Exception $e) {
                 return 'Unable to process rating';
             };

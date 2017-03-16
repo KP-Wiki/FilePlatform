@@ -54,28 +54,23 @@
                        '                <h4>Average user rating</h4>' . PHP_EOL .
                        '                <h2 class="bold padding-bottom-7">' . ($mapItem['avg_rating'] === null ? 'n/a' : $mapItem['avg_rating'] . '<small> / 5</small>') . '</h2>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 1 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
-                       '&score=1\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
+                       ' onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 1);});">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 2 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
-                       '&score=2\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
+                       ' onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 2);});">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 3 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
-                       '&score=3\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
+                       ' onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 3);});">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 4 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
-                       '&score=4\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
+                       ' onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 4);});">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 5 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
-                       '&score=5\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
+                       ' onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 5);});">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '            </div>' . PHP_EOL .

@@ -1,24 +1,19 @@
-window.fillTable = function(ajaxTarget, tableID) {
+window.rateMap = function(mapID, score) {
     // Retrieve current hostname, allow both http and https protocols
     var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
 
-    switch (ajaxTarget) {
-        case 'Home':
-            $.ajax({ // Get the list of maps via API, loads the page quickly and retrieves data asynchronously, helpful with big data lists.
-                url: urlBase + '/api/v1/getMaps',
-                error: function(xhr, status, error) {
-                    alert('Unable to handle the request due to an AJAX fault! \r\nStatus : ' + status + ' <|> Error : ' + error);
-                },
-                dataType: 'json',
-                success: function(result, status, xhr) {
-                    $(tableID).bootstrapTable("load", result);
-                },
-                type: 'GET'
-            });
-            break;
-        default:
-            alert('Unable to handle request with < ajaxTarget = ' + ajaxTarget + ', tableID = ' + tableID + ' >');
-    }
+    $.ajax({
+        url: urlBase + '/api/v1/rateMap/' + mapID + '?score=' + score,
+        error: function(xhr, status, error) {
+            alert('Unable to handle the request due to an AJAX fault! \r\nStatus : ' + status + ' <|> Error : ' + error);
+        },
+        dataType: 'json',
+        success: function(result, status, xhr) {
+            alert(result);
+            location.reload();
+        },
+        type: 'GET'
+    });
 }
 
 // Format the name to an a link
