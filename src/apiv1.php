@@ -34,6 +34,9 @@
         public function start() {
             global $config, $request;
 
+            // Never ever cache an API. It should always be new data.
+            header('Cache-Control: no-cache, must-revalidate');
+
             $response = Array();
 
             if ($request['call_parts'][2] === 'getMaps') {
@@ -45,7 +48,6 @@
                 $fullPath     = $downloadFunc -> getApiResponse($this -> dbHandler);
 
                 if ($fullPath === null) {
-                    header('Cache-Control: no-cache, must-revalidate');
                     header('Content-type: application/json');
 
                     $response['Status']  = 'ERROR';
@@ -67,8 +69,6 @@
                     // Use 'attachment' to force a file download
                     header('Content-Disposition: attachment; filename="' . $pathParts['basename'] . '"');
                     header('Content-length: ' . $fileSize);
-                    // Use this to open files directly
-                    header('Cache-control: private');
 
                     while(!feof($fileData)) {
                         $buffer = fread($fileData, 2048);
