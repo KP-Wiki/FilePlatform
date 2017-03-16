@@ -19,6 +19,8 @@
                        'data-show-toggle="true" ' .
                        'data-show-columns="true" ' .
                        'data-minimum-count-columns="2" ' .
+                       'data-url="/api/v1/getMaps" ' .
+                       'data-show-refresh="true" ' .
                        'data-show-pagination-switch="true" ' .
                        'data-pagination="true" ' .
                        'data-page-list="[10, 25, 50, 100, ALL]" ' .
@@ -35,12 +37,7 @@
                        '                                </tr>' . PHP_EOL .
                        '                            </thead>' . PHP_EOL .
                        '                        </table>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <script>' . PHP_EOL .
-                       '                        $(function(){' . PHP_EOL .
-                       '                            fillTable(\'Home\', \'#homeTable\');' . PHP_EOL .
-                       '                        });' . PHP_EOL .
-                       '                    </script>' . PHP_EOL;
+                       '                    </div>' . PHP_EOL;
 
             return $content;
         }
