@@ -1,7 +1,7 @@
 <?php
     namespace Functions;
 
-    class FileDetails
+    class MapDetails
     {
         public function __construct() {
         }
@@ -11,72 +11,70 @@
 
             $mapItem = null;
 
-            $query1 = 'SET @fileid = :fileid;';
-            $dbHandler -> PrepareAndBind ($query1, Array('fileid' => IntVal($request['query_vars']['file'])));
+            $query1 = 'SET @mapid = :mapid;';
+            $dbHandler -> PrepareAndBind($query1, Array('mapid' => IntVal($request['query_vars']['map'])));
             $dbHandler -> Execute();
 
             $query2 = 'SELECT ' .
-                      '    `Files`.`file_pk`, ' .
-                      '    `Files`.`file_name`, ' .
-                      '    `Files`.`file_downloads`, ' .
+                      '    `Maps`.`map_pk`, ' .
+                      '    `Maps`.`map_name`, ' .
+                      '    `Maps`.`map_downloads`, ' .
                       '    `Revisions`.`rev_pk`, ' .
-                      '    `Revisions`.`rev_file_name`, ' .
-                      '    `Revisions`.`rev_file_path`, ' .
-                      '    `Revisions`.`rev_file_version`, ' .
-                      '    `Revisions`.`rev_file_description`, ' .
+                      '    `Revisions`.`rev_map_version`, ' .
+                      '    `Revisions`.`rev_map_description`, ' .
                       '    `Revisions`.`rev_upload_date`, ' .
                       '    `Users`.`user_name`, ' .
                       '    ROUND(AVG(CAST(`Ratings`.`rating_amount` AS DECIMAL(12,2))), 1) AS avg_rating, ' .
-                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 1 AND file_fk = @fileid), 0) AS rating_one, ' .
-                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 2 AND file_fk = @fileid), 0) AS rating_two, ' .
-                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 3 AND file_fk = @fileid), 0) AS rating_three, ' .
-                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 4 AND file_fk = @fileid), 0) AS rating_four, ' .
-                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 5 AND file_fk = @fileid), 0) AS rating_five ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 1 AND map_fk = @mapid), 0) AS rating_one, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 2 AND map_fk = @mapid), 0) AS rating_two, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 3 AND map_fk = @mapid), 0) AS rating_three, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 4 AND map_fk = @mapid), 0) AS rating_four, ' .
+                      '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 5 AND map_fk = @mapid), 0) AS rating_five ' .
                       'FROM ' .
                       '    `Users` ' .
                       'LEFT JOIN ' .
-                      '    `Files` ON `Users`.`user_pk` = `Files`.`user_fk` ' .
+                      '    `Maps` ON `Users`.`user_pk` = `Maps`.`user_fk` ' .
                       'LEFT JOIN ' .
-                      '    `Revisions` ON `Files`.`file_pk` = `Revisions`.`file_fk` ' .
+                      '    `Revisions` ON `Maps`.`map_pk` = `Revisions`.`map_fk` ' .
                       'LEFT JOIN ' .
-                      '    `Ratings` ON `Files`.`file_pk` = `Ratings`.`file_fk` ' .
+                      '    `Ratings` ON `Maps`.`map_pk` = `Ratings`.`map_fk` ' .
                       'WHERE ' .
                       '    `Revisions`.`rev_status_fk` = 1 AND ' .
-                      '    `Revisions`.`file_fk` = @fileid;';
-            $dbHandler -> PrepareAndBind ($query2);
+                      '    `Revisions`.`map_fk` = @mapid;';
+            $dbHandler -> PrepareAndBind($query2);
             $mapItem = $dbHandler -> ExecuteAndFetch();
 
             $content = '<div class="col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-3 toppad">' . PHP_EOL .
                        '    <div class="panel panel-default">' . PHP_EOL .
                        '        <div class="panel-heading">' . PHP_EOL .
-                       '            <h4>' . $mapItem['file_name'] . '</h4>' . PHP_EOL .
+                       '            <h4>' . $mapItem['map_name'] . '</h4>' . PHP_EOL .
                        '        </div>' . PHP_EOL .
                        '        <div class="col-sm-6">' . PHP_EOL .
                        '            <div class="rating-block">' . PHP_EOL .
                        '                <h4>Average user rating</h4>' . PHP_EOL .
                        '                <h2 class="bold padding-bottom-7">' . ($mapItem['avg_rating'] === null ? 'n/a' : $mapItem['avg_rating'] . '<small> / 5</small>') . '</h2>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 1 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
                        '&score=1\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 2 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
                        '&score=2\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 3 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
                        '&score=3\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 4 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
                        '&score=4\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
                        '                <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 5 ? 'btn-warning' : 'btn-default btn-grey') . ' btn-sm" aria-label="Left Align"' .
-                       ' onclick="window.open(\'/ratefile?file=' . $mapItem['file_pk'] .
+                       ' onclick="window.open(\'/ratemap?map=' . $mapItem['map_pk'] .
                        '&score=5\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
                        '                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                </button>' . PHP_EOL .
@@ -158,11 +156,11 @@
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
                        '                    <td class="col-sm-3"><b>Downloads</b></td>' . PHP_EOL .
-                       '                    <td class="col-sm-9">' . $mapItem['file_downloads'] . '</td>' . PHP_EOL .
+                       '                    <td class="col-sm-9">' . $mapItem['map_downloads'] . '</td>' . PHP_EOL .
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
                        '                    <td class="col-sm-3"><b>Version</b></td>' . PHP_EOL .
-                       '                    <td class="col-sm-9">' . $mapItem['rev_file_version'] . '</td>' . PHP_EOL .
+                       '                    <td class="col-sm-9">' . $mapItem['rev_map_version'] . '</td>' . PHP_EOL .
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
                        '                    <td class="col-sm-3"><b>Last change date</b></td>' . PHP_EOL .
@@ -170,11 +168,11 @@
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
                        '                    <td class="col-sm-3"><b>Description</b></td>' . PHP_EOL .
-                       '                    <td class="col-sm-9">' . nl2br($mapItem['rev_file_description']) . '</td>' . PHP_EOL .
+                       '                    <td class="col-sm-9">' . nl2br($mapItem['rev_map_description']) . '</td>' . PHP_EOL .
                        '                </tr>' . PHP_EOL .
                        '                <tr>' . PHP_EOL .
                        '                    <td colspan="2">' . PHP_EOL .
-                       '                        <button type="submit" title="Download this map" onclick="window.open(\'/download?file=' . $mapItem['rev_pk'] . '\', \'popUpWindow\', \'height=400, width=600, left=10, top=10, , scrollbars=yes, menubar=no\'); return false;">' . PHP_EOL .
+                       '                        <button id="btnDownloadMap" type="submit" title="Download this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
                        '                            <span class="glyphicon glyphicon-download-alt"></span>' . PHP_EOL .
                        '                        </button>' . PHP_EOL .
                        '                        <button title="Flag this map">' . PHP_EOL .
@@ -222,6 +220,127 @@
                        '        </a>' . PHP_EOL .
                        '    </div>' . PHP_EOL .
                        '</div>';
+
+            return $content;
+        }
+
+        public function getApiResponse(&$dbHandler) {
+            global $request;
+
+            header('Cache-Control: no-cache, must-revalidate');
+            header('Content-type: application/json');
+
+            $content = Array();
+
+            try {
+                if (isset($request['call_parts'][3])) {
+                    $mapItem = null;
+                    $mapId   = IntVal($request['call_parts'][3]);
+
+                    if ($mapId === null || $mapId <= 0)
+                        throw new Exception('Ilegal map ID : ' . $mapId);
+
+                    $query1 = 'SET @mapid = :mapid;';
+                    $dbHandler -> PrepareAndBind($query1, Array('mapid' => $mapId));
+                    $dbHandler -> Execute();
+
+                    $query2 = 'SELECT ' .
+                              '    `Maps`.`map_pk`, ' .
+                              '    `Maps`.`map_name`, ' .
+                              '    `Maps`.`map_downloads`, ' .
+                              '    `Revisions`.`rev_map_description_short`, ' .
+                              '    `Revisions`.`rev_map_description`, ' .
+                              '    `Revisions`.`rev_upload_date`, ' .
+                              '    `Users`.`user_name`, ' .
+                              '    `MapTypes`.`map_type_name`, ' .
+                              '    (SELECT ' .
+                              '         ROUND(AVG(CAST(`rating_amount` AS DECIMAL(12,2))), 1) ' .
+                              '     FROM ' .
+                              '         `Ratings` ' .
+                              '     WHERE ' .
+                              '         `map_fk` = @mapid ' .
+                              '    ) AS avg_rating ' .
+                              'FROM ' .
+                              '    `Maps` ' .
+                              'LEFT JOIN ' .
+                              '    `Revisions` ON `Maps`.`map_pk` = `Revisions`.`map_fk` ' .
+                              'LEFT JOIN ' .
+                              '    `Users` ON `Maps`.`user_fk` = `Users`.`user_pk` ' .
+                              'LEFT JOIN ' .
+                              '    `MapTypes` ON `Maps`.`map_type_fk` = `MapTypes`.`map_type_pk` ' .
+                              'WHERE ' .
+                              '    `Revisions`.`rev_status_fk` = 1 AND ' .
+                              '    `Maps`.`map_visible` = 1 AND ' .
+                              '    `Maps`.`map_pk` = @mapid;';
+                    $dbHandler -> PrepareAndBind($query2);
+                    $mapItem = $dbHandler -> ExecuteAndFetch();
+
+                    $content['map_pk']                    = IntVal($mapItem['map_pk']);
+                    $content['map_name']                  = $mapItem['map_name'];
+                    $content['map_downloads']             = IntVal($mapItem['map_downloads']);
+                    $content['rev_map_description_short'] = $mapItem['rev_map_description_short'];
+                    $content['rev_map_description']       = $mapItem['rev_map_description'];
+                    $content['rev_upload_date']           = $mapItem['rev_upload_date '];
+                    $content['user_name']                 = $mapItem['user_name'];
+                    $content['map_type_name']             = $mapItem['map_type_name'];
+                    $content['avg_rating']                = ($mapItem['avg_rating'] === null ? 'n/a' : FloatVal($mapItem['avg_rating']));
+                } else {
+                    $mapListItems = null;
+
+                    $query = 'SELECT ' .
+                             '    `Maps`.`map_pk`, ' .
+                             '    `Maps`.`map_name`, ' .
+                             '    `Maps`.`map_downloads`, ' .
+                             '    `Revisions`.`rev_map_description_short`, ' .
+                             '    `Revisions`.`rev_map_description`, ' .
+                             '    `Revisions`.`rev_upload_date`, ' .
+                             '    `Users`.`user_name`, ' .
+                             '    `MapTypes`.`map_type_name` ' .
+                             'FROM ' .
+                             '    `Maps` ' .
+                             'LEFT JOIN ' .
+                             '    `Revisions` ON `Maps`.`map_pk` = `Revisions`.`map_fk` ' .
+                             'LEFT JOIN ' .
+                             '    `Users` ON `Maps`.`user_fk` = `Users`.`user_pk` ' .
+                             'LEFT JOIN ' .
+                             '    `MapTypes` ON `Maps`.`map_type_fk` = `MapTypes`.`map_type_pk` ' .
+                             'WHERE ' .
+                             '    `Revisions`.`rev_status_fk` = 1 AND ' .
+                             '    `Maps`.`map_visible` = 1 ' .
+                             'ORDER BY ' .
+                             '    `Maps`.`map_name` DESC;';
+                    $dbHandler -> PrepareAndBind($query);
+                    $mapListItems = $dbHandler -> ExecuteAndFetchAll();
+                    $dbHandler -> Clean();
+
+                    if ($mapListItems != null) {
+                        foreach ($mapListItems as $mapItem) {
+                            $ratingQuery = 'SELECT ' .
+                                           '    ROUND(AVG(CAST(`rating_amount` AS DECIMAL(12,2))), 1) AS avg_rating ' .
+                                           'FROM ' .
+                                           '    `Ratings` ' .
+                                           'WHERE ' .
+                                           '    `map_fk` = :mapid;';
+                            $dbHandler -> PrepareAndBind($ratingQuery, Array('mapid' => $mapItem['map_pk']));
+                            $avgRating = $dbHandler -> ExecuteAndFetch();
+
+                            $contentItem = Array('map_pk'                    => IntVal($mapItem['map_pk']),
+                                                 'map_name'                  => $mapItem['map_name'],
+                                                 'map_downloads'             => IntVal($mapItem['map_downloads']),
+                                                 'rev_map_description_short' => $mapItem['rev_map_description_short'],
+                                                 'rev_map_description'       => $mapItem['rev_map_description'],
+                                                 'rev_upload_date'           => $mapItem['rev_upload_date '],
+                                                 'user_name'                 => $mapItem['user_name'],
+                                                 'map_type_name'             => $mapItem['map_type_name'],
+                                                 'avg_rating'                => ($avgRating['avg_rating'] === null ? 'n/a' : FloatVal($avgRating['avg_rating'])));
+
+                            $content[] = $contentItem;
+                        };
+                    };
+                };
+            } catch (Exception $e) {
+                $content = 'Error retrieving data from the database.';
+            };
 
             return $content;
         }

@@ -6,29 +6,29 @@ INSERT INTO `Users` (`user_pk`, `user_name`, `user_password`, `user_salt`, `user
 (2, 'Contributor', '123', '123', NULL, 5);
 
 --
--- Dumping data for table `Files`
+-- Dumping data for table `Maps`
 --
-INSERT INTO `Files` (`file_pk`, `file_name`, `file_visible`, `file_created_date`, `user_fk`, `file_downloads`, `file_Type_fk`) VALUES
-(1, 'File 1', 1, '2017-03-13 16:28:22', 1, 35, 0),
-(2, 'File 2', 1, '2017-03-13 16:28:22', 1, 23, 0),
-(3, 'File 3', 1, '2017-03-13 16:28:22', 2, 1, 3),
-(4, 'File 4', 1, '2017-03-13 16:28:22', 1, 0, 0),
-(5, 'File 5', 1, '2017-03-13 16:28:22', 2, 75, 4),
-(6, 'File 6', 1, '2017-03-13 16:28:22', 1, 4, 0),
-(7, 'File 7', 1, '2017-03-13 16:28:22', 1, 9, 0),
-(8, 'File 8', 1, '2017-03-13 16:28:22', 2, 23, 0),
-(9, 'File 9', 1, '2017-03-13 16:28:22', 2, 435, 5),
-(10, 'File 10', 1, '2017-03-13 16:28:22', 2, 9, 0),
-(11, 'File 11', 1, '2017-03-13 16:28:22', 2, 62, 1),
-(12, 'File 12', 1, '2017-03-13 16:28:22', 2, 5, 0),
-(13, 'File 13', 1, '2017-03-13 16:28:22', 1, 1, 0),
-(14, 'File 14', 1, '2017-03-13 16:28:22', 2, 346, 5),
-(15, 'File 15', 1, '2017-03-13 16:28:22', 2, 2, 0);
+INSERT INTO `Maps` (`map_pk`, `map_name`, `map_visible`, `map_created_date`, `user_fk`, `map_downloads`, `map_Type_fk`) VALUES
+(1, 'Map 1', 1, '2017-03-13 16:28:22', 1, 35, 0),
+(2, 'Map 2', 1, '2017-03-13 16:28:22', 1, 23, 0),
+(3, 'Map 3', 1, '2017-03-13 16:28:22', 2, 1, 3),
+(4, 'Map 4', 1, '2017-03-13 16:28:22', 1, 0, 0),
+(5, 'Map 5', 1, '2017-03-13 16:28:22', 2, 75, 4),
+(6, 'Map 6', 1, '2017-03-13 16:28:22', 1, 4, 0),
+(7, 'Map 7', 1, '2017-03-13 16:28:22', 1, 9, 0),
+(8, 'Map 8', 1, '2017-03-13 16:28:22', 2, 23, 0),
+(9, 'Map 9', 1, '2017-03-13 16:28:22', 2, 435, 5),
+(10, 'Map 10', 1, '2017-03-13 16:28:22', 2, 9, 0),
+(11, 'Map 11', 1, '2017-03-13 16:28:22', 2, 62, 1),
+(12, 'Map 12', 1, '2017-03-13 16:28:22', 2, 5, 0),
+(13, 'Map 13', 1, '2017-03-13 16:28:22', 1, 1, 0),
+(14, 'Map 14', 1, '2017-03-13 16:28:22', 2, 346, 5),
+(15, 'Map 15', 1, '2017-03-13 16:28:22', 2, 2, 0);
 
 --
 -- Dumping data for table `Revisions`
 --
-INSERT INTO `Revisions` (`rev_pk`, `file_fk`, `rev_file_name`, `rev_file_path`, `rev_file_version`, `rev_file_description_short`, `rev_file_description`, `rev_upload_date`, `rev_status_fk`) VALUES
+INSERT INTO `Revisions` (`rev_pk`, `map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, `rev_map_description_short`, `rev_map_description`, `rev_upload_date`, `rev_status_fk`) VALUES
 (1, 1, 'Test_1.zip', '/uploads/Test_1/0.0.1/', '0.0.1', 'Test mission 1', 'This is a longdescription for :\r\nTest mission 1', '2017-03-13 16:36:39', 1),
 (2, 2, 'Test_1.zip', '/uploads/Test_2/0.0.1/', '0.0.1', 'Test mission 2', 'This is a longdescription for :\r\nTest mission 2', '2017-03-13 16:36:39', 1),
 (3, 3, 'Test_1.zip', '/uploads/Test_3/0.0.1/', '0.0.1', 'Test mission 3', 'This is a longdescription for :\r\nTest mission 3', '2017-03-13 16:36:39', 1),
@@ -45,7 +45,7 @@ INSERT INTO `Revisions` (`rev_pk`, `file_fk`, `rev_file_name`, `rev_file_path`, 
 (14, 14, 'Test_1.zip', '/uploads/Test_14/0.0.1/', '0.0.1', 'Test mission 14', 'This is a longdescription for :\r\nTest mission 14', '2017-03-13 16:36:39', 1),
 (15, 15, 'Test_1.zip', '/uploads/Test_15/0.0.1/', '0.0.1', 'Test mission 15', 'This is a longdescription for :\r\nTest mission 15', '2017-03-13 16:36:39', 1);
 
-INSERT INTO `Ratings` (`rating_pk`, `file_fk`, `rating_amount`, `rating_ip`) VALUES
+INSERT INTO `Ratings` (`rating_pk`, `map_fk`, `rating_amount`, `rating_ip`) VALUES
 (1, 8, 2, '0'),
 (2, 12, 2, '0'),
 (3, 8, 3, '0'),

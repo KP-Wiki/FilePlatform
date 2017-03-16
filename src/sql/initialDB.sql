@@ -33,28 +33,28 @@ CREATE TABLE `RememberMe` (
     CONSTRAINT `RememberMe_user_fk` FOREIGN KEY (`user_fk`) REFERENCES `Users` (`user_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `FileTypes` (
-    `file_type_pk` TINYINT UNSIGNED NOT NULL,
-    `file_type_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
-    PRIMARY KEY (`file_type_pk`),
-    INDEX (`file_type_name`)
+CREATE TABLE `MapTypes` (
+    `map_type_pk` TINYINT UNSIGNED NOT NULL,
+    `map_type_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
+    PRIMARY KEY (`map_type_pk`),
+    INDEX (`map_type_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `Files` (
-    `file_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `file_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
-    `file_visible` BOOLEAN NOT NULL DEFAULT TRUE,
-    `file_created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE `Maps` (
+    `map_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `map_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
+    `map_visible` BOOLEAN NOT NULL DEFAULT TRUE,
+    `map_created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `user_fk` BIGINT UNSIGNED NOT NULL,
-    `file_downloads` BIGINT UNSIGNED NOT NULL DEFAULT '0',
-    `file_Type_fk` TINYINT UNSIGNED NOT NULL,
-    PRIMARY KEY (`file_pk`),
-    INDEX (`file_name`),
-    INDEX (`file_visible`),
+    `map_downloads` BIGINT UNSIGNED NOT NULL DEFAULT '0',
+    `map_Type_fk` TINYINT UNSIGNED NOT NULL,
+    PRIMARY KEY (`map_pk`),
+    INDEX (`map_name`),
+    INDEX (`map_visible`),
     INDEX (`user_fk`),
-    INDEX (`file_Type_fk`),
-    CONSTRAINT `Files_user_fk` FOREIGN KEY (`user_fk`) REFERENCES `Users` (`user_pk`),
-    CONSTRAINT `Files_file_Type_fk` FOREIGN KEY (`file_Type_fk`) REFERENCES `FileTypes` (`file_Type_pk`)
+    INDEX (`map_Type_fk`),
+    CONSTRAINT `Maps_user_fk` FOREIGN KEY (`user_fk`) REFERENCES `Users` (`user_pk`),
+    CONSTRAINT `Maps_map_Type_fk` FOREIGN KEY (`map_Type_fk`) REFERENCES `MapTypes` (`map_Type_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `RevisionStatus` (
@@ -67,19 +67,20 @@ CREATE TABLE `RevisionStatus` (
 
 CREATE TABLE `Revisions` (
     `rev_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `file_fk` BIGINT UNSIGNED NOT NULL,
-    `rev_file_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
-    `rev_file_path` VARCHAR(512) COLLATE utf8_unicode_ci NOT NULL,
-    `rev_file_version` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
-    `rev_file_description_short` VARCHAR(512) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-    `rev_file_description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+    `map_fk` BIGINT UNSIGNED NOT NULL,
+    `rev_map_file_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
+    `rev_map_file_path` VARCHAR(512) COLLATE utf8_unicode_ci NOT NULL,
+    `rev_map_version` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
+    `rev_map_description_short` VARCHAR(512) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+    `rev_map_description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `rev_upload_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `rev_status_fk` TINYINT UNSIGNED NOT NULL DEFAULT '0',
     PRIMARY KEY (`rev_pk`),
-    INDEX (`file_fk`),
-    INDEX (`rev_file_name`),
+    INDEX (`map_fk`),
+    INDEX (`rev_map_version`),
+    INDEX (`rev_upload_date`),
     INDEX (`rev_status_fk`),
-    CONSTRAINT `Revisions_file_fk` FOREIGN KEY (`file_fk`) REFERENCES `Files` (`file_pk`),
+    CONSTRAINT `Revisions_map_fk` FOREIGN KEY (`map_fk`) REFERENCES `Maps` (`map_pk`),
     CONSTRAINT `Revisions_rev_status_fk` FOREIGN KEY (`rev_status_fk`) REFERENCES `RevisionStatus` (`rev_status_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -88,7 +89,7 @@ CREATE TABLE `Screenshots` (
     `rev_fk` BIGINT UNSIGNED NOT NULL,
     `screen_title` VARCHAR(512) COLLATE utf8_unicode_ci NOT NULL,
     `screen_alt` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
-    `screen_filename` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
+    `screen_file_name` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
     `screen_path` VARCHAR(512) COLLATE utf8_unicode_ci NOT NULL,
     `screen_order` VARCHAR(512) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     PRIMARY KEY (`screen_pk`),
@@ -112,14 +113,14 @@ CREATE TABLE `Comments` (
 
 CREATE TABLE `Ratings` (
     `rating_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `file_fk` BIGINT UNSIGNED NOT NULL,
+    `map_fk` BIGINT UNSIGNED NOT NULL,
     `rating_amount` TINYINT UNSIGNED NOT NULL,
     `rating_ip` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`rating_pk`),
-    INDEX (`file_fk`),
+    INDEX (`map_fk`),
     INDEX (`rating_amount`),
     INDEX (`rating_ip`),
-    CONSTRAINT `Ratings_file_fk` FOREIGN KEY (`file_fk`) REFERENCES `Files` (`file_pk`)
+    CONSTRAINT `Ratings_map_fk` FOREIGN KEY (`map_fk`) REFERENCES `Maps` (`map_pk`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;
 
 CREATE TABLE `FlagStatus` (
@@ -154,7 +155,7 @@ VALUES
     (10, 'Administrator');
 
 INSERT INTO
-    `FileTypes` (`file_type_pk`, `file_type_name`)
+    `MapTypes` (`map_type_pk`, `map_type_name`)
 VALUES
     ('0', 'SP Normal Story'),
     ('1', 'SP Normal Skirmish'),

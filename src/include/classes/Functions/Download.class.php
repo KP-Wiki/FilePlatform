@@ -6,50 +6,59 @@
         public function __construct() {
         }
 
-        public function getContent(&$dbHandler) {
+        public function getApiResponse(&$dbHandler) {
             global $request;
 
-            $mapFile = null;
+            if (!isset($request['call_parts'][3])) {
+                header('HTTP/1.1 404 Not Found');
+                return null;
+            };
+
+            $mapItem = null;
+            $mapId   = IntVal($request['call_parts'][3]);
+
+            if ($mapId === null || $mapId <= 0) {
+                header('HTTP/1.1 404 Not Found');
+                return null;
+            };
 
             $selectQuery = 'SELECT ' .
-                           '    `Files`.`file_pk`, ' .
-                           '    `Files`.`file_downloads`, ' .
-                           '    `Revisions`.`rev_file_name`, ' .
-                           '    `Revisions`.`rev_file_path` ' .
+                           '    `Maps`.`map_pk`, ' .
+                           '    `Maps`.`map_downloads`, ' .
+                           '    `Revisions`.`rev_map_file_name`, ' .
+                           '    `Revisions`.`rev_map_file_path` ' .
                            'FROM ' .
                            '    `Revisions` ' .
                            'LEFT JOIN ' .
-                           '    `Files` ON `Revisions`.`file_fk` = `Files`.`file_pk` ' .
+                           '    `Maps` ON `Revisions`.`map_fk` = `Maps`.`map_pk` ' .
                            'WHERE ' .
                            '    `Revisions`.`rev_pk` = :revid AND ' .
                            '    `Revisions`.`rev_status_fk` = 1;';
-            $dbHandler -> PrepareAndBind ($selectQuery, Array('revid' => IntVal($request['query_vars']['file'])));
-            $mapFile = $dbHandler -> ExecuteAndFetch();
+            $dbHandler -> PrepareAndBind($selectQuery, Array('revid' => $mapId));
+            $mapItem = $dbHandler -> ExecuteAndFetch();
             $dbHandler -> Clean();
 
-            if ($mapFile === null || Empty($mapFile)) {
+            if ($mapItem === null || Empty($mapItem)) {
                 header('HTTP/1.1 404 Not Found');
-                header('Location: /home');
                 return null;
             };
 
-            $fullPath = $_SERVER['DOCUMENT_ROOT'] . $mapFile['rev_file_path'] . $mapFile['rev_file_name'];
+            $fullPath = $_SERVER['DOCUMENT_ROOT'] . $mapItem['rev_map_file_path'] . $mapItem['rev_map_file_name'];
 
             if (!file_exists($fullPath)) {
                 header('HTTP/1.1 404 Not Found');
-                header('Location: /home');
                 return null;
             };
 
-            $mapDownloads = $mapFile['file_downloads'] + 1;
+            $mapDownloads = $mapItem['map_downloads'] + 1;
             $updateQuery  = 'UPDATE ' .
-                            '    `Files` ' .
+                            '    `Maps` ' .
                             'SET ' .
-                            '    `file_downloads` = :downloads ' .
+                            '    `map_downloads` = :downloads ' .
                             'WHERE ' .
-                            '    `file_pk` = :fileid;';
-            $dbHandler -> PrepareAndBind ($updateQuery, Array('downloads' => $mapDownloads,
-                                                              'fileid'    => $mapFile['file_pk']));
+                            '    `map_pk` = :mapid;';
+            $dbHandler -> PrepareAndBind($updateQuery, Array('downloads' => $mapDownloads,
+                                                             'mapid'     => $mapItem['map_pk']));
             $dbHandler -> Execute();
 
             return $fullPath;

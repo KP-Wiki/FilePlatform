@@ -11,7 +11,7 @@
         public function __construct() {
             global $config;
 
-            $this -> DSN = "mysql:host=" . $config['db']['server'] . ";dbname=" . $config['db']['database'];
+            $this -> DSN = 'mysql:host=' . $config['db']['server'] . ';dbname=' . $config['db']['database'];
             $this -> PDO = new PDO($this -> DSN, $config['db']['username'], $config['db']['password']);
 
             $this -> PDO -> setAttribute(PDO::ATTR_ERRMODE,            PDO::ERRMODE_EXCEPTION);

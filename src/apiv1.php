@@ -8,8 +8,7 @@
     use App\Utils;
     use Data\Database;
     use Data\Files;
-    use Functions\Home;
-    use Functions\FileDetails;
+    use Functions\MapDetails;
     use Functions\Download;
     use Functions\Rate;
 
@@ -37,10 +36,48 @@
 
             $response = Array();
 
-            if ($request['call_parts'][2] === 'getFiles') {
-                $homeFunc = new Functions\Home();
+            if ($request['call_parts'][2] === 'getMaps') {
+                $mapDetailFunc = new Functions\MapDetails();
 
-                $response = $homeFunc -> getApiResponse($this -> dbHandler);
+                $response = $mapDetailFunc -> getApiResponse($this -> dbHandler);
+            } elseif ($request['call_parts'][2] === 'downloadMap') {
+                $downloadFunc = new Functions\Download();
+                $fullPath     = $downloadFunc -> getApiResponse($this -> dbHandler);
+
+                if ($fullPath === null) {
+                    header('Cache-Control: no-cache, must-revalidate');
+                    header('Content-type: application/json');
+
+                    $response['Status']  = 'ERROR';
+                    $response['Message'] = 'Requested map does not exist!';
+                    print(json_encode($response, JSON_PRETTY_PRINT));
+
+                    Exit;
+                };
+
+                ignore_user_abort(true);
+                // Disable the time limit for this script
+                set_time_limit(0);
+
+                if ($fileData = fopen ($fullPath, 'r')) {
+                    $fileSize  = filesize($fullPath);
+                    $pathParts = pathinfo($fullPath);
+
+                    header('Content-type: application/octet-stream');
+                    // Use 'attachment' to force a file download
+                    header('Content-Disposition: attachment; filename="' . $pathParts['basename'] . '"');
+                    header('Content-length: ' . $fileSize);
+                    // Use this to open files directly
+                    header('Cache-control: private');
+
+                    while(!feof($fileData)) {
+                        $buffer = fread($fileData, 2048);
+                        echo $buffer;
+                    };
+                };
+
+                fclose ($fileData);
+                Exit;
             } else {
                 $response['Status']  = 'ERROR';
                 $response['Message'] = 'Requested function does not exist!';

@@ -20,20 +20,20 @@
                                   '    `Ratings` ' .
                                   'WHERE ' .
                                   '    `rating_ip` = :ratingip AND' .
-                                  '    `file_fk` = :fileid';
+                                  '    `map_fk` = :mapid';
                 $dbHandler -> PrepareAndBind ($spamCheckQuery, Array('ratingip' => $ratingIP,
-                                                                     'fileid'   => $request['query_vars']['file']));
+                                                                     'mapid'    => $request['query_vars']['map']));
                 $ratingCount = $dbHandler -> ExecuteAndFetch();
                 $dbHandler -> Clean();
 
                 if ($ratingCount['rating_count'] >= 1)
-                    return 'You have already rated this file.';
+                    return 'You have already rated this map.';
 
                 $insertQuery = 'INSERT INTO ' .
-                               '    `Ratings` (`file_fk`, `rating_amount`, `rating_ip`) ' .
+                               '    `Ratings` (`map_fk`, `rating_amount`, `rating_ip`) ' .
                                'VALUES ' .
-                               '    (:fileid, :ratingamount, :ratingip);';
-                $dbHandler -> PrepareAndBind ($insertQuery, Array('fileid'       => IntVal($request['query_vars']['file']),
+                               '    (:mapid, :ratingamount, :ratingip);';
+                $dbHandler -> PrepareAndBind ($insertQuery, Array('mapid'        => IntVal($request['query_vars']['map']),
                                                                   'ratingamount' => IntVal($request['query_vars']['score']),
                                                                   'ratingip'     => $ratingIP));
                 $dbHandler -> Execute();

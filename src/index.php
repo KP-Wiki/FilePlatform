@@ -13,7 +13,7 @@
     use Data\Files;
     use Functions\Home;
     use Functions\About;
-    use Functions\FileDetails;
+    use Functions\MapDetails;
     use Functions\Download;
     use Functions\Rate;
 
@@ -54,72 +54,36 @@
 
                 // Set the content
                 $this -> renderer -> setContent($content);
-            } elseif ($request['call'] === 'filedetails') {
-                if (Empty($request['query_vars']) || Empty($request['query_vars']['file'])) {
+            } elseif ($request['call'] === 'mapdetails') {
+                if (Empty($request['query_vars']) || Empty($request['query_vars']['map'])) {
                     header('HTTP/1.1 404 Not Found');
                     header('Location: /home');
                     Exit;
                 };
 
-                $fileDetailFunc = new Functions\FileDetails();
+                $mapDetailFunc = new Functions\MapDetails();
 
                 // Set the page title
-                $this -> renderer -> setValue('title', 'File Details');
+                $this -> renderer -> setValue('title', 'Map Details');
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', 'class="active"');
                 $this -> renderer -> setValue('about-active', '');
 
-                $content = $fileDetailFunc -> getContent($this -> dbHandler);
+                $content = $mapDetailFunc -> getContent($this -> dbHandler);
 
                 // Set the content
                 $this -> renderer -> setContent($content);
-            } elseif ($request['call'] === 'download') {
-                if (Empty($request['query_vars']) || Empty($request['query_vars']['file'])) {
-                    header('HTTP/1.1 404 Not Found');
-                    header('Location: /home');
-                    Exit;
-                };
-
-                $downloadFunc = new Functions\Download();
-                $fullPath     = $downloadFunc -> getContent($this -> dbHandler);
-
-                if ($fullPath === null)
-                    Exit;
-
-                ignore_user_abort(true);
-                // Disable the time limit for this script
-                set_time_limit(0);
-
-                if ($fileData = fopen ($fullPath, 'r')) {
-                    $fileSize  = filesize($fullPath);
-                    $pathParts = pathinfo($fullPath);
-
-                    header('Content-type: application/octet-stream');
-                    // Use 'attachment' to force a file download
-                    header('Content-Disposition: attachment; filename="' . $pathParts['basename'] . '"');
-                    header('Content-length: ' . $fileSize);
-                    // Use this to open files directly
-                    header('Cache-control: private');
-
-                    while(!feof($fileData)) {
-                        $buffer = fread($fileData, 2048);
-                        echo $buffer;
-                    };
-                };
-
-                fclose ($fileData);
-                Exit;
-            } elseif ($request['call'] === 'ratefile') {
+            } elseif ($request['call'] === 'ratemap') {
                 $rateFunc = new Functions\Rate($this -> utils);
 
                 // Set the page title
-                $this -> renderer -> setValue('title', 'File Rating');
+                $this -> renderer -> setValue('title', 'Map Rating');
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', 'class="active"');
                 $this -> renderer -> setValue('about-active', '');
 
                 if (Empty($request['query_vars']) ||
-                    Empty($request['query_vars']['file']) ||
+                    Empty($request['query_vars']['map']) ||
                     Empty($request['query_vars']['score']) ||
                     (IntVal($request['query_vars']['score']) <= 0) ||
                     (IntVal($request['query_vars']['score']) >= 6)) {
