@@ -40,9 +40,12 @@
             $response = Array();
 
             if ($request['call_parts'][2] === 'getMaps') {
-                $mapDetailFunc = new Functions\MapDetails();
+                header('Content-type: application/json');
 
-                $response = $mapDetailFunc -> getApiResponse($this -> dbHandler);
+                $mapDetailFunc = new Functions\MapDetails();
+                $response      = $mapDetailFunc -> getApiResponse($this -> dbHandler);
+
+                print(json_encode($response, JSON_PRETTY_PRINT));
             } elseif ($request['call_parts'][2] === 'downloadMap') {
                 $downloadFunc = new Functions\Download();
                 $fullPath     = $downloadFunc -> getApiResponse($this -> dbHandler);
@@ -52,8 +55,8 @@
 
                     $response['Status']  = 'ERROR';
                     $response['Message'] = 'Requested map does not exist!';
-                    print(json_encode($response, JSON_PRETTY_PRINT));
 
+                    print(json_encode($response, JSON_PRETTY_PRINT));
                     Exit;
                 };
 
@@ -77,8 +80,9 @@
                 };
 
                 fclose ($fileData);
-                Exit;
             } elseif ($request['call_parts'][2] === 'rateMap') {
+                header('Content-type: application/json');
+
                 $rateFunc = new Functions\Rate($this -> utils);
 
                 if (Empty($request['call_parts'][3]) ||
@@ -88,13 +92,16 @@
                 } else {
                     $response = $rateFunc -> getApiResponse($this -> dbHandler);
                 };
+
+                print(json_encode($response, JSON_PRETTY_PRINT));
             } else {
                 $response['Status']  = 'ERROR';
                 $response['Message'] = 'Requested function does not exist!';
+
+                print(json_encode($response, JSON_PRETTY_PRINT));
             };
 
             $this -> dbHandler -> Destroy();
-            print(json_encode($response, JSON_PRETTY_PRINT));
         }
     }
 

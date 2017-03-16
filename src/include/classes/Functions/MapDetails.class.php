@@ -222,9 +222,6 @@
         public function getApiResponse(&$dbHandler) {
             global $request;
 
-            header('Cache-Control: no-cache, must-revalidate');
-            header('Content-type: application/json');
-
             $content = Array();
 
             try {
