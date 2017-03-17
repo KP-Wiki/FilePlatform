@@ -18,12 +18,14 @@
                        'data-sort-order="desc" ' .
                        'data-show-toggle="true" ' .
                        'data-show-columns="true" ' .
+                       'data-show-export="true" ' .
                        'data-minimum-count-columns="2" ' .
-                       'data-url="/api/v1/getMaps" ' .
+                       'data-url="/api/v1/maps" ' .
                        'data-show-refresh="true" ' .
                        'data-show-pagination-switch="true" ' .
                        'data-pagination="true" ' .
-                       'data-page-list="[10, 25, 50, 100, ALL]" ' .
+                       'data-page-list="[5, 10, 25, 50, 100, ALL]" ' .
+                       'data-page-size="10" ' .
                        'data-show-footer="false" ' .
                        'data-side-pagination="client">' . PHP_EOL .
                        '                            <thead>' . PHP_EOL .

@@ -15,6 +15,8 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js" crossorigin="anonymous"></script>
         <script src="/js/jquery.fileDownload.js"></script>
+        <script src="/js/bootstrap-table-export.js"></script>
+        <script src="/js/tableExport.js"></script>
         <script src="/js/main.js"></script>
     </head>
     <body>
