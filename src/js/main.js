@@ -3,16 +3,17 @@ window.rateMap = function(mapID, score) {
     var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
 
     $.ajax({
-        url: urlBase + '/api/v1/rateMap/' + mapID + '?score=' + score,
+        url: urlBase + '/api/v1/rating/' + mapID, // + '?score=' + score,
         error: function(xhr, status, error) {
             alert('Unable to handle the request due to an AJAX fault! \r\nStatus : ' + status + ' <|> Error : ' + error);
         },
+        data: {'score': score},
         dataType: 'json',
         success: function(result, status, xhr) {
             alert(result);
             location.reload();
         },
-        type: 'GET'
+        type: 'POST'
     });
 }
 
@@ -27,7 +28,7 @@ $(document).ready(function() {
         var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
         var mapID   = $('#btnDownloadMap').attr('kp-map-id');
 
-        $.fileDownload(urlBase + '/api/v1/downloadMap/' + mapID, {
+        $.fileDownload(urlBase + '/api/v1/download/' + mapID, {
             successCallback: function (url) {
                 alert('Great success!');
             },

@@ -56,4 +56,63 @@
 
             return $ipAddr;
         }
+
+        public function http_code_to_text($Code) {
+            switch($Code) {
+                case 100: $Text = 'Continue'; break;
+                case 101: $Text = 'Switching Protocols'; break;
+                case 200: $Text = 'OK'; break;
+                case 201: $Text = 'Created'; break;
+                case 202: $Text = 'Accepted'; break;
+                case 203: $Text = 'Non-Authoritative Information'; break;
+                case 204: $Text = 'No Content'; break;
+                case 205: $Text = 'Reset Content'; break;
+                case 206: $Text = 'Partial Content'; break;
+                case 300: $Text = 'Multiple Choices'; break;
+                case 301: $Text = 'Moved Permanently'; break;
+                case 302: $Text = 'Moved Temporarily'; break;
+                case 303: $Text = 'See Other'; break;
+                case 304: $Text = 'Not Modified'; break;
+                case 305: $Text = 'Use Proxy'; break;
+                case 400: $Text = 'Bad Request'; break;
+                case 401: $Text = 'Unauthorized'; break;
+                case 402: $Text = 'Payment Required'; break;
+                case 403: $Text = 'Forbidden'; break;
+                case 404: $Text = 'Not Found'; break;
+                case 405: $Text = 'Method Not Allowed'; break;
+                case 406: $Text = 'Not Acceptable'; break;
+                case 407: $Text = 'Proxy Authentication Required'; break;
+                case 408: $Text = 'Request Time-out'; break;
+                case 409: $Text = 'Conflict'; break;
+                case 410: $Text = 'Gone'; break;
+                case 411: $Text = 'Length Required'; break;
+                case 412: $Text = 'Precondition Failed'; break;
+                case 413: $Text = 'Request Entity Too Large'; break;
+                case 414: $Text = 'Request-URI Too Large'; break;
+                case 415: $Text = 'Unsupported Media Type'; break;
+                case 500: $Text = 'Internal Server Error'; break;
+                case 501: $Text = 'Not Implemented'; break;
+                case 502: $Text = 'Bad Gateway'; break;
+                case 503: $Text = 'Service Unavailable'; break;
+                case 504: $Text = 'Gateway Time-out'; break;
+                case 505: $Text = 'HTTP Version not supported'; break;
+                default:  $Text = 'Unknown http status code ' . $Code; break;
+            };
+            
+            return $Text;
+        }
+
+        public function http_response_code($Code = null) {
+            if ($Code !== null) {
+                $Text = $this -> http_code_to_text($Code);
+
+                $Protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+                header($Protocol . ' ' . $Code . ' ' . $Text);
+                $GLOBALS['http_response_code'] = $Code;
+            } else {
+                $Code = (isset($GLOBALS['http_response_code']) ? $GLOBALS['http_response_code'] : 200);
+            };
+
+            return $Code;
+        }
     }

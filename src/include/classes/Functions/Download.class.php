@@ -3,14 +3,17 @@
 
     class Download
     {
-        public function __construct() {
+        private $utils = null;
+
+        public function __construct(&$utilsClass) {
+            $this -> utils = $utilsClass;
         }
 
-        public function getApiResponse(&$dbHandler) {
+        public function getDownload(&$dbHandler) {
             global $request;
 
             if (!isset($request['call_parts'][3])) {
-                header('HTTP/1.1 404 Not Found');
+                $this -> utils -> http_response_code(400);
                 return null;
             };
 
@@ -18,7 +21,7 @@
             $mapId   = IntVal($request['call_parts'][3]);
 
             if ($mapId === null || $mapId <= 0) {
-                header('HTTP/1.1 404 Not Found');
+                $this -> utils -> http_response_code(400);
                 return null;
             };
 
@@ -39,14 +42,14 @@
             $dbHandler -> Clean();
 
             if ($mapItem === null || Empty($mapItem)) {
-                header('HTTP/1.1 404 Not Found');
+                $this -> utils -> http_response_code(404);
                 return null;
             };
 
             $fullPath = $_SERVER['DOCUMENT_ROOT'] . $mapItem['rev_map_file_path'] . $mapItem['rev_map_file_name'];
 
             if (!file_exists($fullPath)) {
-                header('HTTP/1.1 404 Not Found');
+                $this -> utils -> http_response_code(404);
                 return null;
             };
 
