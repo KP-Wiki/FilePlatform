@@ -140,9 +140,7 @@
                 header('Content-type: application/json');
                 $rateFunc = new Functions\Rate($this -> utils);
 
-                if (Empty($request['call_parts'][3]) ||
-                    Empty($request['query_vars']) ||
-                    Empty($request['query_vars']['score'])) {
+                if (Empty($request['call_parts'][3])) {
                     $this -> utils -> http_response_code(404);
                     $response['status']  = 'Error';
                     $response['message'] = $this -> utils -> http_code_to_text(404);
