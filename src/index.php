@@ -61,7 +61,7 @@
                     Exit;
                 };
 
-                $mapDetailFunc = new Functions\MapDetails();
+                $mapDetailFunc = new Functions\MapDetails($this -> utils);
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'Map Details');
