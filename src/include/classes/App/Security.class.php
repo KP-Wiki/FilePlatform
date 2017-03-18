@@ -96,6 +96,27 @@
             return False;
         }
 
+        private function isValidReCaptcha() {
+            global $config;
+
+            if (!isset($_POST['g-recaptcha-response']))
+                return False;
+
+            $captcha = $_POST['g-recaptcha-response'];
+            $secret  = $config['reCaptcha']['secretKey'];
+            $curl    = curl_init(); // Create curl resource
+
+            curl_setopt_array($curl, Array(CURLOPT_RETURNTRANSFER => 1, // Return the server's response data as a string rather then a boolean
+                                           CURLOPT_URL            => 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret .
+                                                                     '&response=' . $captcha .
+                                                                     '&remoteip=' . $_SERVER['REMOTE_ADDR'],
+                                           CURLOPT_USERAGENT      => 'Maps_Platform/v' . APP_VERSION));
+            $response = json_decode(curl_exec($curl), True);
+            curl_close($curl); // Close curl resource to free up system resources
+
+            return $response['success'];
+        }
+
         public function login($username, $password, &$dbHandler) {
             $query1 = 'SET @username = :username;';
             $dbHandler -> PrepareAndBind ($query1, Array('username' => $username);
