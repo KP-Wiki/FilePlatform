@@ -14,4 +14,7 @@
     $config['files']['defaultDir']        = APP_DIR . '/uploads/Default';
     $config['files']['allowedExtensions'] = Array('.zip', '.rar', '.7z', '.kpmap');
 
+    $config['reCaptcha']['siteKey']   = 'google site key';
+    $config['reCaptcha']['secretKey'] = 'google secret key';
+
     return $config;

@@ -48,7 +48,7 @@
             $mapItem = $dbHandler -> ExecuteAndFetch();
 
             $content = '<div class="row">' . PHP_EOL .
-                       '    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-2 toppad">' . PHP_EOL .
+                       '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad">' . PHP_EOL .
                        '        <div class="panel panel-default">' . PHP_EOL .
                        '            <div class="panel-heading">' . PHP_EOL .
                        '                <h4>' . $mapItem['map_name'] . '</h4>' . PHP_EOL .
@@ -176,11 +176,11 @@
                        '                        <td class="col-sm-9">' . nl2br($mapItem['rev_map_description']) . '</td>' . PHP_EOL .
                        '                    </tr>' . PHP_EOL .
                        '                    <tr>' . PHP_EOL .
-                       '                        <td colspan="2">' . PHP_EOL .
-                       '                            <button id="btnDownloadMap" type="submit" title="Download this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
-                       '                                <span class="glyphicon glyphicon-download-alt"></span>' . PHP_EOL .
+                       '                        <td class="col-lg-12" colspan="2">' . PHP_EOL .
+                       '                            <button class="btn btn-default" id="btnDownloadMap" type="submit" title="Download this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
+                       '                                <span class="glyphicon glyphicon-download"></span>' . PHP_EOL .
                        '                            </button>' . PHP_EOL .
-                       '                            <button title="Flag this map">' . PHP_EOL .
+                       '                            <button class="btn btn-danger pull-right" id="btnFlagMap" type="submit" title="Flag this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
                        '                                <span class="glyphicon glyphicon-flag"></span>' . PHP_EOL .
                        '                            </button>' . PHP_EOL .
                        '                        </td>' . PHP_EOL .
@@ -191,7 +191,7 @@
                        '    </div>' . PHP_EOL .
                        '</div>' . PHP_EOL .
                        '<div class="row">' . PHP_EOL .
-                       '    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-1 col-lg-offset-2" style="margin-bottom: 25px;">' . PHP_EOL .
+                       '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2" style="margin-bottom: 25px;">' . PHP_EOL .
                        '        <div id="screenshot_carousel" class="carousel slide" data-ride="carousel">' . PHP_EOL .
                        '            <!-- Indicators -->' . PHP_EOL .
                        '            <ol class="carousel-indicators">' . PHP_EOL .

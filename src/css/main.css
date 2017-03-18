@@ -1,3 +1,4 @@
+/* Generic/Common */
 html {
     position: relative;
     min-height: 100%;
@@ -35,10 +36,12 @@ code {
     font-size: 80%;
 }
 
+/* File/Map table */
 .filetable > tbody > tr > td {
     word-wrap: break-word;
 }
 
+/* Screenshots carousel */
 #slideshow {
     padding: 0;
     border-radius: 25px;
@@ -52,6 +55,7 @@ code {
     border-radius: 25px;
 }
 
+/* Rating block */
 .btn-grey{
     background-color: #D8D8D8;
     color: #FFF;
@@ -62,4 +66,52 @@ code {
     border: 1px solid #EFEFEF;
     padding: 15px 15px 20px 15px;
     border-radius: 3px;
+}
+
+/* Login and registration modal form */
+.logreg-frm ul {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.logreg-frm ul li {
+    color: #666;
+    display: block;
+    font-size: 14px;
+    line-height: 25px;
+}
+
+.logreg-frm ul li a {
+    color: #f47521;
+    cursor: pointer;
+    display: block;
+    padding: 10px 0;
+}
+
+.logreg-frm ul li p {
+    border: 1px solid #ccc;
+    color: #666;
+    font-size: 12px;
+    line-height: 18px;
+    margin: 10px 0;
+    padding: 2px 5px;
+}
+
+.logreg-frm ul li input[type="text"] {
+    border: 1px solid #ccc;
+    border-radius: 0;
+    color: #000;
+    display: block;
+    font-size: 13px;
+    line-height: 19px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.logreg-model {
+    padding-right: 0px;
+}
+
+.logreg-forgot {
+    display: none;
 }

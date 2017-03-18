@@ -19,10 +19,11 @@ window.rateMap = function(mapID, score) {
 
 // Format the name to an a link
 window.detailUrlFormatter = function(value, row, index) {
-    return '<a href="/mapdetails?map=' + row.map_pk + '">' + value + '</a>';
+    return '<a href="/mapdetails?map=' + row.map_pk + '"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;' + value + '</a>';
 }
 
 $(document).ready(function() {
+    $('#userRegBtn').prop('disabled', true);
     $("#btnDownloadMap").click(function(){
         // Retrieve current hostname, allow both http and https protocols
         var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
@@ -38,3 +39,15 @@ $(document).ready(function() {
         });
     });
 });
+
+window.enableRegBtn = function() {
+    $('#userRegBtn').prop('disabled', false);
+}
+
+window.disableRegBtn = function() {
+    $('#userRegBtn').prop('disabled', true);
+}
+
+window.toggleForgot = function() {
+    $(".logreg-forgot").slideToggle('slow');
+}

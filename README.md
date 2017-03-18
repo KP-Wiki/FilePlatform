@@ -9,3 +9,4 @@ This project is in it's early stages, expect changes!
  * jquery.fileDownload : [Project page](https://github.com/johnculviner/jquery.fileDownload/)
  * Bootstrap 3 : [Project page](https://getbootstrap.com/)
  * Bootstrap Table : [Project page](http://bootstrap-table.wenzhixin.net.cn/)
+ * Google reCaptcha2 ( noCaptcha ) : [Project page](http://bootstrap-table.wenzhixin.net.cn/)
