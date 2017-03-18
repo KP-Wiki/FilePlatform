@@ -10,10 +10,13 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/css/bootstrapValidator.min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="/css/main.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" crossorigin="anonymous"></script>
         <script src="https://www.google.com/recaptcha/api.js"></script>
         <script src="/js/jquery.fileDownload.js"></script>
         <script src="/js/bootstrap-table-export.js"></script>
@@ -38,20 +41,17 @@
                         <div class="modal-body">
                             <div class="col-md-12 col-sm-12 no-padng">
                                 <div class="logreg-model">
-                                    <form method="post" id="loginFrm" class="logreg-frm" name="logFrm">
+                                    <form method="post" id="loginFrm" class="logreg-frm" name="loginFrm" role="form" data-toggle="validator">
                                         <ul>
                                             <li>Username or Email</li>
                                             <li><input type="text" placeholder="Username/Email" id="userName" name="userName" class="form-control" required></li>
                                             <li>Password</li>
                                             <li><input type="password" placeholder="Password" id="password" name="password" class="form-control" required></li><br />
                                             <li><button type="button" onclick="userLogin();" id="logBtn" class="btn btn-default">Submit</button></li>
-                                            <div style="display:none;" id="loginFail" class="sign">
-                                                <li><font color="red">Username or password is incorrect.</font></li>
-                                            </div>
                                         </ul>
                                     </form>
                                     <div class="clearfix"></div>
-                                        <form method="post" id="forgotFrm" class="logreg-frm" name="logFrm1">
+                                        <form method="post" id="forgotFrm" class="logreg-frm" name="forgotFrm">
                                         <ul>
                                             <li>
                                                 <a class="forgot-link" onclick="toggleForgot();" href="javascript:;">Forgot your password?</a>
@@ -59,7 +59,7 @@
                                                     <ul>
                                                         <li><p>Enter your Email Address here to receive a link to change password.</p></li>
                                                         <li>Email</li>
-                                                        <li><input type="text" placeholder="Your email" id="forgetemail" class="form-control" name="forgetemail" required></li>
+                                                        <li><input type="email" placeholder="Your email" id="forgetemail" class="form-control" name="forgetemail" required></li>
                                                         <li><button type="button" class="btn btn-default" onclick="forgot();">Send Mail</button></li>
                                                     </ul>
                                                 </div>
@@ -86,34 +86,29 @@
                                     <form method="post" id="userRegisterFrm" class="logreg-frm" name="userRegisterFrm">
                                         <ul>
                                             <li>Username</li>
-                                            <li><input type="text" placeholder="First Name" name="fName" class="form-control" required></li>
+                                            <li>
+                                                <input type="text" id="username" name="username" placeholder="Username" class="form-control" required>
+                                            </li>
                                             <li>Email</li>
                                             <li>
-                                                <input type="text" placeholder="Email" id="emailAddress" name="emailAddress" class="form-control" required>
-                                                <input type="text" placeholder="Confirm Email" id="confirmEmailAddress" name="confirmEmailAddress" class="form-control" style="display: none;">
+                                                <input type="email" id="emailAddress" name="emailAddress" placeholder="Email" class="form-control" required>
+                                                <input type="email" id="confirmEmailAddress" name="confirmEmailAddress" placeholder="Confirm Email" class="form-control" style="display: none;">
                                             </li>
                                             <li>Password</li>
-                                            <li><input type="password" placeholder="Password" name="password" class="form-control" required></li>
+                                            <li>
+                                                <input type="password" id="password" name="password" placeholder="Password" class="form-control" required>
+                                            </li>
                                             <li>Confirm Password</li>
-                                            <li><input type="password" placeholder="Confirm Password" name="repassword" class="form-control" required></li><br />
+                                            <li>
+                                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" class="form-control" required>
+                                            </li><br />
                                             <!-- Need to find a nice way to load the sitekey from the config. -->
-                                            <div class="g-recaptcha" data-sitekey="6LcTcBkUAAAAADJcfF5RhZL_3I8ALCacwmHztWeu" data-callback="enableRegBtn" data-expired-callback="disableRegBtn"></div><br />
-                                            <li><button type="button" id="userRegBtn" name="userRegBtn" class="btn btn-default">Signup Now</button></li>
-                                            <div style="display:none;" class="sign greenglow">
-                                                <li>
-                                                    <i class="icon-check"></i><br />
-                                                    <font color="red">
-                                                        User registration successful.<br />
-                                                        Your login Url already send to your email.
-                                                    </font>
-                                                </li>
-                                            </div>
-                                            <div style="display:none;" id="regnSuc11" class="sign redglow">
-                                                <li>
-                                                    <i class="icon-mail"></i><br />
-                                                    <font color="red">Email Exist.</font>
-                                                </li>
-                                            </div>
+                                            <li>
+                                                <div class="g-recaptcha" data-sitekey="6LcTcBkUAAAAADJcfF5RhZL_3I8ALCacwmHztWeu" data-callback="enableRegBtn" data-expired-callback="disableRegBtn"></div>
+                                            </li><br />
+                                            <li>
+                                                <button type="button" id="userRegBtn" name="userRegBtn" class="btn btn-default">Signup Now</button>
+                                            </li>
                                         </ul>
                                     </form>
                                 </div>

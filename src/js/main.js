@@ -24,6 +24,7 @@ window.detailUrlFormatter = function(value, row, index) {
 
 $(document).ready(function() {
     $('#userRegBtn').prop('disabled', true);
+
     $("#btnDownloadMap").click(function(){
         // Retrieve current hostname, allow both http and https protocols
         var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
@@ -37,6 +38,58 @@ $(document).ready(function() {
                 alert('Unable to handle the request due to an AJAX fault! \r\nHtml : ' + html);
             }
         });
+    });
+
+    $('#userRegisterFrm').bootstrapValidator({
+        framework: 'bootstrap',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        exclude: ':disabled',
+        fields: {
+            username: {
+                validators: {
+                    stringLength: {
+                        min: 2,
+                        message: 'Username should be longer than two characters'
+                    },
+                    notEmpty: {
+                        message: 'Please supply your username'
+                    }
+                }
+            },
+            emailAddress: {
+                validators: {
+                    emailAddress: {
+                        message: 'Email address must be valid'
+                    },
+                    notEmpty: {
+                        message: 'Please supply your email address'
+                    }
+                }
+            },
+            password: {
+                validators: {
+                    stringLength: {
+                        min: 6,
+                        message: 'Password requires a minimum of 6 characters'
+                    },
+                    notEmpty: {
+                        message: 'Please supply your password'
+                    }
+                }
+            },
+            confirmPassword: {
+                validators: {
+                    identical: {
+                        field: 'password',
+                        message: 'Passwords must match'
+                    }
+                }
+            }
+        }
     });
 });
 
