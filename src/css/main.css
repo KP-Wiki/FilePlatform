@@ -97,17 +97,6 @@ code {
     padding: 2px 5px;
 }
 
-.logreg-frm ul li input[type="text"] {
-    border: 1px solid #ccc;
-    border-radius: 0;
-    color: #000;
-    display: block;
-    font-size: 13px;
-    line-height: 19px;
-    margin-bottom: 10px;
-    width: 100%;
-}
-
 .logreg-model {
     padding-right: 0px;
 }
