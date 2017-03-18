@@ -117,7 +117,7 @@
             return $response['success'];
         }
 
-        public function login($username, $password, &$dbHandler) {
+        public function login(&$dbHandler) {
             $query1 = 'SET @username = :username;';
             $dbHandler -> PrepareAndBind ($query1, Array('username' => $username);
             $user = $dbHandler -> Execute();
@@ -137,13 +137,25 @@
             return $this -> isValidPassword($password, $user['user_salt'], $user['user_password']);
         }
 
-        public function register($username, $password, $emailAddress, &$dbHandler) {
+        public function register(&$dbHandler) {
             //TODO: Check if the user exists
             //TODO: Create the user in the DB
         }
 
-        public function checkRememberMe($username, $token, &$dbHandler) {
+        public function checkRememberMe(&$dbHandler) {
             //TODO: Check if the user exists
             //TODO: Check if the token is correct
+        }
+
+        public function logout() {
+            // Unset the 'remember me' cookies
+            setcookie('UserID', '', time() - 3600, '/');
+            setcookie('Token', '', time() - 3600, '/');
+
+            session_unset();   // Remove all session variables
+            session_destroy(); // Destroy the session
+
+            header('Refresh:0; url=/home');
+            Die();
         }
     }

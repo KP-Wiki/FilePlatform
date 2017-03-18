@@ -17,4 +17,7 @@
     $config['reCaptcha']['siteKey']   = 'google site key';
     $config['reCaptcha']['secretKey'] = 'google secret key';
 
+    $config['security']['cookieLifetime'] = 15778463; // ~6 months in seconds
+    $config['security']['cryptoStrong']   = True;
+
     return $config;
