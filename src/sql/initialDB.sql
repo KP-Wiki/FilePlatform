@@ -2,8 +2,7 @@
 CREATE TABLE `Groups` (
     `group_pk` BIGINT UNSIGNED NOT NULL,
     `group_name` VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL,
-    UNIQUE (`group_pk`),
-    INDEX (`group_pk`),
+    PRIMARY KEY (`group_pk`),
     INDEX (`group_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -12,7 +11,7 @@ CREATE TABLE `Users` (
     `user_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
     `user_password` VARCHAR(2048) COLLATE utf8_unicode_ci NOT NULL,
     `user_salt` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
-    `user_email_address` VARCHAR(255) COLLATE utf8_unicode_ci,
+    `user_email_address` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
     `group_fk` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`user_pk`),
     INDEX (`user_name`),
@@ -60,8 +59,7 @@ CREATE TABLE `Maps` (
 CREATE TABLE `RevisionStatus` (
     `rev_status_pk` TINYINT UNSIGNED NOT NULL,
     `status` VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL,
-    UNIQUE (`rev_status_pk`),
-    INDEX (`rev_status_pk`),
+    PRIMARY KEY (`rev_status_pk`),
     INDEX (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -126,8 +124,7 @@ CREATE TABLE `Ratings` (
 CREATE TABLE `FlagStatus` (
     `flag_status_pk` TINYINT UNSIGNED NOT NULL,
     `status` VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL,
-    UNIQUE (`flag_status_pk`),
-    INDEX (`flag_status_pk`),
+    PRIMARY KEY (`flag_status_pk`),
     INDEX (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -149,6 +146,7 @@ CREATE TABLE `Flags` (
 INSERT INTO
     `Groups` (`group_pk`, `group_name`)
 VALUES
+    (0, 'Guest'),
     (1, 'User'),
     (5, 'Contributor'),
     (9, 'Moderator'),
