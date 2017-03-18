@@ -40,6 +40,20 @@
         }
 
         /**
+         ** Remove unwanted characters from the given string
+         **
+         ** @param string $aString
+         ** @return string
+         **/
+        public function cleanInput($aString) {
+            $result = str_replace(chr(0), '', $aString);  // Strip null-bytes
+            $result = str_replace(' ', '-', $result);     // Replace spaces with underscores
+            $result = preg_replace('/-+/', '-', $result); // Replace multiple hyphens with a single one
+
+            return $result;
+        }
+
+        /**
          ** Get the client's IP addres
          **
          ** @param  boolean $checkProxy
@@ -57,6 +71,12 @@
             return $ipAddr;
         }
 
+        /**
+         ** Return the HTTP status text for the provided code
+         **
+         ** @param integer $Code
+         ** @return string
+         **/
         public function http_code_to_text($Code) {
             switch($Code) {
                 case 100: $Text = 'Continue'; break;
@@ -102,6 +122,12 @@
             return $Text;
         }
 
+        /**
+         ** Set the HTTP response status
+         **
+         ** @param integer $Code
+         ** @return integer
+         **/
         public function http_response_code($Code = null) {
             if ($Code !== null) {
                 $Text = $this -> http_code_to_text($Code);
