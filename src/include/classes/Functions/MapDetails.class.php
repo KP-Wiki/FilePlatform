@@ -47,6 +47,8 @@
             $dbHandler -> PrepareAndBind($query2);
             $mapItem = $dbHandler -> ExecuteAndFetch();
 
+            $lastChangeDate = new \DateTime($mapItem['rev_upload_date']);
+
             $content = '<div class="row">' . PHP_EOL .
                        '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad">' . PHP_EOL .
                        '        <div class="panel panel-default">' . PHP_EOL .
@@ -169,7 +171,7 @@
                        '                    </tr>' . PHP_EOL .
                        '                    <tr>' . PHP_EOL .
                        '                        <td class="col-sm-3"><b>Last change date</b></td>' . PHP_EOL .
-                       '                        <td class="col-sm-9">' . $mapItem['rev_upload_date'] . '</td>' . PHP_EOL .
+                       '                        <td class="col-sm-9">' . $lastChangeDate -> format('Y-m-d H:i') . '</td>' . PHP_EOL .
                        '                    </tr>' . PHP_EOL .
                        '                    <tr>' . PHP_EOL .
                        '                        <td class="col-sm-3"><b>Description</b></td>' . PHP_EOL .
@@ -280,12 +282,13 @@
 
                     if ($mapItem != null) {
                         $this -> utils -> http_response_code(200);
+                        $lastChangeDate = new \DateTime($mapItem['rev_upload_date']);
                         $content['map_pk']                    = $mapId;
                         $content['map_name']                  = $mapItem['map_name'];
                         $content['map_downloads']             = IntVal($mapItem['map_downloads']);
                         $content['rev_map_description_short'] = $mapItem['rev_map_description_short'];
                         $content['rev_map_description']       = $mapItem['rev_map_description'];
-                        $content['rev_upload_date']           = $mapItem['rev_upload_date'];
+                        $content['rev_upload_date']           = $lastChangeDate -> format('Y-m-d H:i');
                         $content['user_name']                 = $mapItem['user_name'];
                         $content['map_type_name']             = $mapItem['map_type_name'];
                         $content['avg_rating']                = ($mapItem['avg_rating'] === null ? 'n/a' : FloatVal($mapItem['avg_rating']));
@@ -333,13 +336,14 @@
                                            '    `map_fk` = :mapid;';
                             $dbHandler -> PrepareAndBind($ratingQuery, Array('mapid' => $mapItem['map_pk']));
                             $avgRating = $dbHandler -> ExecuteAndFetch();
+                            $lastChangeDate = new \DateTime($mapItem['rev_upload_date']);
 
                             $contentItem = Array('map_pk'                    => IntVal($mapItem['map_pk']),
                                                  'map_name'                  => $mapItem['map_name'],
                                                  'map_downloads'             => IntVal($mapItem['map_downloads']),
                                                  'rev_map_description_short' => $mapItem['rev_map_description_short'],
                                                  'rev_map_description'       => $mapItem['rev_map_description'],
-                                                 'rev_upload_date'           => $mapItem['rev_upload_date'],
+                                                 'rev_upload_date'           => $lastChangeDate -> format('Y-m-d H:i'),
                                                  'user_name'                 => $mapItem['user_name'],
                                                  'map_type_name'             => $mapItem['map_type_name'],
                                                  'avg_rating'                => ($avgRating['avg_rating'] === null ? 'n/a' : FloatVal($avgRating['avg_rating'])));
