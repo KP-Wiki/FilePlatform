@@ -1,9 +1,11 @@
 <?php
     $config = Array();
 
-    $config['tpl']['main']     = APP_DIR . '/include/main.tpl';
-    $config['tpl']['nav']      = APP_DIR . '/include/nav.tpl';
-    $config['tpl']['adminNav'] = APP_DIR . '/include/admin-nav.tpl';
+    $config['tpl']['main']       = APP_DIR . '/include/main.tpl';
+    $config['tpl']['nav']        = APP_DIR . '/include/nav.tpl';
+    $config['tpl']['userNav']    = APP_DIR . '/include/user-nav.tpl';
+    $config['tpl']['contribNav'] = APP_DIR . '/include/contributor-nav.tpl';
+    $config['tpl']['adminNav']   = APP_DIR . '/include/admin-nav.tpl';
 
     $config['db']['server']   = 'localhost';
     $config['db']['database'] = 'aDatabase';
@@ -18,6 +20,5 @@
     $config['reCaptcha']['secretKey'] = 'google secret key';
 
     $config['security']['cookieLifetime'] = 15778463; // ~6 months in seconds
-    $config['security']['cryptoStrong']   = True;
 
     return $config;

@@ -16,13 +16,14 @@
                         <li><a href="https://kp-wiki.org" target="_blank" title="Go to the KP-Wiki website"><span class="glyphicon glyphicon-globe"></span>&nbsp;&nbsp;KP-Wiki</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
+                        <li>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="#loginModal" data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Login</a></li>
-                                <li><a href="#RegisterModal" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Register</a></li>
+                                <li><a href="/settings"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>
                             </ul>
                         </li>
                     </ul>
