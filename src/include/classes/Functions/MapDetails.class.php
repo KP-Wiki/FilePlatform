@@ -179,8 +179,8 @@
                        '                    </tr>' . PHP_EOL .
                        '                    <tr>' . PHP_EOL .
                        '                        <td class="col-lg-12" colspan="2">' . PHP_EOL .
-                       '                            <button class="btn btn-default" id="btnDownloadMap" type="submit" title="Download this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
-                       '                                <span class="glyphicon glyphicon-download"></span>' . PHP_EOL .
+                       '                            <button class="btn btn-success" id="btnDownloadMap" type="submit" title="Download this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
+                       '                                <span class="glyphicon glyphicon-download-alt"></span>&nbsp;&nbsp;Download' . PHP_EOL .
                        '                            </button>' . PHP_EOL .
                        '                            <button class="btn btn-danger pull-right" id="btnFlagMap" type="submit" title="Flag this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
                        '                                <span class="glyphicon glyphicon-flag"></span>' . PHP_EOL .
