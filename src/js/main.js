@@ -3,7 +3,7 @@ window.rateMap = function(mapID, score) {
     var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
 
     $.ajax({
-        url: urlBase + '/api/v1/rating/' + mapID, // + '?score=' + score,
+        url: urlBase + '/api/v1/rating/' + mapID,
         error: function(xhr, status, error) {
             alert('Unable to handle the request due to an AJAX fault! \r\nStatus : ' + status + ' <|> Error : ' + error);
         },
@@ -110,6 +110,32 @@ $(document).ready(function() {
 
         // Reset form
         $('#userRegisterFrm').formValidation('resetForm', true);
+    });
+
+    $('#ratingStarrr').starrr({
+        change: function(e, value){
+            if (value) {
+                // Retrieve current hostname, allow both http and https protocols
+                var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
+                var mapID   = $('#ratingStarrr').attr('kp-map-id');
+
+                $.ajax({
+                    url: urlBase + '/api/v1/rating/' + mapID,
+                    error: function(xhr, status, error) {
+                        
+                        $('#ratingResultError > .message').text(xhr.responseJSON.message);
+                        $('#ratingResultError').show();
+                    },
+                    data: {'score': value},
+                    dataType: 'json',
+                    success: function(result, status, xhr) {
+                        $('#ratingResultSuccess > .message').text(result.data);
+                        $('#ratingResultSuccess').show();
+                    },
+                    type: 'POST'
+                });
+            }
+        }
     });
 });
 

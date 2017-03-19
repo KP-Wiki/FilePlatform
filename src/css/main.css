@@ -40,6 +40,22 @@ code {
     margin-top: 40px;
 }
 
+.spacersmall {
+    margin-top: 20px;
+}
+
+.starrr {
+    display: inline-block;
+}
+
+.starrr a {
+    font-size: 22px;
+    padding: 0 1px;
+    cursor: pointer;
+    color: #F0AD4E;
+    text-decoration: none;
+}
+
 /* File/Map table */
 .filetable > tbody > tr > td {
     word-wrap: break-word;

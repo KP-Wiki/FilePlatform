@@ -11,3 +11,4 @@ This project is in it's early stages, expect changes!
  * Bootstrap Table : [Project page](http://bootstrap-table.wenzhixin.net.cn/)
  * Bootstrap Validator : [Project page](http://formvalidation.io/)
  * Google reCaptcha2 ( noCaptcha ) : [Project page](http://bootstrap-table.wenzhixin.net.cn/)
+ * Starrr : [Project page](http://dobtco.github.io/starrr/)

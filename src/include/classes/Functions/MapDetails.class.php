@@ -60,6 +60,7 @@
                        '                    <h4>Average user rating</h4>' . PHP_EOL .
                        '                    <h2 class="bold padding-bottom-7">' . ($mapItem['avg_rating'] === null ? 'n/a' : $mapItem['avg_rating'] .
                        '<small> / 5</small>') . '</h2>' . PHP_EOL .
+                       /**
                        '                    <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 1 ? 'btn-warning' : 'btn-default btn-grey') .
                        ' btn-sm" aria-label="Left Align" onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 1);});">' . PHP_EOL .
                        '                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
@@ -80,6 +81,16 @@
                        ' btn-sm" aria-label="Left Align" onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 5);});">' . PHP_EOL .
                        '                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                    </button>' . PHP_EOL .
+                       **/
+                       '                    <div class="starrr" id="ratingStarrr" kp-map-id="' . $mapItem['map_pk'] . '"></div><br />' . PHP_EOL .
+                       '                    <div id="ratingResultSuccess" class="alert alert-success alert-dismissible spacersmall" role="alert" style="display: none;">' . PHP_EOL .
+                       '                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . PHP_EOL .
+                       '                        <span class="message"></span>' . PHP_EOL .
+                       '                    </div>' . PHP_EOL .
+                       '                    <div id="ratingResultError" class="alert alert-danger alert-dismissible spacersmall" role="alert" style="display: none;">' . PHP_EOL .
+                       '                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . PHP_EOL .
+                       '                        <span class="message"></span>' . PHP_EOL .
+                       '                    </div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '            <div class="col-sm-6">' . PHP_EOL .
@@ -192,7 +203,7 @@
                        '        </div>' . PHP_EOL .
                        '    </div>' . PHP_EOL .
                        '</div>' . PHP_EOL .
-                       '<div class="row">' . PHP_EOL .
+                       '<div class="row spacer">' . PHP_EOL .
                        '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2" style="margin-bottom: 25px;">' . PHP_EOL .
                        '        <div id="screenshot_carousel" class="carousel slide" data-ride="carousel">' . PHP_EOL .
                        '            <!-- Indicators -->' . PHP_EOL .
@@ -204,15 +215,15 @@
                        '            <center>' . PHP_EOL .
                        '                <div class="carousel-inner" role="listbox">' . PHP_EOL .
                        '                    <div class="item active">' . PHP_EOL .
-                       '                        <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iOTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDkwMCA1MDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzkwMHg1MDAvYXV0by8jNzc3OiM1NTUvdGV4dDpGaXJzdCBzbGlkZQpDcmVhdGVkIHdpdGggSG9sZGVyLmpzIDIuNi4wLgpMZWFybiBtb3JlIGF0IGh0dHA6Ly9ob2xkZXJqcy5jb20KKGMpIDIwMTItMjAxNSBJdmFuIE1hbG9waW5za3kgLSBodHRwOi8vaW1za3kuY28KLS0+PGRlZnM+PHN0eWxlIHR5cGU9InRleHQvY3NzIj48IVtDREFUQVsjaG9sZGVyXzE1YWM0YTEzOWVhIHRleHQgeyBmaWxsOiM1NTU7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTpBcmlhbCwgSGVsdmV0aWNhLCBPcGVuIFNhbnMsIHNhbnMtc2VyaWYsIG1vbm9zcGFjZTtmb250LXNpemU6NDVwdCB9IF1dPjwvc3R5bGU+PC9kZWZzPjxnIGlkPSJob2xkZXJfMTVhYzRhMTM5ZWEiPjxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjNzc3Ii8+PGc+PHRleHQgeD0iMzA4LjI5Njg3NSIgeT0iMjcwLjEiPkZpcnN0IHNsaWRlPC90ZXh0PjwvZz48L2c+PC9zdmc+" alt="First slide [900x500]">' . PHP_EOL .
+                       '                        <img src="/uploads/images/kp_2016-08-30_21-29-44.png" alt="Knights Province Image 1">' . PHP_EOL .
                        '                        <div class="carousel-caption">' . PHP_EOL .
-                       '                            First image' . PHP_EOL .
+                       '                            A first look at combat' . PHP_EOL .
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                    <div class="item">' . PHP_EOL .
-                       '                        <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iOTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDkwMCA1MDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzkwMHg1MDAvYXV0by8jNjY2OiM0NDQvdGV4dDpTZWNvbmQgc2xpZGUKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNWFjNGEwZGE5ZiB0ZXh0IHsgZmlsbDojNDQ0O2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjQ1cHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1YWM0YTBkYTlmIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iIzY2NiIvPjxnPjx0ZXh0IHg9IjI2NC45NTMxMjUiIHk9IjI3MC4xIj5TZWNvbmQgc2xpZGU8L3RleHQ+PC9nPjwvZz48L3N2Zz4=" alt="Second slide [900x500]">' . PHP_EOL .
+                       '                        <img src="/uploads/images/kp_2016-09-03_18-34-31.png" alt="Knights Province Image 2">' . PHP_EOL .
                        '                        <div class="carousel-caption">' . PHP_EOL .
-                       '                            Second image' . PHP_EOL .
+                       '                            A basic village' . PHP_EOL .
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
