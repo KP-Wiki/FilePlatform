@@ -36,6 +36,10 @@ code {
     font-size: 80%;
 }
 
+.spacer {
+    margin-top: 40px;
+}
+
 /* File/Map table */
 .filetable > tbody > tr > td {
     word-wrap: break-word;

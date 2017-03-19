@@ -54,6 +54,7 @@
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'About');
+                $this -> renderer -> setValue('header', '<h1 class="page-header">About</h1>');
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', '');
                 $this -> renderer -> setValue('about-active', 'class="active"');
@@ -73,6 +74,7 @@
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'Map Details');
+                $this -> renderer -> setValue('header', '<div class="row spacer"></div>');
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', 'class="active"');
                 $this -> renderer -> setValue('about-active', '');
@@ -101,6 +103,7 @@
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'Home');
+                $this -> renderer -> setValue('header', '<h1 class="page-header">Home</h1>');
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', 'class="active"');
                 $this -> renderer -> setValue('about-active', '');
