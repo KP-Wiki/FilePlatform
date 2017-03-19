@@ -1,3 +1,5 @@
+[Github Pages](https://kp-wiki.github.io/Map_Platform/) || [Github Project](https://github.com/KP-Wiki/Map_Platform/)
+
 # Map Sharing Platform
 This platform aims to aid mapcreators to share their creations to the players.  
 There will be an API and a web front-end.
