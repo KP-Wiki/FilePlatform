@@ -19,6 +19,14 @@
          **/
         private $navTemplate = '';
         /**
+         ** User navigation template file
+         **/
+        private $userNavTemplate = '';
+        /**
+         ** Contributor navigation template file
+         **/
+        private $contributorNavTemplate = '';
+        /**
          ** Admin navigation template file
          **/
         private $adminNavTemplate = '';
@@ -38,9 +46,11 @@
         public function __construct() {
             global $config;
 
-            $this -> mainTemplate      = $config['tpl']['main'];
-            $this -> navTemplate       = $config['tpl']['nav'];
-            $this -> adminNavTemplate  = $config['tpl']['adminNav'];
+            $this -> mainTemplate           = $config['tpl']['main'];
+            $this -> navTemplate            = $config['tpl']['nav'];
+            $this -> userNavTemplate        = $config['tpl']['userNav'];
+            $this -> contributorNavTemplate = $config['tpl']['contribNav'];
+            $this -> adminNavTemplate       = $config['tpl']['adminNav'];
         }
 
         /**
@@ -55,13 +65,6 @@
          **/
         public function setContent($value) {
             $this -> content = $value;
-        }
-
-        /**
-         ** Sets the page content
-         **/
-        public function setShowAdmin() {
-            $this -> showAdmin = True;
         }
         
         /**
@@ -80,11 +83,22 @@
             $output  = str_replace('[@content]', $this -> content, $output);
 
             // Determine which menu to show
-            if ($this -> showAdmin) {
-                $navMenu = file_get_contents($this -> adminNavTemplate);
-            } else {
-                $navMenu = file_get_contents($this -> navTemplate);
-            };
+            switch ($_SESSION['user'] -> group) {
+                case 1: {
+                    $navMenu = file_get_contents($this -> userNavTemplate);
+                    break;
+                }
+                case 5: {
+                    $navMenu = file_get_contents($this -> contributorNavTemplate);
+                    break;
+                }
+                case 10: {
+                    $navMenu = file_get_contents($this -> adminNavTemplate);
+                    break;
+                }
+                default:
+                    $navMenu = file_get_contents($this -> navTemplate);
+            }
 
             // Insert the nav bar into the output variable
             $output  = str_replace('[@nav]', $navMenu, $output);
