@@ -50,11 +50,15 @@
             $this -> security -> checkRememberMe($this -> dbHandler);
 
             if ($request['call'] === 'about') {
-                $aboutFunc = new Functions\About();
+                $aboutFunc  = new Functions\About();
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li class="active">About</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<h1 class="page-header">About</h1>' . PHP_EOL;
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'About');
-                $this -> renderer -> setValue('header', '<h1 class="page-header">About</h1>');
+                $this -> renderer -> setValue('header', $pageHeader);
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', '');
                 $this -> renderer -> setValue('about-active', 'class="active"');
@@ -71,10 +75,15 @@
                 };
 
                 $mapDetailFunc = new Functions\MapDetails($this -> utils);
+                $pageHeader    = '<ol class="breadcrumb">' . PHP_EOL .
+                                 '    <li><a href="/home">Home</a></li>' . PHP_EOL .
+                                 '    <li class="active">Map Details</li>' . PHP_EOL .
+                                 '</ol>' . PHP_EOL .
+                                 '<div class="row spacer"></div>' . PHP_EOL;
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'Map Details');
-                $this -> renderer -> setValue('header', '<div class="row spacer"></div>');
+                $this -> renderer -> setValue('header', $pageHeader);
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', 'class="active"');
                 $this -> renderer -> setValue('about-active', '');
@@ -99,11 +108,15 @@
             } elseif ($request['call'] === 'logout') {
                 $this -> security -> logout($this -> dbHandler);
             } else {
-                $homeFunc = new Functions\Home();
+                $homeFunc   = new Functions\Home();
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li class="active">Home</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<h1 class="page-header">Home</h1>' . PHP_EOL;
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'Home');
-                $this -> renderer -> setValue('header', '<h1 class="page-header">Home</h1>');
+                $this -> renderer -> setValue('header', $pageHeader);
                 // Set the active tab
                 $this -> renderer -> setValue('home-active', 'class="active"');
                 $this -> renderer -> setValue('about-active', '');
