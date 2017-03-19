@@ -30,20 +30,20 @@ INSERT INTO `Maps` (`map_pk`, `map_name`, `map_visible`, `map_created_date`, `us
 --
 INSERT INTO `Revisions` (`rev_pk`, `map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, `rev_map_description_short`, `rev_map_description`, `rev_upload_date`, `rev_status_fk`) VALUES
 (1, 1, 'Test_1.zip', '/uploads/Test_1/0.0.1/', '0.0.1', 'Test mission 1', 'This is a longdescription for :\r\nTest mission 1', '2017-03-13 16:36:39', 1),
-(2, 2, 'Test_1.zip', '/uploads/Test_2/0.0.1/', '0.0.1', 'Test mission 2', 'This is a longdescription for :\r\nTest mission 2', '2017-03-13 16:36:39', 1),
-(3, 3, 'Test_1.zip', '/uploads/Test_3/0.0.1/', '0.0.1', 'Test mission 3', 'This is a longdescription for :\r\nTest mission 3', '2017-03-13 16:36:39', 1),
-(4, 4, 'Test_1.zip', '/uploads/Test_4/0.0.1/', '0.0.1', 'Test mission 4', 'This is a longdescription for :\r\nTest mission 4', '2017-03-13 16:36:39', 1),
-(5, 5, 'Test_1.zip', '/uploads/Test_5/0.0.1/', '0.0.1', 'Test mission 5', 'This is a longdescription for :\r\nTest mission 5', '2017-03-13 16:36:39', 1),
-(6, 6, 'Test_1.zip', '/uploads/Test_6/0.0.1/', '0.0.1', 'Test mission 6', 'This is a longdescription for :\r\nTest mission 6', '2017-03-13 16:36:39', 1),
-(7, 7, 'Test_1.zip', '/uploads/Test_7/0.0.1/', '0.0.1', 'Test mission 7', 'This is a longdescription for :\r\nTest mission 7', '2017-03-13 16:36:39', 1),
-(8, 8, 'Test_1.zip', '/uploads/Test_8/0.0.1/', '0.0.1', 'Test mission 8', 'This is a longdescription for :\r\nTest mission 8', '2017-03-13 16:36:39', 1),
-(9, 9, 'Test_1.zip', '/uploads/Test_9/0.0.1/', '0.0.1', 'Test mission 9', 'This is a longdescription for :\r\nTest mission 9', '2017-03-13 16:36:39', 1),
-(10, 10, 'Test_1.zip', '/uploads/Test_10/0.0.1/', '0.0.1', 'Test mission 10', 'This is a longdescription for :\r\nTest mission 10', '2017-03-13 16:36:39', 1),
-(11, 11, 'Test_1.zip', '/uploads/Test_11/0.0.1/', '0.0.1', 'Test mission 11', 'This is a longdescription for :\r\nTest mission 11', '2017-03-13 16:36:39', 1),
-(12, 12, 'Test_1.zip', '/uploads/Test_12/0.0.1/', '0.0.1', 'Test mission 12', 'This is a longdescription for :\r\nTest mission 12', '2017-03-13 16:36:39', 1),
-(13, 13, 'Test_1.zip', '/uploads/Test_13/0.0.1/', '0.0.1', 'Test mission 13', 'This is a longdescription for :\r\nTest mission 13', '2017-03-13 16:36:39', 1),
-(14, 14, 'Test_1.zip', '/uploads/Test_14/0.0.1/', '0.0.1', 'Test mission 14', 'This is a longdescription for :\r\nTest mission 14', '2017-03-13 16:36:39', 1),
-(15, 15, 'Test_1.zip', '/uploads/Test_15/0.0.1/', '0.0.1', 'Test mission 15', 'This is a longdescription for :\r\nTest mission 15', '2017-03-13 16:36:39', 1);
+(2, 2, 'Test_2.zip', '/uploads/Test_2/0.0.1/', '0.0.1', 'Test mission 2', 'This is a longdescription for :\r\nTest mission 2', '2017-03-13 16:36:39', 1),
+(3, 3, 'Test_3.zip', '/uploads/Test_3/0.0.1/', '0.0.1', 'Test mission 3', 'This is a longdescription for :\r\nTest mission 3', '2017-03-13 16:36:39', 1),
+(4, 4, 'Test_4.zip', '/uploads/Test_4/0.0.1/', '0.0.1', 'Test mission 4', 'This is a longdescription for :\r\nTest mission 4', '2017-03-13 16:36:39', 1),
+(5, 5, 'Test_5.zip', '/uploads/Test_5/0.0.1/', '0.0.1', 'Test mission 5', 'This is a longdescription for :\r\nTest mission 5', '2017-03-13 16:36:39', 1),
+(6, 6, 'Test_6.zip', '/uploads/Test_6/0.0.1/', '0.0.1', 'Test mission 6', 'This is a longdescription for :\r\nTest mission 6', '2017-03-13 16:36:39', 1),
+(7, 7, 'Test_7.zip', '/uploads/Test_7/0.0.1/', '0.0.1', 'Test mission 7', 'This is a longdescription for :\r\nTest mission 7', '2017-03-13 16:36:39', 1),
+(8, 8, 'Test_8.zip', '/uploads/Test_8/0.0.1/', '0.0.1', 'Test mission 8', 'This is a longdescription for :\r\nTest mission 8', '2017-03-13 16:36:39', 1),
+(9, 9, 'Test_9.zip', '/uploads/Test_9/0.0.1/', '0.0.1', 'Test mission 9', 'This is a longdescription for :\r\nTest mission 9', '2017-03-13 16:36:39', 1),
+(10, 10, 'Test_10.zip', '/uploads/Test_10/0.0.1/', '0.0.1', 'Test mission 10', 'This is a longdescription for :\r\nTest mission 10', '2017-03-13 16:36:39', 1),
+(11, 11, 'Test_11.zip', '/uploads/Test_11/0.0.1/', '0.0.1', 'Test mission 11', 'This is a longdescription for :\r\nTest mission 11', '2017-03-13 16:36:39', 1),
+(12, 12, 'Test_12.zip', '/uploads/Test_12/0.0.1/', '0.0.1', 'Test mission 12', 'This is a longdescription for :\r\nTest mission 12', '2017-03-13 16:36:39', 1),
+(13, 13, 'Test_13.zip', '/uploads/Test_13/0.0.1/', '0.0.1', 'Test mission 13', 'This is a longdescription for :\r\nTest mission 13', '2017-03-13 16:36:39', 1),
+(14, 14, 'Test_14.zip', '/uploads/Test_14/0.0.1/', '0.0.1', 'Test mission 14', 'This is a longdescription for :\r\nTest mission 14', '2017-03-13 16:36:39', 1),
+(15, 15, 'Test_15.zip', '/uploads/Test_15/0.0.1/', '0.0.1', 'Test mission 15', 'This is a longdescription for :\r\nTest mission 15', '2017-03-13 16:36:39', 1);
 
 INSERT INTO `Ratings` (`rating_pk`, `map_fk`, `rating_amount`, `rating_ip`) VALUES
 (1, 8, 2, '0'),
