@@ -54,7 +54,7 @@
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
                               '    <li class="active">About</li>' . PHP_EOL .
                               '</ol>' . PHP_EOL .
-                              '<h1 class="page-header">About</h1>' . PHP_EOL;
+                              '<div class="row spacer"></div>' . PHP_EOL;
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'About');
@@ -76,7 +76,7 @@
 
                 $mapDetailFunc = new Functions\MapDetails($this -> utils);
                 $pageHeader    = '<ol class="breadcrumb">' . PHP_EOL .
-                                 '    <li><a href="/home">Home</a></li>' . PHP_EOL .
+                                 '    <li><a href="/home">All Maps</a></li>' . PHP_EOL .
                                  '    <li class="active">Map Details</li>' . PHP_EOL .
                                  '</ol>' . PHP_EOL .
                                  '<div class="row spacer"></div>' . PHP_EOL;
@@ -110,9 +110,9 @@
             } else {
                 $homeFunc   = new Functions\Home();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
-                              '    <li class="active">Home</li>' . PHP_EOL .
+                              '    <li class="active">All Maps</li>' . PHP_EOL .
                               '</ol>' . PHP_EOL .
-                              '<h1 class="page-header">Home</h1>' . PHP_EOL;
+                              '<div class="row spacer"></div>' . PHP_EOL;
 
                 // Set the page title
                 $this -> renderer -> setValue('title', 'Home');
