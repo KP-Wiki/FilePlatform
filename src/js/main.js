@@ -113,6 +113,8 @@ $(document).ready(function() {
     });
 
     $('#ratingStarrr').starrr({
+        max: 5,
+        rating: $('#ratingStarrr').attr('kp-map-rating'),
         change: function(e, value){
             if (value) {
                 // Retrieve current hostname, allow both http and https protocols
@@ -122,7 +124,6 @@ $(document).ready(function() {
                 $.ajax({
                     url: urlBase + '/api/v1/rating/' + mapID,
                     error: function(xhr, status, error) {
-                        
                         $('#ratingResultError > .message').text(xhr.responseJSON.message);
                         $('#ratingResultError').show();
                     },
@@ -131,6 +132,24 @@ $(document).ready(function() {
                     success: function(result, status, xhr) {
                         $('#ratingResultSuccess > .message').text(result.data);
                         $('#ratingResultSuccess').show();
+
+                        $.ajax({
+                            url: urlBase + '/api/v1/rating/' + mapID,
+                            error: function(xhr, status, error) {
+                            },
+                            data: {'score': value},
+                            dataType: 'json',
+                            success: function(result, status, xhr) {
+                                $('#ratingStarrr').attr('kp-map-rating', result.data.avg_rating);
+                                $('#ratingAvg').html(result.data.avg_rating + '<small> / 5</small>');
+                                $('#ratingFive').text(result.data.rating_five);
+                                $('#ratingFour').text(result.data.rating_four);
+                                $('#ratingThree').text(result.data.rating_three);
+                                $('#ratingTwo').text(result.data.rating_two);
+                                $('#ratingOne').text(result.data.rating_one);
+                            },
+                            type: 'GET'
+                        });
                     },
                     type: 'POST'
                 });

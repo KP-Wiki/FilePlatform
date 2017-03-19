@@ -58,7 +58,7 @@
                        '            <div class="col-sm-6">' . PHP_EOL .
                        '                <div class="rating-block">' . PHP_EOL .
                        '                    <h4>Average user rating</h4>' . PHP_EOL .
-                       '                    <h2 class="bold padding-bottom-7">' . ($mapItem['avg_rating'] === null ? 'n/a' : $mapItem['avg_rating'] .
+                       '                    <h2 id="ratingAvg" class="bold padding-bottom-7">' . ($mapItem['avg_rating'] === null ? 'n/a' : $mapItem['avg_rating'] .
                        '<small> / 5</small>') . '</h2>' . PHP_EOL .
                        /**
                        '                    <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 1 ? 'btn-warning' : 'btn-default btn-grey') .
@@ -82,7 +82,8 @@
                        '                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
                        '                    </button>' . PHP_EOL .
                        **/
-                       '                    <div class="starrr" id="ratingStarrr" kp-map-id="' . $mapItem['map_pk'] . '"></div><br />' . PHP_EOL .
+                       '                    <div class="starrr" id="ratingStarrr" kp-map-id="' . $mapItem['map_pk'] .
+                       '" kp-map-rating="' . ($mapItem['avg_rating'] === null ? '0' : $mapItem['avg_rating']) . '"></div><br />' . PHP_EOL .
                        '                    <div id="ratingResultSuccess" class="alert alert-success alert-dismissible spacersmall" role="alert" style="display: none;">' . PHP_EOL .
                        '                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . PHP_EOL .
                        '                        <span class="message"></span>' . PHP_EOL .
@@ -107,7 +108,7 @@
                        '                            </div>' . PHP_EOL .
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_five'] . '</div>' . PHP_EOL .
+                       '                    <div id="ratingFive" class="pull-right" style="margin-left:10px;">' . $mapItem['rating_five'] . '</div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
                        '                <div class="pull-left">' . PHP_EOL .
                        '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
@@ -121,7 +122,7 @@
                        '                            </div>' . PHP_EOL .
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_four'] . '</div>' . PHP_EOL .
+                       '                    <div id="ratingFour" class="pull-right" style="margin-left:10px;">' . $mapItem['rating_four'] . '</div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
                        '                <div class="pull-left">' . PHP_EOL .
                        '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
@@ -135,7 +136,7 @@
                        '                            </div>' . PHP_EOL .
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_three'] . '</div>' . PHP_EOL .
+                       '                    <div id="ratingThree" class="pull-right" style="margin-left:10px;">' . $mapItem['rating_three'] . '</div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
                        '                <div class="pull-left">' . PHP_EOL .
                        '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
@@ -149,7 +150,7 @@
                        '                            </div>' . PHP_EOL .
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_two'] . '</div>' . PHP_EOL .
+                       '                    <div id="ratingTwo" class="pull-right" style="margin-left:10px;">' . $mapItem['rating_two'] . '</div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
                        '                <div class="pull-left">' . PHP_EOL .
                        '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
@@ -163,7 +164,7 @@
                        '                            </div>' . PHP_EOL .
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-right" style="margin-left:10px;">' . $mapItem['rating_one'] . '</div>' . PHP_EOL .
+                       '                    <div id="ratingOne" class="pull-right" style="margin-left:10px;">' . $mapItem['rating_one'] . '</div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '            <table class="table table-user-information">' . PHP_EOL .
