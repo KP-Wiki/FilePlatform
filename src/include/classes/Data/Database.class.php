@@ -19,7 +19,7 @@
             $this -> PDO -> setAttribute(PDO::ATTR_EMULATE_PREPARES,   False);
         }
 
-        function PrepareAndBind($Statement, $Params = null) {
+        public function PrepareAndBind($Statement, $Params = null) {
             $this -> STMT = $this -> PDO -> prepare ($Statement);
 
             if ($Params != null && is_array($Params) && !Empty($Params)) {
@@ -28,26 +28,30 @@
                 };
             };
         }
-        
-        function Execute() {
-            $this -> STMT -> execute();
+
+        public function Execute() {
+            return $this -> STMT -> execute();
         }
 
-        function ExecuteAndFetch() {
+        public function ExecuteAndFetch() {
             $this -> STMT -> execute();
             $Result = $this -> STMT -> fetch();
 
             return $Result;
         }
 
-        function ExecuteAndFetchAll() {
+        public function ExecuteAndFetchAll() {
             $this -> STMT -> execute();
             $Result = $this -> STMT -> fetchAll();
 
             return $Result;
         }
 
-        function Clean() {
+        public function GetLastInsertId() {
+            return $this -> PDO -> lastInsertId();
+        }
+
+        public function Clean() {
             global $config;
 
             $this -> STMT = null;
@@ -59,7 +63,7 @@
             $this -> PDO -> setAttribute(PDO::ATTR_EMULATE_PREPARES,   False);
         }
 
-        function Destroy() {
+        public function Destroy() {
             $this -> STMT     = null;
             $this -> PDO      = null;
             $this -> DSN      = '';
