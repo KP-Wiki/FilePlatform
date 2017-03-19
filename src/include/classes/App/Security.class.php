@@ -348,6 +348,7 @@
                 $_SESSION['user'] -> username     = $user['user_name'];
                 $_SESSION['user'] -> emailAddress = $user['user_email_address'];
                 $_SESSION['user'] -> group        = $user['group_fk'];
+                $_SESSION['user'] -> token        = $newToken;
                 $logger -> log('checkRememberMe -> _SESSION[user] = ' . print_r($_SESSION['user'], True), Logger::DEBUG);
 
                 setcookie('userId', $user['user_pk'], time() + $config['security']['cookieLifetime'], '/');
@@ -361,8 +362,8 @@
 
         public function logout(&$dbHandler) {
             global $logger;
-            $userId    = $_COOKIE['userId'];
-            $token     = $_COOKIE['token'];
+            $userId    = $_SESSION['user'] -> id;
+            $token     = $_SESSION['user'] -> token;
             $ipAddress = $this -> utils -> getClientIp();
             $logger -> log('logout -> start( userId = ' . $userId .
                            ', token = ' . $token .
