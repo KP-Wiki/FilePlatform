@@ -23,8 +23,6 @@ window.detailUrlFormatter = function(value, row, index) {
 }
 
 $(document).ready(function() {
-    $('#userRegBtn').prop('disabled', true);
-
     $("#btnDownloadMap").click(function(){
         // Retrieve current hostname, allow both http and https protocols
         var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
@@ -40,7 +38,7 @@ $(document).ready(function() {
         });
     });
 
-    $('#userRegisterFrm').bootstrapValidator({
+    $('#userRegisterFrm').formValidation({
         framework: 'bootstrap',
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
@@ -48,12 +46,26 @@ $(document).ready(function() {
             validating: 'glyphicon glyphicon-refresh'
         },
         exclude: ':disabled',
+        addOns: {
+            reCaptcha2: {
+                element: 'captchaContainer',
+                language: 'en',
+                theme: 'light',
+                siteKey: '6LcTcBkUAAAAADJcfF5RhZL_3I8ALCacwmHztWeu',
+                timeout: 120,
+                message: 'The captcha is not valid'
+            }
+        },
         fields: {
             username: {
                 validators: {
                     stringLength: {
                         min: 2,
                         message: 'Username should be longer than two characters'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9_\.]+$/,
+                        message: 'Username can only consist of alphanumber, dot and underscore'
                     },
                     notEmpty: {
                         message: 'Please supply your username'
@@ -91,15 +103,15 @@ $(document).ready(function() {
             }
         }
     });
+
+    $('#userRegResetBtn').on('click', function() {
+        // Reset the recaptcha
+        FormValidation.AddOn.reCaptcha2.reset('captchaContainer');
+
+        // Reset form
+        $('#userRegisterFrm').formValidation('resetForm', true);
+    });
 });
-
-window.enableRegBtn = function() {
-    $('#userRegBtn').prop('disabled', false);
-}
-
-window.disableRegBtn = function() {
-    $('#userRegBtn').prop('disabled', true);
-}
 
 window.toggleForgot = function() {
     $(".logreg-forgot").slideToggle('slow');
