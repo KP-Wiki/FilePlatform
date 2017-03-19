@@ -265,12 +265,6 @@
                 Die('Unable to create rememberme token, please try again later');
             };
 
-            $_SESSION['user'] -> id           = $user['user_pk'];
-            $_SESSION['user'] -> username     = $user['user_name'];
-            $_SESSION['user'] -> emailAddress = $user['user_email_address'];
-            $_SESSION['user'] -> group        = $user['group_fk'];
-            $logger -> log('Login -> _SESSION[user] : ' . print_r($_SESSION['user'], True), Logger::DEBUG);
-
             setcookie('userId', $user['user_pk'], time() + $config['security']['cookieLifetime'], '/');
             setcookie('token', $token, time() + $config['security']['cookieLifetime'], '/');
 
