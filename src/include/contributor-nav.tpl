@@ -21,6 +21,7 @@
                                 <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
+                                <li><a href="/dashboard"><span class="glyphicon glyphicon-dashboard"></span>&nbsp;&nbsp;Dashboard</a></li>
                                 <li><a href="/settings"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>

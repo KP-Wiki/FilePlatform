@@ -18,6 +18,7 @@
     use Functions\MapDetails;
     use Functions\Download;
     use Functions\Rate;
+    use Functions\Dashboard;
 
     $config  = require_once(__DIR__ . '/include/config/' . APP_ENV . '_config.php');
     $request = null;
@@ -107,6 +108,26 @@
                 $this -> security -> login($this -> dbHandler);
             } elseif ($request['call'] === 'logout') {
                 $this -> security -> logout($this -> dbHandler);
+            } elseif ($request['call'] === 'dashboard' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0) {
+                $dashboardFunc   = new Functions\Dashboard();
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li class="active">Dashboard</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Dashboard');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', '');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $dashboardFunc -> getContent($this -> dbHandler);
+
+                // Set the content
+                $this -> renderer -> setContent($content);
             } else {
                 $homeFunc   = new Functions\Home();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
