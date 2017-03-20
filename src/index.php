@@ -19,6 +19,7 @@
     use Functions\Download;
     use Functions\Rate;
     use Functions\Dashboard;
+    use Functions\NewMap;
 
     $config  = require_once(__DIR__ . '/include/config/' . APP_ENV . '_config.php');
     $request = null;
@@ -125,6 +126,28 @@
                 $this -> renderer -> setValue('about-active', '');
 
                 $content = $dashboardFunc -> getContent($this -> dbHandler);
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call'] === 'newmap' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0 &&
+                      $_SESSION['user'] -> group != 0) {
+                $newMapFunc   = new Functions\NewMap();
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li><a href="/dashboard">Dashboard</a></li>' . PHP_EOL .
+                              '    <li class="active">New Map</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'New Map');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', '');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $newMapFunc -> getContent($this -> dbHandler);
 
                 // Set the content
                 $this -> renderer -> setContent($content);
