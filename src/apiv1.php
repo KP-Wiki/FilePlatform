@@ -163,6 +163,21 @@
                 };
 
                 print(json_encode($response, JSON_PRETTY_PRINT));
+            } elseif ($request['call_parts'][2] === 'resizedefault') {
+                header('Content-type: application/json');
+
+                $images   = Array();
+                $images[] = APP_DIR . '/uploads/images/kp_2016-08-30_21-29-44.png';
+                $images[] = APP_DIR . '/uploads/images/kp_2016-09-03_18-34-31.png';
+
+                foreach ($images as $image) {
+                    $imageObject = new \Imagick($image);
+                    $this -> utils -> resizeImage($imageObject, $config['images']['maxWidth'], $config['images']['maxHeight']);
+                    $imageObject -> writeImage($image);
+                    $imageObject -> destroy(); 
+                };
+
+                print(json_encode('Success', JSON_PRETTY_PRINT));
             } else {
                 $this -> utils -> http_response_code(404);
                 $response['status']  = 'Error';

@@ -16,6 +16,10 @@
     $config['files']['defaultDir']        = APP_DIR . '/uploads/Default';
     $config['files']['allowedExtensions'] = Array('.zip', '.rar', '.7z', '.kpmap');
 
+    $config['images']['maxWidth']          = 1280;
+    $config['images']['maxHeight']         = 720;
+    $config['images']['allowedExtensions'] = Array('.png', '.gif', '.jpg', '.jpeg');
+
     $config['reCaptcha']['siteKey']   = 'google site key';
     $config['reCaptcha']['secretKey'] = 'google secret key';
 

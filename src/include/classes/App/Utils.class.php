@@ -141,4 +141,20 @@
 
             return $Code;
         }
+
+        public function resizeImage(&$imageObject, $maxWidth, $maxHeight) {
+            $format = $imageObject -> getImageFormat();
+
+            if ($format == 'GIF') { // If it's a GIF file we need to resize each frame one by one
+                $imageObject = $imageObject -> coalesceImages();
+
+                foreach ($imageObject as $frame) { // Gaussian seems better for animations
+                    $frame -> resizeImage($maxWidth , $maxHeight , \Imagick::FILTER_GAUSSIAN, 1, True);
+                }
+
+                $imageObject = $imageObject -> deconstructImages();
+            } else { // Lanczos seems better for static images
+                $imageObject -> resizeImage($maxWidth , $maxHeight , \Imagick::FILTER_LANCZOS, 1, True);
+            };
+        }
     }
