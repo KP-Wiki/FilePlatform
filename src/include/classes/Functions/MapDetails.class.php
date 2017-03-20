@@ -251,7 +251,67 @@
             $content = Array();
 
             try {
-                if (isset($request['call_parts'][3])) {
+                if (isset($request['query_vars']['user'])) {
+                    $userId       = IntVal($request['query_vars']['user']);
+                    $mapListItems = null;
+
+                    if ($userId === null || $userId <= 0)
+                        throw new Exception('Ilegal user ID : ' . $userId);
+
+                    $query = 'SELECT ' .
+                             '    `Maps`.`map_pk`, ' .
+                             '    `Maps`.`map_name`, ' .
+                             '    `Maps`.`map_downloads`, ' .
+                             '    `Revisions`.`rev_map_description_short`, ' .
+                             '    `Revisions`.`rev_map_description`, ' .
+                             '    `Revisions`.`rev_upload_date`, ' .
+                             '    `Users`.`user_name`, ' .
+                             '    `MapTypes`.`map_type_name` ' .
+                             'FROM ' .
+                             '    `Maps` ' .
+                             'LEFT JOIN ' .
+                             '    `Revisions` ON `Maps`.`map_pk` = `Revisions`.`map_fk` ' .
+                             'LEFT JOIN ' .
+                             '    `Users` ON `Maps`.`user_fk` = `Users`.`user_pk` ' .
+                             'LEFT JOIN ' .
+                             '    `MapTypes` ON `Maps`.`map_type_fk` = `MapTypes`.`map_type_pk` ' .
+                             'WHERE ' .
+                             '    `Revisions`.`rev_status_fk` IN (0, 1) AND ' .
+                             '    `Maps`.`user_fk` = :userid ' .
+                             'ORDER BY ' .
+                             '    `Maps`.`map_name` DESC;';
+                    $dbHandler -> PrepareAndBind($query, Array('userid' => $userId));
+                    $mapListItems = $dbHandler -> ExecuteAndFetchAll();
+                    $dbHandler -> Clean();
+
+                    if ($mapListItems != null) {
+                        foreach ($mapListItems as $mapItem) {
+                            $ratingQuery = 'SELECT ' .
+                                           '    ROUND(AVG(CAST(`rating_amount` AS DECIMAL(12,2))), 1) AS avg_rating ' .
+                                           'FROM ' .
+                                           '    `Ratings` ' .
+                                           'WHERE ' .
+                                           '    `map_fk` = :mapid;';
+                            $dbHandler -> PrepareAndBind($ratingQuery, Array('mapid' => $mapItem['map_pk']));
+                            $avgRating = $dbHandler -> ExecuteAndFetch();
+                            $lastChangeDate = new \DateTime($mapItem['rev_upload_date']);
+
+                            $contentItem = Array('map_pk'                    => IntVal($mapItem['map_pk']),
+                                                 'map_name'                  => $mapItem['map_name'],
+                                                 'map_downloads'             => IntVal($mapItem['map_downloads']),
+                                                 'rev_map_description_short' => $mapItem['rev_map_description_short'],
+                                                 'rev_map_description'       => $mapItem['rev_map_description'],
+                                                 'rev_upload_date'           => $lastChangeDate -> format('Y-m-d H:i'),
+                                                 'user_name'                 => $mapItem['user_name'],
+                                                 'map_type_name'             => $mapItem['map_type_name'],
+                                                 'avg_rating'                => ($avgRating['avg_rating'] === null ? 'n/a' : FloatVal($avgRating['avg_rating'])));
+
+                            $content[] = $contentItem;
+                        };
+
+                        $this -> utils -> http_response_code(200);
+                    };
+                } elseif (isset($request['call_parts'][3])) {
                     $mapItem = null;
                     $mapId   = IntVal($request['call_parts'][3]);
 
