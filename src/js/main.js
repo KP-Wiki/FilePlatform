@@ -160,29 +160,45 @@ $(document).ready(function() {
             }
         }
     });
-});
 
-$(function() {
-  // We can attach the `fileselect` event to all file inputs on the page
-    $(document).on('change', ':file', function() {
-        var input    = $(this),
-            numFiles = input.get(0).files ? input.get(0).files.length : 1,
-            label    = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-        input.trigger('fileselect', [numFiles, label]);
+    var navListItems = $('div.setup-panel > div > a'),
+        allWells     = $('.setup-content'),
+        allNextBtn   = $('.nextBtn');
+
+    allWells.hide();
+
+    navListItems.click(function (e) {
+        e.preventDefault();
+        var $target = $($(this).attr('href')),
+            $item   = $(this);
+
+        if (!$item.hasClass('disabled')) {
+            navListItems.removeClass('btn-primary').addClass('btn-default');
+            $item.addClass('btn-primary');
+            allWells.hide();
+            $target.show();
+            $target.find('input:eq(0)').focus();
+        }
     });
 
-    // We can watch for our custom `fileselect` event like this
-    $(document).ready( function() {
-        $(':file').on('fileselect', function(event, numFiles, label) {
-            var input = $(this).parents('.input-group').find(':text'),
-                log   = numFiles > 1 ? numFiles + ' files selected' : label;
+    allNextBtn.click(function(){
+        var curStep        = $(this).closest(".setup-content"),
+            curStepBtn     = curStep.attr("id"),
+            nextStepWizard = $('div.setup-panel > div > a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+            curInputs      = curStep.find("input[type='text'],input[type='url'],input[type='file'],select,textarea"),
+            isValid        = true;
+        $(".form-group").removeClass("has-error");
 
-            if ( input.length ) {
-                input.val(log);
-            } else {
-                if (log)
-                    alert(log);
+        for(var i=0; i<curInputs.length; i++){
+            if (!curInputs[i].validity.valid){
+                isValid = false;
+                $(curInputs[i]).closest(".form-group").addClass("has-error");
             }
-        });
+        }
+
+        if (isValid)
+            nextStepWizard.removeAttr('disabled').removeClass('disabled').trigger('click');
     });
+
+    $('div.setup-panel > div > a.btn-primary').trigger('click');
 });

@@ -22,6 +22,7 @@
         <script src="/js/formValidation.min.js"></script>
         <script src="/js/framework/bootstrap.min.js"></script>
         <script src="/js/reCaptcha2.min.js"></script>
+        <script src="/js/bootstrap-filestyle.min.js"></script>
         <script src="/js/starrr.js"></script>
         <script src="/js/main.js"></script>
     </head>
