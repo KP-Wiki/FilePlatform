@@ -3,10 +3,7 @@
 
     class NewMap
     {
-        private $utils = null;
-
-        public function __construct(&$utilsClass) {
-            $this -> utils = $utilsClass;
+        public function __construct() {
         }
 
         public function getContent(&$dbHandler) {
@@ -44,7 +41,7 @@
                        '                            </div>' . PHP_EOL .
                        '                        </div>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
-                       '                    <form method="post" action="/upload" id="uploadMapFrm" role="form">' . PHP_EOL .
+                       '                    <form method="post" enctype="multipart/form-data" action="/upload" id="uploadMapFrm" role="form">' . PHP_EOL .
                        '                        <div class="row setup-content" id="step-1">' . PHP_EOL .
                        '                            <div class="col-xs-6 col-md-offset-3">' . PHP_EOL .
                        '                                <div class="col-md-12">' . PHP_EOL .

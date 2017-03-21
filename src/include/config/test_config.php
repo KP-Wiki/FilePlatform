@@ -12,8 +12,9 @@
     $config['db']['username'] = 'aUser';
     $config['db']['password'] = 'aPassword';
 
-    $config['files']['queueDir']          = APP_DIR . '/uploads/Queue';
-    $config['files']['defaultDir']        = APP_DIR . '/uploads/Default';
+    $config['files']['uploadDir']         = '/uploads';
+    $config['files']['queueDir']          = '/uploads/Queue';
+    $config['files']['defaultDir']        = '/uploads/Default';
     $config['files']['allowedExtensions'] = Array('.zip', '.rar', '.7z', '.kpmap');
 
     $config['images']['maxWidth']          = 1280;

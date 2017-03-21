@@ -17,6 +17,7 @@
     use Functions\About;
     use Functions\MapDetails;
     use Functions\Download;
+    use Functions\Upload;
     use Functions\Rate;
     use Functions\Dashboard;
     use Functions\NewMap;
@@ -112,7 +113,7 @@
             } elseif ($request['call'] === 'dashboard' &&
                       property_exists($_SESSION['user'], 'id') &&
                       $_SESSION['user'] -> id != 0) {
-                $dashboardFunc   = new Functions\Dashboard();
+                $dashboardFunc   = new Functions\Dashboard($this -> utils);
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
                               '    <li class="active">Dashboard</li>' . PHP_EOL .
                               '</ol>' . PHP_EOL .
@@ -149,6 +150,31 @@
 
                 $content = $newMapFunc -> getContent($this -> dbHandler);
 
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call'] === 'upload' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0 &&
+                      $_SESSION['user'] -> group >= 5 &&
+                      $_SERVER['REQUEST_METHOD'] == 'POST') {
+                $uploadFunc   = new Functions\Upload($this -> utils);
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li><a href="/dashboard">Dashboard</a></li>' . PHP_EOL .
+                              '    <li><a href="/newmap">New Map</a></li>' . PHP_EOL .
+                              '    <li class="active">Upload</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Upload');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', '');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $uploadFunc -> getContent($this -> dbHandler);
+
+                header('Refresh:5; url=/dashboard');
                 // Set the content
                 $this -> renderer -> setContent($content);
             } else {

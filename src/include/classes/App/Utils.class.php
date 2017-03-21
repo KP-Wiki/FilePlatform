@@ -157,4 +157,38 @@
                 $imageObject -> resizeImage($maxWidth , $maxHeight , \Imagick::FILTER_LANCZOS, 1, True);
             };
         }
+
+        public function reArrayFiles(&$aFileArr) {
+            $resultArr = Array();
+            $fileCount = count($aFileArr['name']);
+            $fileKeys  = array_keys($aFileArr);
+
+            for ($i = 0; $i < $fileCount; $i++) {
+                foreach ($fileKeys as $key) {
+                    $resultArr[$i][$key] = $aFileArr[$key][$i];
+                };
+            };
+
+            return $resultArr;
+        }
+
+        function mkdirRecursive($path) {
+            $path = str_replace("\\", '/', $path);
+            $path = Explode('/', $path);
+
+            $rebuild = '';
+
+            foreach ($path as $p) {
+                if (strstr($p, ':') != False) {
+                    $rebuild = $p;
+
+                    continue;
+                };
+
+                $rebuild .= '/' . $p;
+
+                if (!is_dir($rebuild))
+                    mkdir($rebuild);
+            };
+        }
     }
