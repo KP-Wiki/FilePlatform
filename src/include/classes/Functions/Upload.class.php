@@ -30,7 +30,10 @@
                     throw new \Exception('Invalid request, inputs missing');
 
                 if (isset($_POST['map_pk']) && !Empty($_POST['map_pk'])) {
-                    $content = '';
+                    $content = '<div class="alert alert-warning" role="alert">' . PHP_EOL .
+                               '    There is nothing here, yet.<br />' . PHP_EOL .
+                               '    Redirecting you now.' . PHP_EOL .
+                               '</div>' . PHP_EOL;
                 } else {
                     $mapName         = $_POST['mapName'];
                     $mapType         = IntVal($_POST['mapType']);
@@ -41,8 +44,20 @@
                     $mapDirInArchive = $mapName . '/';
                     $mapDirOnDisk    = $config['files']['uploadDir'] . '/' . $mapName . '/' . $mapVersion . '/';
 
+                    $selectQuery = 'SELECT ' .
+                                   '    COUNT(*) AS map_count ' .
+                                   'FROM ' .
+                                   '    `Maps` ' .
+                                   'WHERE ' .
+                                   '    `map_name` = :mapname;';
+                    $dbHandler -> PrepareAndBind($selectQuery, Array('mapname' => $mapName));
+                    $mapCount = $dbHandler -> ExecuteAndFetch();
+
+                    if ($mapCount['map_count'] > 0)
+                        throw new \Exception('Map already exists!');
+
                     // Create the directory that will hold our newly created ZIP archive
-                    $this -> utils -> mkdirRecursive($mapDirOnDisk);
+                    $this -> utils -> mkdirRecursive(APP_DIR . $mapDirOnDisk);
 
                     // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
                     if (count($_FILES['libxFiles']['name']) > 0) {
@@ -59,7 +74,7 @@
                     };
 
                     // Try to create the new archive
-                    if ($mapArchive -> open($mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE) !== True)
+                    if ($mapArchive -> open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE) !== True)
                         throw new \Exception('Unable to create the archive');
 
                     // Create a new directory
@@ -81,10 +96,47 @@
 
                     $mapArchive -> close();
 
-                    $content = '';
+                    $insertMapQuery = 'INSERT INTO ' .
+                                      '    `Maps` (`map_name`, `user_fk`, `map_Type_fk`) '.
+                                      'VALUES ' .
+                                      '    (:mapname, :userid, :maptypeid);';
+                    $dbHandler -> PrepareAndBind($insertMapQuery, Array('mapname'   => $mapName,
+                                                                        'userid'    => $_SESSION['user'] -> id,
+                                                                        'maptypeid' => $mapType));
+                    $dbHandler -> Execute();
+                    $mapId = $dbHandler -> GetLastInsertId();
+                    $dbHandler -> Clean();
+
+                    if ($mapId == null)
+                        throw new \Exception('Could not add the map to the database');
+
+                    $insertRevQuery = 'INSERT INTO ' .
+                                      '    `Revisions` (`map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, `rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '.
+                                      'VALUES ' .
+                                      '    (:mapid, :filename, :filepath, :mapversion, :mapdescshort, :mapdescfull, :revstatusid);';
+                    $dbHandler -> PrepareAndBind($insertRevQuery, Array('mapid' => $mapId,
+                                                                        'filename' => $mapName . '.zip',
+                                                                        'filepath' => $mapDirOnDisk,
+                                                                        'mapversion' => $mapVersion,
+                                                                        'mapdescshort' => $mapDescShort,
+                                                                        'mapdescfull' => $mapDescFull,
+                                                                        'revstatusid' => 1));
+                    $dbHandler -> Execute();
+                    $revId = $dbHandler -> GetLastInsertId();
+                    $dbHandler -> Clean();
+
+                    if ($revId == null)
+                        throw new \Exception('Could not add the map to the database');
+
+                    $content = '<div class="alert alert-success" role="alert">' . PHP_EOL .
+                               '    Map has been added successfully!<br />' . PHP_EOL .
+                               '    Redirecting you now.' . PHP_EOL .
+                               '</div>' . PHP_EOL;
                 };
             } catch (Exception $e) {
-                $content = 'Something went wrong, please try again later';
+                $content = '<div class="alert alert-danger" role="alert">' . PHP_EOL .
+                           '    Something went wrong, please try again later' . PHP_EOL .
+                           '</div>' . PHP_EOL;
             };
 
             return $content;
