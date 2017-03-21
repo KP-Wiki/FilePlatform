@@ -58,38 +58,21 @@
                        '            <div class="col-sm-6">' . PHP_EOL .
                        '                <div class="rating-block">' . PHP_EOL .
                        '                    <h4>Average user rating</h4>' . PHP_EOL .
-                       '                    <h2 id="ratingAvg" class="bold padding-bottom-7">' . ($mapItem['avg_rating'] === null ? 'n/a' : $mapItem['avg_rating'] .
-                       '<small> / 5</small>') . '</h2>' . PHP_EOL .
-                       /**
-                       '                    <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 1 ? 'btn-warning' : 'btn-default btn-grey') .
-                       ' btn-sm" aria-label="Left Align" onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 1);});">' . PHP_EOL .
-                       '                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
-                       '                    </button>' . PHP_EOL .
-                       '                    <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 2 ? 'btn-warning' : 'btn-default btn-grey') .
-                       ' btn-sm" aria-label="Left Align" onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 2);});">' . PHP_EOL .
-                       '                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
-                       '                    </button>' . PHP_EOL .
-                       '                    <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 3 ? 'btn-warning' : 'btn-default btn-grey') .
-                       ' btn-sm" aria-label="Left Align" onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 3);});">' . PHP_EOL .
-                       '                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
-                       '                    </button>' . PHP_EOL .
-                       '                    <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 4 ? 'btn-warning' : 'btn-default btn-grey') .
-                       ' btn-sm" aria-label="Left Align" onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 4);});">' . PHP_EOL .
-                       '                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
-                       '                    </button>' . PHP_EOL .
-                       '                    <button type="submit" class="btn ' . ($mapItem['avg_rating'] >= 5 ? 'btn-warning' : 'btn-default btn-grey') .
-                       ' btn-sm" aria-label="Left Align" onclick="$(function(){rateMap(' . $mapItem['map_pk'] . ', 5);});">' . PHP_EOL .
-                       '                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>' . PHP_EOL .
-                       '                    </button>' . PHP_EOL .
-                       **/
+                       '                    <h2 id="ratingAvg" class="bold padding-bottom-7">' .
+                       ($mapItem['avg_rating'] === null ? 'n/a' : $mapItem['avg_rating'] . '<small> / 5</small>') . '</h2>' . PHP_EOL .
                        '                    <div class="starrr" id="ratingStarrr" kp-map-id="' . $mapItem['map_pk'] .
                        '" kp-map-rating="' . ($mapItem['avg_rating'] === null ? '0' : $mapItem['avg_rating']) . '"></div><br />' . PHP_EOL .
-                       '                    <div id="ratingResultSuccess" class="alert alert-success alert-dismissible spacersmall" role="alert" style="display: none;">' . PHP_EOL .
-                       '                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . PHP_EOL .
+                       '                    <div id="ratingResultSuccess" class="alert alert-success alert-dismissible spacersmall" role="alert" ' .
+                       'style="display: none;">' . PHP_EOL .
+                       '                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">' .
+                       '                            <span aria-hidden="true">&times;</span>' .
+                       '                        </button>' . PHP_EOL .
                        '                        <span class="message"></span>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                    <div id="ratingResultError" class="alert alert-danger alert-dismissible spacersmall" role="alert" style="display: none;">' . PHP_EOL .
-                       '                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . PHP_EOL .
+                       '                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">' .
+                       '                            <span aria-hidden="true">&times;</span>' .
+                       '                        </button>' . PHP_EOL .
                        '                        <span class="message"></span>' . PHP_EOL .
                        '                    </div>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
@@ -191,10 +174,12 @@
                        '                    </tr>' . PHP_EOL .
                        '                    <tr>' . PHP_EOL .
                        '                        <td class="col-lg-12" colspan="2">' . PHP_EOL .
-                       '                            <button class="btn btn-success" id="btnDownloadMap" type="submit" title="Download this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
+                       '                            <button class="btn btn-success" id="btnDownloadMap" type="submit" title="Download this map" kp-map-id="' .
+                       $mapItem['rev_pk'] . '">' . PHP_EOL .
                        '                                <span class="glyphicon glyphicon-download-alt"></span>&nbsp;&nbsp;Download' . PHP_EOL .
                        '                            </button>' . PHP_EOL .
-                       '                            <button class="btn btn-danger pull-right" id="btnFlagMap" type="submit" title="Flag this map" kp-map-id="' . $mapItem['rev_pk'] . '">' . PHP_EOL .
+                       '                            <button class="btn btn-danger pull-right" id="btnFlagMap" type="submit" title="Flag this map" kp-map-id="' .
+                       $mapItem['rev_pk'] . '">' . PHP_EOL .
                        '                                <span class="glyphicon glyphicon-flag"></span>' . PHP_EOL .
                        '                            </button>' . PHP_EOL .
                        '                        </td>' . PHP_EOL .
@@ -205,7 +190,8 @@
                        '    </div>' . PHP_EOL .
                        '</div>' . PHP_EOL .
                        '<div class="row spacer">' . PHP_EOL .
-                       '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2" style="margin-bottom: 25px;">' . PHP_EOL .
+                       '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2" ' .
+                       'style="margin-bottom: 25px;">' . PHP_EOL .
                        '        <div id="screenshot_carousel" class="carousel slide" data-ride="carousel">' . PHP_EOL .
                        '            <!-- Indicators -->' . PHP_EOL .
                        '            <ol class="carousel-indicators">' . PHP_EOL .
@@ -256,7 +242,7 @@
                     $mapListItems = null;
 
                     if ($userId === null || $userId <= 0)
-                        throw new Exception('Ilegal user ID : ' . $userId);
+                        throw new \Exception('Ilegal user ID : ' . $userId);
 
                     $query = 'SELECT ' .
                              '    `Maps`.`map_pk`, ' .
@@ -316,7 +302,7 @@
                     $mapId   = IntVal($request['call_parts'][3]);
 
                     if ($mapId === null || $mapId <= 0)
-                        throw new Exception('Ilegal map ID : ' . $mapId);
+                        throw new \Exception('Ilegal map ID : ' . $mapId);
 
                     $query1 = 'SET @mapid = :mapid;';
                     $dbHandler -> PrepareAndBind($query1, Array('mapid' => $mapId));

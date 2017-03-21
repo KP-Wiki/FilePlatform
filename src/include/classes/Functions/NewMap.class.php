@@ -84,7 +84,7 @@
                        '                                    </div>' . PHP_EOL .
                        '                                    <div class="form-group">' . PHP_EOL .
                        '                                        <label for="mapType">Map Type</label> ' . PHP_EOL .
-                       '                                        <select id="mapName" name="mapName" class="form-control" required>' . PHP_EOL;
+                       '                                        <select id="mapType" name="mapType" class="form-control" required>' . PHP_EOL;
 
             foreach ($mapTypes as $maptype) {
                 $content .= '                                            <option value="' . $maptype['map_type_pk'] . '">' . $maptype['map_type_name'] . '</option>' . PHP_EOL;
