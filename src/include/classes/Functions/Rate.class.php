@@ -1,5 +1,6 @@
 <?php
     namespace Functions;
+    use \Exception;
 
     class Rate
     {
@@ -16,7 +17,7 @@
                 $mapID = IntVal($request['call_parts'][3]);
 
                 if ($mapID === null || $mapID <= 0)
-                    throw new \Exception('Map ID out of acceptable range');
+                    throw new Exception('Map ID out of acceptable range');
 
                 $query1 = 'SET @mapid = :mapid;';
                 $dbHandler -> PrepareAndBind ($query1, Array('mapid' => $mapID));
@@ -51,7 +52,7 @@
 
             try {
                 if (!isset($_POST['score']))
-                    throw new \Exception('Map ID or Score out of acceptable range');
+                    throw new Exception('Map ID or Score out of acceptable range');
 
                 $mapID    = IntVal($request['call_parts'][3]);
                 $score    = IntVal($_POST['score']);
@@ -59,7 +60,7 @@
 
                 if ($mapID === null || $mapID <= 0 ||
                     $score <= 0 || $score >= 6)
-                    throw new \Exception('Map ID or Score out of acceptable range');
+                    throw new Exception('Map ID or Score out of acceptable range');
 
                 $spamCheckQuery = 'SELECT ' .
                                   '    COUNT(*) AS rating_count ' .

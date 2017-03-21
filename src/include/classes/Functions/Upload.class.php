@@ -1,6 +1,7 @@
 <?php
     namespace Functions;
     use \ZipArchive;
+    use \Exception;
 
     class Upload
     {
@@ -27,7 +28,7 @@
                     Empty($_POST['mapDescShort']) &&
                     !isset($_POST['mapDescFull']) &&
                     Empty($_POST['mapDescFull']))
-                    throw new \Exception('Invalid request, inputs missing');
+                    throw new Exception('Invalid request, inputs missing');
 
                 if (isset($_POST['map_pk']) && !Empty($_POST['map_pk'])) {
                     $content = '<div class="alert alert-warning" role="alert">' . PHP_EOL .
@@ -54,7 +55,7 @@
                     $mapCount = $dbHandler -> ExecuteAndFetch();
 
                     if ($mapCount['map_count'] > 0)
-                        throw new \Exception('Map already exists!');
+                        throw new Exception('Map already exists!');
 
                     // Create the directory that will hold our newly created ZIP archive
                     $this -> utils -> mkdirRecursive(APP_DIR . $mapDirOnDisk);
@@ -75,7 +76,7 @@
 
                     // Try to create the new archive
                     if ($mapArchive -> open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE) !== True)
-                        throw new \Exception('Unable to create the archive');
+                        throw new Exception('Unable to create the archive');
 
                     // Create a new directory
                     $mapArchive -> addEmptyDir($mapDirInArchive);
@@ -108,7 +109,7 @@
                     $dbHandler -> Clean();
 
                     if ($mapId == null)
-                        throw new \Exception('Could not add the map to the database');
+                        throw new Exception('Could not add the map to the database');
 
                     $insertRevQuery = 'INSERT INTO ' .
                                       '    `Revisions` (`map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, `rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '.
@@ -126,7 +127,7 @@
                     $dbHandler -> Clean();
 
                     if ($revId == null)
-                        throw new \Exception('Could not add the map to the database');
+                        throw new Exception('Could not add the map to the database');
 
                     $content = '<div class="alert alert-success" role="alert">' . PHP_EOL .
                                '    Map has been added successfully!<br />' . PHP_EOL .

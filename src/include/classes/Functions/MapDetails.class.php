@@ -1,5 +1,7 @@
 <?php
     namespace Functions;
+    use \Exception;
+    use \DateTime;
 
     class MapDetails
     {
@@ -47,7 +49,7 @@
             $dbHandler -> PrepareAndBind($query2);
             $mapItem = $dbHandler -> ExecuteAndFetch();
 
-            $lastChangeDate = new \DateTime($mapItem['rev_upload_date']);
+            $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
 
             $content = '<div class="row">' . PHP_EOL .
                        '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad">' . PHP_EOL .
@@ -242,7 +244,7 @@
                     $mapListItems = null;
 
                     if ($userId === null || $userId <= 0)
-                        throw new \Exception('Ilegal user ID : ' . $userId);
+                        throw new Exception('Ilegal user ID : ' . $userId);
 
                     $query = 'SELECT ' .
                              '    `Maps`.`map_pk`, ' .
@@ -280,7 +282,7 @@
                                            '    `map_fk` = :mapid;';
                             $dbHandler -> PrepareAndBind($ratingQuery, Array('mapid' => $mapItem['map_pk']));
                             $avgRating = $dbHandler -> ExecuteAndFetch();
-                            $lastChangeDate = new \DateTime($mapItem['rev_upload_date']);
+                            $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
 
                             $contentItem = Array('map_pk'                    => IntVal($mapItem['map_pk']),
                                                  'map_name'                  => $mapItem['map_name'],
@@ -302,7 +304,7 @@
                     $mapId   = IntVal($request['call_parts'][3]);
 
                     if ($mapId === null || $mapId <= 0)
-                        throw new \Exception('Ilegal map ID : ' . $mapId);
+                        throw new Exception('Ilegal map ID : ' . $mapId);
 
                     $query1 = 'SET @mapid = :mapid;';
                     $dbHandler -> PrepareAndBind($query1, Array('mapid' => $mapId));
@@ -340,7 +342,7 @@
 
                     if ($mapItem != null) {
                         $this -> utils -> http_response_code(200);
-                        $lastChangeDate = new \DateTime($mapItem['rev_upload_date']);
+                        $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
                         $content['map_pk']                    = $mapId;
                         $content['map_name']                  = $mapItem['map_name'];
                         $content['map_downloads']             = IntVal($mapItem['map_downloads']);
@@ -394,7 +396,7 @@
                                            '    `map_fk` = :mapid;';
                             $dbHandler -> PrepareAndBind($ratingQuery, Array('mapid' => $mapItem['map_pk']));
                             $avgRating = $dbHandler -> ExecuteAndFetch();
-                            $lastChangeDate = new \DateTime($mapItem['rev_upload_date']);
+                            $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
 
                             $contentItem = Array('map_pk'                    => IntVal($mapItem['map_pk']),
                                                  'map_name'                  => $mapItem['map_name'],
