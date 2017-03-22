@@ -47,9 +47,63 @@
                       '    `Revisions`.`rev_status_fk` = 1 AND ' .
                       '    `Revisions`.`map_fk` = @mapid;';
             $dbHandler -> PrepareAndBind($query2);
-            $mapItem = $dbHandler -> ExecuteAndFetch();
-
+            $mapItem        = $dbHandler -> ExecuteAndFetch();
             $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
+            $dbHandler -> Clean();
+
+            $screenshotQuery = 'SELECT ' .
+                               '    `screen_title`, ' .
+                               '    `screen_alt`, ' .
+                               '    `screen_file_name`, ' .
+                               '    `screen_path`, ' .
+                               '    `screen_order` ' .
+                               'FROM ' .
+                               '    `Screenshots` ' .
+                               'WHERE ' .
+                               '    `rev_fk` = :revid;';
+            $dbHandler -> PrepareAndBind($screenshotQuery, Array('revid' => $mapItem['rev_pk']));
+            $screenshotItems = $dbHandler -> ExecuteAndFetchAll();
+            $dbHandler -> Clean();
+
+            if (is_array($screenshotItems) && count($screenshotItems) > 0) {
+                $firstItem = True;
+
+                foreach ($screenshotItems as $screenshotItem) {
+                    if ($firstItem) {
+                        $carouselIndicators = '                <li data-target="#screenshot_carousel" data-slide-to="' . $screenshotItem['screen_order'] . '" class="active"></li>' . PHP_EOL;
+                        $carouselItems      = '                    <div class="item active">' . PHP_EOL .
+                                              '                        <img src="' . $screenshotItem['screen_path'] . $screenshotItem['screen_file_name'] . '" alt="' . $screenshotItem['screen_alt'] . '">' . PHP_EOL .
+                                              '                        <div class="carousel-caption">' . PHP_EOL .
+                                              '                            ' . $screenshotItem['screen_title'] . PHP_EOL .
+                                              '                        </div>' . PHP_EOL .
+                                              '                    </div>' . PHP_EOL;
+                        $firstItem = False;
+                    } else {
+                        $carouselIndicators .= '                <li data-target="#screenshot_carousel" data-slide-to="' . $screenshotItem['screen_order'] . '"></li>' . PHP_EOL;
+                        $carouselItems      .= '                    <div class="item">' . PHP_EOL .
+                                               '                        <img src="' . $screenshotItem['screen_path'] . $screenshotItem['screen_file_name'] . '" alt="' . $screenshotItem['screen_alt'] . '">' . PHP_EOL .
+                                               '                        <div class="carousel-caption">' . PHP_EOL .
+                                               '                            ' . $screenshotItem['screen_title'] . PHP_EOL .
+                                               '                        </div>' . PHP_EOL .
+                                               '                    </div>' . PHP_EOL;
+                    };
+                };
+            } else {
+                $carouselIndicators = '                <li data-target="#screenshot_carousel" data-slide-to="0" class="active"></li>' . PHP_EOL .
+                                      '                <li data-target="#screenshot_carousel" data-slide-to="1"></li>' . PHP_EOL;
+                $carouselItems      = '                    <div class="item active">' . PHP_EOL .
+                                      '                        <img src="/uploads/images/kp_2016-08-30_21-29-44.png" alt="Knights Province Image 1">' . PHP_EOL .
+                                      '                        <div class="carousel-caption">' . PHP_EOL .
+                                      '                            A first look at combat' . PHP_EOL .
+                                      '                        </div>' . PHP_EOL .
+                                      '                    </div>' . PHP_EOL .
+                                      '                    <div class="item">' . PHP_EOL .
+                                      '                        <img src="/uploads/images/kp_2016-09-03_18-34-31.png" alt="Knights Province Image 2">' . PHP_EOL .
+                                      '                        <div class="carousel-caption">' . PHP_EOL .
+                                      '                            A basic village' . PHP_EOL .
+                                      '                        </div>' . PHP_EOL .
+                                      '                    </div>' . PHP_EOL;
+            };
 
             $content = '<div class="row">' . PHP_EOL .
                        '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad">' . PHP_EOL .
@@ -197,24 +251,12 @@
                        '        <div id="screenshot_carousel" class="carousel slide" data-ride="carousel">' . PHP_EOL .
                        '            <!-- Indicators -->' . PHP_EOL .
                        '            <ol class="carousel-indicators">' . PHP_EOL .
-                       '                <li data-target="#screenshot_carousel" data-slide-to="0" class="active"></li>' . PHP_EOL .
-                       '                <li data-target="#screenshot_carousel" data-slide-to="1"></li>' . PHP_EOL .
+                       $carouselIndicators .
                        '            </ol>' . PHP_EOL .
                        '            <!-- Wrapper for slides -->' . PHP_EOL .
                        '            <center>' . PHP_EOL .
                        '                <div class="carousel-inner" role="listbox">' . PHP_EOL .
-                       '                    <div class="item active">' . PHP_EOL .
-                       '                        <img src="/uploads/images/kp_2016-08-30_21-29-44.png" alt="Knights Province Image 1">' . PHP_EOL .
-                       '                        <div class="carousel-caption">' . PHP_EOL .
-                       '                            A first look at combat' . PHP_EOL .
-                       '                        </div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div class="item">' . PHP_EOL .
-                       '                        <img src="/uploads/images/kp_2016-09-03_18-34-31.png" alt="Knights Province Image 2">' . PHP_EOL .
-                       '                        <div class="carousel-caption">' . PHP_EOL .
-                       '                            A basic village' . PHP_EOL .
-                       '                        </div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
+                       $carouselItems .
                        '                </div>' . PHP_EOL .
                        '            </center>' . PHP_EOL .
                        '            <!-- Controls -->' . PHP_EOL .
