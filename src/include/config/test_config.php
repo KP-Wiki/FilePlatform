@@ -12,14 +12,13 @@
     $config['db']['username'] = 'aUser';
     $config['db']['password'] = 'aPassword';
 
-    $config['files']['uploadDir']         = '/uploads';
-    $config['files']['queueDir']          = '/uploads/Queue';
-    $config['files']['defaultDir']        = '/uploads/Default';
-    $config['files']['allowedExtensions'] = Array('.zip', '.rar', '.7z', '.kpmap');
+    $config['files']['uploadDir']  = '/uploads';
+    $config['files']['queueDir']   = '/uploads/Queue';
+    $config['files']['defaultDir'] = '/uploads/Default';
 
-    $config['images']['maxWidth']          = 1280;
-    $config['images']['maxHeight']         = 720;
-    $config['images']['allowedExtensions'] = Array('.png', '.gif', '.jpg', '.jpeg');
+    $config['images']['maxWidth']     = 1280;
+    $config['images']['maxHeight']    = 720;
+    $config['images']['allowedTypes'] = Array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP);
 
     $config['reCaptcha']['siteKey']   = 'google site key';
     $config['reCaptcha']['secretKey'] = 'google secret key';

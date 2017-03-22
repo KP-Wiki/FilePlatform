@@ -2,6 +2,7 @@
     namespace Functions;
     use \ZipArchive;
     use \Exception;
+    use \Imagick;
 
     class Upload
     {
@@ -67,13 +68,6 @@
                         $libxFiles = Array();
                     };
 
-                    // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
-                    if (count($_FILES['screenshotFiles']['name']) > 0) {
-                        $screenshotFiles = $this -> utils -> reArrayFiles($_FILES['screenshotFiles']);
-                    } else {
-                        $screenshotFiles = Array();
-                    };
-
                     // Try to create the new archive
                     if ($mapArchive -> open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE) !== True)
                         throw new Exception('Unable to create the archive');
@@ -129,6 +123,9 @@
                     if ($revId == null)
                         throw new Exception('Could not add the map to the database');
 
+                    if (!$this -> uploadImages($dbHandler, $mapName, APP_DIR . $mapDirOnDisk, $revId))
+                        throw new Exception('Could not add the screenshots to the map');
+
                     $content = '<div class="alert alert-success" role="alert">' . PHP_EOL .
                                '    Map has been added successfully!<br />' . PHP_EOL .
                                '    Redirecting you now.' . PHP_EOL .
@@ -137,9 +134,98 @@
             } catch (Exception $e) {
                 $content = '<div class="alert alert-danger" role="alert">' . PHP_EOL .
                            '    Something went wrong, please try again later' . PHP_EOL .
+                           PHP_EOL .
+                           '    Message : ' . $e -> getMessage();
                            '</div>' . PHP_EOL;
             };
 
             return $content;
+        }
+
+        private function uploadImages(&$dbHandler, $mapName, $mapDir, $revId, $oldRevId = null) {
+            global $config, $request;
+
+            try {
+                $cleanMapName  = $this -> utils -> cleanInput($mapName, True);
+                $imageDir      = $config['files']['uploadDir'] . '/images/' . $cleanMapName;
+                $imageOrderNum = 0;
+
+                if ($oldRevId !== null) {
+                    $selectQuery = 'SELECT ' .
+                                   '    * ' .
+                                   'FROM ' .
+                                   '    `Screenshots` ' .
+                                   'WHERE ' .
+                                   '    `rev_fk` = :revid ' .
+                                   'ORDER BY ' .
+                                   '    `screen_order` ASC;';
+                    $dbHandler -> PrepareAndBind($selectQuery, Array('revid' => $oldRevId));
+                    $oldScreenshotFiles = $dbHandler -> ExecuteAndFetchAll();
+                    $dbHandler -> Clean();
+                } else {
+                    $oldScreenshotFiles = Array();
+                };
+
+                // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
+                if (count($_FILES['screenshotFiles']['name']) > 0) {
+                    $screenshotFiles = $this -> utils -> reArrayFiles($_FILES['screenshotFiles']);
+                } else {
+                    $screenshotFiles = Array();
+                };
+
+                foreach ($screenshotFiles as $screenshotFile) {
+                    $detectedType = exif_imagetype($screenshotFile['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $imageObject = new Imagick($screenshotFile['tmp_name']);
+                        $this -> utils -> resizeImage($imageObject, $config['images']['maxWidth'], $config['images']['maxHeight']);
+
+                        if ($detectedType == IMAGETYPE_GIF) {
+                            $imageExtention = '.gif';
+                        } else {
+                            $imageExtention = '.png';
+                            $imageObject -> setImageFormat('png');
+                        };
+
+                        $imageObject -> writeImage($mapDir . $cleanMapName . '-' . $imageOrderNum . $imageExtention);
+                        $imageObject -> destroy();
+
+                        $insertQuery = 'INSERT INTO ' .
+                                       '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' .
+                                       'VALUES ' .
+                                       '    (:revid, :screentitle, :screenalt, :screenfilename, :screenpath, :screenorder);';
+                        $dbHandler -> PrepareAndBind($insertQuery, Array('revid'          => $revId,
+                                                                         'screentitle'    => $cleanMapName . '-' . $imageOrderNum,
+                                                                         'screenalt'      => $cleanMapName . '-' . $imageOrderNum . $imageExtention,
+                                                                         'screenfilename' => $cleanMapName . '-' . $imageOrderNum . $imageExtention,
+                                                                         'screenpath'     => $mapDir,
+                                                                         'screenorder'    => $imageOrderNum));
+                        $dbHandler -> Execute();
+
+                        $imageOrderNum++;
+                    };
+                };
+
+                foreach ($oldScreenshotFiles as $oldScreenshotFile) { // Only append these to the revision but keep original location
+                    $insertQuery = 'INSERT INTO ' .
+                                   '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' .
+                                   'VALUES ' .
+                                   '    (:revid, :screentitle, :screenalt, :screenfilename, :screenpath, :screenorder);';
+                    $dbHandler -> PrepareAndBind($insertQuery, Array('revid'          => $revId,
+                                                                     'screentitle'    => $oldScreenshotFile['screen_title'],
+                                                                     'screenalt'      => $oldScreenshotFile['screen_alt'],
+                                                                     'screenfilename' => $oldScreenshotFile['screen_file_name'],
+                                                                     'screenpath'     => $oldScreenshotFile['screen_path'],
+                                                                     'screenorder'    => $imageOrderNum));
+                    $dbHandler -> Execute();
+
+                    $imageOrderNum++;
+                };
+
+                return True;
+            } catch (Exception $e) {
+                return False;
+            };
         }
     }

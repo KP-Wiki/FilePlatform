@@ -45,9 +45,12 @@
          ** @param string $aString
          ** @return string
          **/
-        public function cleanInput($aString) {
-            $result = str_replace(chr(0), '', $aString);  // Strip null-bytes
-            $result = str_replace(' ', '-', $result);     // Replace spaces with underscores
+        public function cleanInput($aString, $stripSpaces = False) {
+            $result = str_replace(chr(0), '', $aString); // Strip null-bytes
+
+            if ($stripSpaces)
+                $result = str_replace(' ', '_', $result); // Replace spaces with underscores
+
             $result = preg_replace('/-+/', '-', $result); // Replace multiple hyphens with a single one
 
             return $result;
