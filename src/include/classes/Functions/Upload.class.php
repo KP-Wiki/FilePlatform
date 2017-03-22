@@ -123,7 +123,7 @@
                     if ($revId == null)
                         throw new Exception('Could not add the map to the database');
 
-                    if (!$this -> uploadImages($dbHandler, $mapName, APP_DIR . $mapDirOnDisk, $revId))
+                    if (!$this -> uploadImages($dbHandler, $mapName, $mapDirOnDisk, $revId))
                         throw new Exception('Could not add the screenshots to the map');
 
                     $content = '<div class="alert alert-success" role="alert">' . PHP_EOL .
@@ -188,7 +188,7 @@
                             $imageObject -> setImageFormat('png');
                         };
 
-                        $imageObject -> writeImage($mapDir . $cleanMapName . '-' . $imageOrderNum . $imageExtention);
+                        $imageObject -> writeImage(APP_DIR . $mapDir . $cleanMapName . '-' . $imageOrderNum . $imageExtention);
                         $imageObject -> destroy();
 
                         $insertQuery = 'INSERT INTO ' .
