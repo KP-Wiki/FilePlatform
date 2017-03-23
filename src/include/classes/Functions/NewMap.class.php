@@ -122,7 +122,7 @@
                         '                                            <div class="form-group">' . PHP_EOL .
                         '                                                <label for="screenshotFileOne">File</label> ' . PHP_EOL .
                         '                                                <input type="file" id="screenshotFileOne" name="screenshotFileOne" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
-                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*">' . PHP_EOL .
                         '                                            </div>' . PHP_EOL .
                         '                                        </div>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
@@ -136,7 +136,7 @@
                         '                                            <div class="form-group">' . PHP_EOL .
                         '                                                <label for="screenshotFileTwo">File</label> ' . PHP_EOL .
                         '                                                <input type="file" id="screenshotFileTwo" name="screenshotFileTwo" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
-                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*">' . PHP_EOL .
                         '                                            </div>' . PHP_EOL .
                         '                                        </div>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
@@ -150,7 +150,7 @@
                         '                                            <div class="form-group">' . PHP_EOL .
                         '                                                <label for="screenshotFileThree">File</label> ' . PHP_EOL .
                         '                                                <input type="file" id="screenshotFileThree" name="screenshotFileThree" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
-                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*">' . PHP_EOL .
                         '                                            </div>' . PHP_EOL .
                         '                                        </div>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
@@ -164,7 +164,7 @@
                         '                                            <div class="form-group">' . PHP_EOL .
                         '                                                <label for="screenshotFileFour">File</label> ' . PHP_EOL .
                         '                                                <input type="file" id="screenshotFileFour" name="screenshotFileFour" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
-                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*">' . PHP_EOL .
                         '                                            </div>' . PHP_EOL .
                         '                                        </div>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
@@ -178,7 +178,7 @@
                         '                                            <div class="form-group">' . PHP_EOL .
                         '                                                <label for="screenshotFileFive">File</label> ' . PHP_EOL .
                         '                                                <input type="file" id="screenshotFileFive" name="screenshotFileFive" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
-                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*">' . PHP_EOL .
                         '                                            </div>' . PHP_EOL .
                         '                                        </div>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
