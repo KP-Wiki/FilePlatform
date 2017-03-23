@@ -62,10 +62,13 @@
                        'data-iconName="glyphicon glyphicon-open-file" accept=".script">' . PHP_EOL .
                        '                                    </div>' . PHP_EOL .
                        '                                    <div class="form-group">' . PHP_EOL .
-                       '                                        <label for="libxFiles">.LIBX File</label> ' . PHP_EOL .
-                       '                                        <span class="help-block helpermarginfix">These are files that hold the translations for your dynamic script texts</span> ' . PHP_EOL .
+                       '                                        <label for="libxFiles">.LIBX File</label>' . PHP_EOL .
+                       '                                        <span class="help-block helpermarginfix">' . PHP_EOL .
+                       '                                            These are files that hold the translations for your dynamic script texts<br />' . PHP_EOL .
+                       '                                            More information <a href="https://github.com/Kromster80/knights_province/wiki" target="_blank">Github wiki</a>' . PHP_EOL .
+                       '                                        </span> ' . PHP_EOL .
                        '                                        <input type="file" id="libxFiles" name="libxFiles[]" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
-                       'data-iconName="glyphicon glyphicon-open-file" accept=".*.libx" multiple>' . PHP_EOL .
+                       'data-iconName="glyphicon glyphicon-open-file" accept=".libx" multiple>' . PHP_EOL .
                        '                                    </div>' . PHP_EOL .
                        '                                    <button class="btn btn-primary nextBtn btn-lg pull-right" type="button" >Next</button>' . PHP_EOL .
                        '                                </div>' . PHP_EOL .
@@ -109,10 +112,75 @@
                         '                            <div class="col-xs-6 col-md-offset-3">' . PHP_EOL .
                         '                                <div class="col-md-12">' . PHP_EOL .
                         '                                    <h3>Add some screenshots for the map</h3>' . PHP_EOL .
-                        '                                    <div class="form-group">' . PHP_EOL .
-                        '                                        <label for="screenshotFiles">Screenshots</label> ' . PHP_EOL .
-                        '                                        <input type="file" id="screenshotFiles" name="screenshotFiles[]" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
+                        '                                    <div class="panel panel-default">'. PHP_EOL .
+                        '                                        <div class="panel-heading">Screenshot 1</div>'. PHP_EOL .
+                        '                                        <div class="panel-body">' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotTitleOne">Title</label> ' . PHP_EOL .
+                        '                                                <input type="text" id="screenshotTitleOne" name="screenshotTitleOne" class="form-control">' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotFileOne">File</label> ' . PHP_EOL .
+                        '                                                <input type="file" id="screenshotFileOne" name="screenshotFileOne" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
                         'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                        </div>' . PHP_EOL .
+                        '                                    </div>' . PHP_EOL .
+                        '                                    <div class="panel panel-default">'. PHP_EOL .
+                        '                                        <div class="panel-heading">Screenshot 2</div>'. PHP_EOL .
+                        '                                        <div class="panel-body">' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotTitleTwo">Title</label> ' . PHP_EOL .
+                        '                                                <input type="text" id="screenshotTitleTwo" name="screenshotTitleTwo" class="form-control">' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotFileTwo">File</label> ' . PHP_EOL .
+                        '                                                <input type="file" id="screenshotFileTwo" name="screenshotFileTwo" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                        </div>' . PHP_EOL .
+                        '                                    </div>' . PHP_EOL .
+                        '                                    <div class="panel panel-default">'. PHP_EOL .
+                        '                                        <div class="panel-heading">Screenshot 3</div>'. PHP_EOL .
+                        '                                        <div class="panel-body">' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotTitleThree">Title</label> ' . PHP_EOL .
+                        '                                                <input type="text" id="screenshotTitleThree" name="screenshotTitleThree" class="form-control">' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotFileThree">File</label> ' . PHP_EOL .
+                        '                                                <input type="file" id="screenshotFileThree" name="screenshotFileThree" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                        </div>' . PHP_EOL .
+                        '                                    </div>' . PHP_EOL .
+                        '                                    <div class="panel panel-default">'. PHP_EOL .
+                        '                                        <div class="panel-heading">Screenshot 4</div>'. PHP_EOL .
+                        '                                        <div class="panel-body">' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotTitleFour">Title</label> ' . PHP_EOL .
+                        '                                                <input type="text" id="screenshotTitleFour" name="screenshotTitleFour" class="form-control">' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotFileFour">File</label> ' . PHP_EOL .
+                        '                                                <input type="file" id="screenshotFileFour" name="screenshotFileFour" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                        </div>' . PHP_EOL .
+                        '                                    </div>' . PHP_EOL .
+                        '                                    <div class="panel panel-default">'. PHP_EOL .
+                        '                                        <div class="panel-heading">Screenshot 5</div>'. PHP_EOL .
+                        '                                        <div class="panel-body">' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotTitleFive">Title</label> ' . PHP_EOL .
+                        '                                                <input type="text" id="screenshotTitleFive" name="screenshotTitleFive" class="form-control">' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                            <div class="form-group">' . PHP_EOL .
+                        '                                                <label for="screenshotFileFive">File</label> ' . PHP_EOL .
+                        '                                                <input type="file" id="screenshotFileFive" name="screenshotFileFive" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
+                        'data-iconName="glyphicon glyphicon-open-file" accept="image/*" multiple>' . PHP_EOL .
+                        '                                            </div>' . PHP_EOL .
+                        '                                        </div>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
                         '                                    <button class="btn btn-success btn-lg pull-right" type="submit">Submit</button>' . PHP_EOL .
                         '                                </div>' . PHP_EOL .
