@@ -146,9 +146,10 @@
             global $config, $request;
 
             try {
-                $cleanMapName  = $this -> utils -> cleanInput($mapName, True);
-                $imageDir      = $config['files']['uploadDir'] . '/images/' . $cleanMapName;
-                $imageOrderNum = 0;
+                $cleanMapName    = $this -> utils -> cleanInput($mapName, True);
+                $imageDir        = $config['files']['uploadDir'] . '/images/' . $cleanMapName;
+                $imageOrderNum   = 0;
+                $screenshotFiles = Array();
 
                 if ($oldRevId !== null) {
                     $selectQuery = 'SELECT ' .
@@ -166,45 +167,107 @@
                     $oldScreenshotFiles = Array();
                 };
 
-                // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
-                if (count($_FILES['screenshotFiles']['name']) > 0) {
-                    $screenshotFiles = $this -> utils -> reArrayFiles($_FILES['screenshotFiles']);
-                } else {
-                    $screenshotFiles = Array();
-                };
-
-                foreach ($screenshotFiles as $screenshotFile) {
-                    $detectedType = exif_imagetype($screenshotFile['tmp_name']);
+                if (!Empty($_FILES['screenshotFileOne']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileOne']['tmp_name']);
                     $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
 
                     if ($validFile) {
-                        $imageObject = new Imagick($screenshotFile['tmp_name']);
-                        $this -> utils -> resizeImage($imageObject, $config['images']['maxWidth'], $config['images']['maxHeight']);
-
-                        if ($detectedType == IMAGETYPE_GIF) {
-                            $imageExtention = '.gif';
-                        } else {
-                            $imageExtention = '.png';
-                            $imageObject -> setImageFormat('png');
-                        };
-
-                        $imageObject -> writeImage(APP_DIR . $mapDir . $cleanMapName . '-' . $imageOrderNum . $imageExtention);
-                        $imageObject -> destroy();
-
-                        $insertQuery = 'INSERT INTO ' .
-                                       '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' .
-                                       'VALUES ' .
-                                       '    (:revid, :screentitle, :screenalt, :screenfilename, :screenpath, :screenorder);';
-                        $dbHandler -> PrepareAndBind($insertQuery, Array('revid'          => $revId,
-                                                                         'screentitle'    => $cleanMapName . '-' . $imageOrderNum,
-                                                                         'screenalt'      => $cleanMapName . '-' . $imageOrderNum . $imageExtention,
-                                                                         'screenfilename' => $cleanMapName . '-' . $imageOrderNum . $imageExtention,
-                                                                         'screenpath'     => $mapDir,
-                                                                         'screenorder'    => $imageOrderNum));
-                        $dbHandler -> Execute();
-
+                        $_FILES['screenshotFileOne']['imageTitle']    = (Empty($_POST['screenshotTitleOne'])
+                                                                         ? $cleanMapName . '-' . $imageOrderNum
+                                                                         : $_POST['screenshotTitleOne']);
+                        $_FILES['screenshotFileOne']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileOne']['imageType']     = $detectedType;
+                        $screenshotFiles[]                            = $_FILES['screenshotFileOne'];
                         $imageOrderNum++;
                     };
+                };
+
+                if (!Empty($_FILES['screenshotFileTwo']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileTwo']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileTwo']['imageTitle']    = (Empty($_POST['screenshotTitleTwo'])
+                                                                         ? $cleanMapName . '-' . $imageOrderNum
+                                                                         : $_POST['screenshotTitleTwo']);
+                        $_FILES['screenshotFileTwo']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileTwo']['imageType']     = $detectedType;
+                        $screenshotFiles[]                            = $_FILES['screenshotFileTwo'];
+                        $imageOrderNum++;
+                    };
+                };
+
+                if (!Empty($_FILES['screenshotFileThree']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileThree']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileThree']['imageTitle']    = (Empty($_POST['screenshotTitleThree'])
+                                                                           ? $cleanMapName . '-' . $imageOrderNum
+                                                                           : $_POST['screenshotTitleThree']);
+                        $_FILES['screenshotFileThree']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileThree']['imageType']     = $detectedType;
+                        $screenshotFiles[]                              = $_FILES['screenshotFileThree'];
+                        $imageOrderNum++;
+                    };
+                };
+
+                if (!Empty($_FILES['screenshotFileFour']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileFour']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileFour']['imageTitle']    = (Empty($_POST['screenshotTitleFour'])
+                                                                          ? $cleanMapName . '-' . $imageOrderNum
+                                                                          : $_POST['screenshotTitleFour']);
+                        $_FILES['screenshotFileFour']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileFour']['imageType']     = $detectedType;
+                        $screenshotFiles[]                             = $_FILES['screenshotFileFour'];
+                        $imageOrderNum++;
+                    };
+                };
+
+                if (!Empty($_FILES['screenshotFileFive']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileFive']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileFive']['imageTitle']    = (Empty($_POST['screenshotTitleFive'])
+                                                                          ? $cleanMapName . '-' . $imageOrderNum
+                                                                          : $_POST['screenshotTitleFive']);
+                        $_FILES['screenshotFileFive']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileFive']['imageType']     = $detectedType;
+                        $screenshotFiles[]                             = $_FILES['screenshotFileFive'];
+                    };
+                };
+
+                foreach ($screenshotFiles as $screenshotFile) {
+                    $imageObject   = new Imagick($screenshotFile['tmp_name']);
+                    $this -> utils -> resizeImage($imageObject, $config['images']['maxWidth'], $config['images']['maxHeight']);
+
+                    if ($screenshotFile['imageType'] == IMAGETYPE_GIF) {
+                        $imageExtention = '.gif';
+                    } else {
+                        $imageExtention = '.png';
+                        $imageObject -> setImageFormat('png');
+                    };
+
+                    $imageFileName = $cleanMapName . '-' . $screenshotFile['imageOrderNum'] . $imageExtention;
+
+                    $imageObject -> writeImage(APP_DIR . $mapDir . $imageFileName);
+                    $imageObject -> destroy();
+
+                    $insertQuery = 'INSERT INTO ' .
+                                   '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' .
+                                   'VALUES ' .
+                                   '    (:revid, :screentitle, :screenalt, :screenfilename, :screenpath, :screenorder);';
+                    $dbHandler -> PrepareAndBind($insertQuery, Array('revid'          => $revId,
+                                                                     'screentitle'    => $screenshotFile['imageTitle'],
+                                                                     'screenalt'      => $imageFileName,
+                                                                     'screenfilename' => $imageFileName,
+                                                                     'screenpath'     => $mapDir,
+                                                                     'screenorder'    => $screenshotFile['imageOrderNum']));
+                    $dbHandler -> Execute();
                 };
 
                 foreach ($oldScreenshotFiles as $oldScreenshotFile) { // Only append these to the revision but keep original location
