@@ -46,13 +46,13 @@
                        '                            <div class="col-xs-6 col-md-offset-3">' . PHP_EOL .
                        '                                <div class="col-md-12">' . PHP_EOL .
                        '                                    <h3>Select the map files</h3>' . PHP_EOL .
-                       '                                    <div class="form-group">' . PHP_EOL .
-                       '                                        <label for="mapFile">.MAP File</label> ' . PHP_EOL .
+                       '                                    <div class="form-group required">' . PHP_EOL .
+                       '                                        <label for="mapFile" class="control-label">.MAP File</label> ' . PHP_EOL .
                        '                                        <input type="file" id="mapFile" name="mapFile" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
                        'data-iconName="glyphicon glyphicon-open-file" accept=".map" required>' . PHP_EOL .
                        '                                    </div>' . PHP_EOL .
-                       '                                    <div class="form-group">' . PHP_EOL .
-                       '                                        <label for="datFile">.DAT File</label> ' . PHP_EOL .
+                       '                                    <div class="form-group required">' . PHP_EOL .
+                       '                                        <label for="datFile" class="control-label">.DAT File</label> ' . PHP_EOL .
                        '                                        <input type="file" id="datFile" name="datFile" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true" ' .
                        'data-iconName="glyphicon glyphicon-open-file" accept=".dat" required>' . PHP_EOL .
                        '                                    </div>' . PHP_EOL .
@@ -78,12 +78,12 @@
                        '                            <div class="col-xs-6 col-md-offset-3">' . PHP_EOL .
                        '                                <div class="col-md-12">' . PHP_EOL .
                        '                                    <h3>Provide information about the map</h3>' . PHP_EOL .
-                       '                                    <div class="form-group">' . PHP_EOL .
-                       '                                        <label for="mapName">Map Name</label> ' . PHP_EOL .
+                       '                                    <div class="form-group required">' . PHP_EOL .
+                       '                                        <label for="mapName" class="control-label">Map Name</label> ' . PHP_EOL .
                        '                                        <input type="text" id="mapName" name="mapName" class="form-control" required>' . PHP_EOL .
                        '                                    </div>' . PHP_EOL .
-                       '                                    <div class="form-group">' . PHP_EOL .
-                       '                                        <label for="mapType">Map Type</label> ' . PHP_EOL .
+                       '                                    <div class="form-group required">' . PHP_EOL .
+                       '                                        <label for="mapType" class="control-label">Map Type</label> ' . PHP_EOL .
                        '                                        <select id="mapType" name="mapType" class="form-control" required>' . PHP_EOL;
 
             foreach ($mapTypes as $maptype) {
@@ -92,16 +92,16 @@
 
             $content .= '                                        </select>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
-                        '                                    <div class="form-group">' . PHP_EOL .
-                        '                                        <label for="mapVersion">Map Version</label> ' . PHP_EOL .
+                        '                                    <div class="form-group required">' . PHP_EOL .
+                        '                                        <label for="mapVersion" class="control-label">Map Version</label> ' . PHP_EOL .
                         '                                        <input type="text" id="mapVersion" name="mapVersion" class="form-control" required>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
-                        '                                    <div class="form-group">' . PHP_EOL .
-                        '                                        <label for="mapDescShort">Short Description</label> ' . PHP_EOL .
+                        '                                    <div class="form-group required">' . PHP_EOL .
+                        '                                        <label for="mapDescShort" class="control-label">Short Description</label> ' . PHP_EOL .
                         '                                        <input type="text" id="mapDescShort" name="mapDescShort" class="form-control" required>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
-                        '                                    <div class="form-group">' . PHP_EOL .
-                        '                                        <label for="mapDescFull">Full Description</label> ' . PHP_EOL .
+                        '                                    <div class="form-group required">' . PHP_EOL .
+                        '                                        <label for="mapDescFull" class="control-label">Full Description</label> ' . PHP_EOL .
                         '                                        <textarea id="mapDescFull" name="mapDescFull" class="form-control" rows="3" required></textarea>' . PHP_EOL .
                         '                                    </div>' . PHP_EOL .
                         '                                    <button class="btn btn-primary nextBtn btn-lg pull-right" type="button" >Next</button>' . PHP_EOL .
