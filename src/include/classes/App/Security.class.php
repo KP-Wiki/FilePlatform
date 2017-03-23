@@ -338,10 +338,18 @@
                 $dbHandler -> Execute();
                 $dbHandler -> Clean();
 
-                $_SESSION['user'] -> id           = $user['user_pk'];
-                $_SESSION['user'] -> username     = $user['user_name'];
-                $_SESSION['user'] -> emailAddress = $user['user_email_address'];
-                $_SESSION['user'] -> group        = $user['group_fk'];
+                if ($_SESSION['user'] -> id !== $user['user_pk'])
+                    $_SESSION['user'] -> id = $user['user_pk'];
+
+                if ($_SESSION['user'] -> username !== $user['user_name'])
+                    $_SESSION['user'] -> username = $user['user_name'];
+
+                if ($_SESSION['user'] -> emailAddress !== $user['user_email_address'])
+                    $_SESSION['user'] -> emailAddress = $user['user_email_address'];
+
+                if ($_SESSION['user'] -> group !== $user['group_fk'])
+                    $_SESSION['user'] -> group = $user['group_fk'];
+
                 $_SESSION['user'] -> token        = $newToken;
                 $logger -> log('checkRememberMe -> _SESSION[user] = ' . print_r($_SESSION['user'], True), Logger::DEBUG);
 
