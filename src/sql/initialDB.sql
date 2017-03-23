@@ -179,3 +179,26 @@ VALUES
     (0, 'Open'),
     (1, 'Assigned'),
     (2, 'Closed');
+
+-- CREATE SCHEDULED EVENTSs
+-- Enable the scheduler
+SET GLOBAL
+    event_scheduler = ON;
+
+-- Set a custom delimiter
+DELIMITER $$
+-- Create the event
+CREATE EVENT
+    `rememberMeCleanup`
+ON SCHEDULE
+    EVERY 6 HOUR STARTS '2016-10-10 00:00:00'
+ON COMPLETION PRESERVE
+ENABLE
+DO BEGIN
+    DELETE FROM 
+        `RememberMe` 
+    WHERE 
+        datediff(now(),`RememberMe`.`Date`) > 182;
+END$$
+-- Reset delimiter to it's original value
+DELIMITER ;
