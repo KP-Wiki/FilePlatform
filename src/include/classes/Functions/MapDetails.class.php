@@ -387,7 +387,7 @@
                     $dbHandler -> PrepareAndBind($query2);
                     $mapItem = $dbHandler -> ExecuteAndFetch();
 
-                    if ($mapItem != null) {
+                    if ($mapItem != null && $mapItem['map_name'] != null) {
                         $this -> utils -> http_response_code(200);
                         $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
                         $content['status']                            = 'Ok';
@@ -462,7 +462,7 @@
                             $content['data'][] = $contentItem;
                         };
                     } else {
-                        throw new Exception('Map not found, ID : ' . $mapId);
+                        $content['data'] = Array();
                     };
 
                     $this -> utils -> http_response_code(200);
