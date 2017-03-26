@@ -25,8 +25,8 @@
                        'data-show-refresh="true" ' .
                        'data-show-pagination-switch="true" ' .
                        'data-pagination="true" ' .
-                       'data-page-list="[5, 10, 25, 50, 100, ALL]" ' .
-                       'data-page-size="10" ' .
+                       'data-page-list="[25, 50, 100, ALL]" ' .
+                       'data-page-size="25" ' .
                        'data-show-footer="false" ' .
                        'data-side-pagination="client">' . PHP_EOL .
                        '                                <thead>' . PHP_EOL .
