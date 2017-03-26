@@ -324,7 +324,7 @@
                     return;
                 };
 
-                $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
+                $bytes    = openssl_random_pseudo_bytes(32, $crypto_strong);
                 $newToken = bin2hex($bytes);
 
                 $query3 = 'UPDATE ' . PHP_EOL .
@@ -338,10 +338,18 @@
                 $dbHandler -> Execute();
                 $dbHandler -> Clean();
 
-                $_SESSION['user'] -> id           = $user['user_pk'];
-                $_SESSION['user'] -> username     = $user['user_name'];
-                $_SESSION['user'] -> emailAddress = $user['user_email_address'];
-                $_SESSION['user'] -> group        = $user['group_fk'];
+                if (!property_exists($_SESSION['user'], 'id') || $_SESSION['user'] -> id !== $user['user_pk'])
+                    $_SESSION['user'] -> id = $user['user_pk'];
+
+                if (!property_exists($_SESSION['user'], 'username') || $_SESSION['user'] -> username !== $user['user_name'])
+                    $_SESSION['user'] -> username = $user['user_name'];
+
+                if (!property_exists($_SESSION['user'], 'emailAddress') || $_SESSION['user'] -> emailAddress !== $user['user_email_address'])
+                    $_SESSION['user'] -> emailAddress = $user['user_email_address'];
+
+                if (!property_exists($_SESSION['user'], 'group') || $_SESSION['user'] -> group !== $user['group_fk'])
+                    $_SESSION['user'] -> group = $user['group_fk'];
+
                 $_SESSION['user'] -> token        = $newToken;
                 $logger -> log('checkRememberMe -> _SESSION[user] = ' . print_r($_SESSION['user'], True), Logger::DEBUG);
 

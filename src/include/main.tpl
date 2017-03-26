@@ -118,10 +118,6 @@
                                             <li>
                                                 <div id="captchaContainer"></div>
                                             </li><br />
-                                            <!-- Need to find a nice way to load the sitekey from the config. -->
-                                            <!--<li>
-                                                <div class="g-recaptcha" data-sitekey="6LcTcBkUAAAAADJcfF5RhZL_3I8ALCacwmHztWeu" data-callback="enableRegBtn" data-expired-callback="disableRegBtn"></div>
-                                            </li><br />-->
                                             <li>
                                                 <button type="submit" id="userRegBtn" name="userRegBtn" class="btn btn-default">Signup Now</button>
                                                 <button type="button" id="userRegResetBtn" name="userRegResetBtn" class="btn btn-default">Reset</button>

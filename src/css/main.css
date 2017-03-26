@@ -61,6 +61,11 @@ code {
     text-decoration: none;
 }
 
+.form-group.required .control-label:after { 
+   content: "  *";
+   color: red;
+}
+
 /* File/Map table */
 .filetable > tbody > tr > td {
     word-wrap: break-word;
