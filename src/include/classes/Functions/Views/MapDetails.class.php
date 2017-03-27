@@ -218,27 +218,29 @@
                        '<div class="row spacer">' . PHP_EOL .
                        '    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2" ' .
                        'style="margin-bottom: 25px;">' . PHP_EOL .
-                       '        <div id="screenshot_carousel" class="carousel slide" data-ride="carousel">' . PHP_EOL .
-                       '            <!-- Indicators -->' . PHP_EOL .
-                       '            <ol class="carousel-indicators">' . PHP_EOL .
+                       '        <center>' . PHP_EOL .
+                       '            <div id="screenshot_carousel" class="carousel slide" data-ride="carousel">' . PHP_EOL .
+                       '                <!-- Indicators -->' . PHP_EOL .
+                       '                <ol class="carousel-indicators">' . PHP_EOL .
                        $carouselIndicators .
-                       '            </ol>' . PHP_EOL .
-                       '            <!-- Wrapper for slides -->' . PHP_EOL .
-                       '            <center>' . PHP_EOL .
-                       '                <div class="carousel-inner" role="listbox">' . PHP_EOL .
+                       '                </ol>' . PHP_EOL .
+                       '                <!-- Wrapper for slides -->' . PHP_EOL .
+                       '                <center>' . PHP_EOL .
+                       '                    <div class="carousel-inner" role="listbox">' . PHP_EOL .
                        $carouselItems .
-                       '                </div>' . PHP_EOL .
-                       '            </center>' . PHP_EOL .
-                       '            <!-- Controls -->' . PHP_EOL .
-                       '            <a class="left carousel-control" href="#screenshot_carousel" role="button" data-slide="prev">' . PHP_EOL .
-                       '                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>' . PHP_EOL .
-                       '                <span class="sr-only">Previous</span>' . PHP_EOL .
-                       '            </a>' . PHP_EOL .
-                       '            <a class="right carousel-control" href="#screenshot_carousel" role="button" data-slide="next">' . PHP_EOL .
-                       '                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' . PHP_EOL .
-                       '                <span class="sr-only">Next</span>' . PHP_EOL .
-                       '            </a>' . PHP_EOL .
-                       '        </div>' . PHP_EOL .
+                       '                    </div>' . PHP_EOL .
+                       '                </center>' . PHP_EOL .
+                       '                <!-- Controls -->' . PHP_EOL .
+                       '                <a class="left carousel-control" href="#screenshot_carousel" role="button" data-slide="prev">' . PHP_EOL .
+                       '                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>' . PHP_EOL .
+                       '                    <span class="sr-only">Previous</span>' . PHP_EOL .
+                       '                </a>' . PHP_EOL .
+                       '                <a class="right carousel-control" href="#screenshot_carousel" role="button" data-slide="next">' . PHP_EOL .
+                       '                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' . PHP_EOL .
+                       '                    <span class="sr-only">Next</span>' . PHP_EOL .
+                       '                </a>' . PHP_EOL .
+                       '            </div>' . PHP_EOL .
+                       '        </center>' . PHP_EOL .
                        '    </div>' . PHP_EOL .
                        '</div>';
 
