@@ -449,7 +449,6 @@
                                            '    `map_fk` = :mapid;';
                             $dbHandler -> PrepareAndBind($ratingQuery, Array('mapid' => $mapItem['map_pk']));
                             $avgRating = $dbHandler -> ExecuteAndFetch();
-                            $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
 
                             $contentItem = Array('map_pk'                    => IntVal($mapItem['map_pk']),
                                                  'map_name'                  => $mapItem['map_name'],

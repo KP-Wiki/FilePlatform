@@ -1,27 +1,34 @@
 <?php
+    // Open the existing or create a new session
     session_start();
 
+    // Application global constants
     define('APP_ENV',     'dev');
     define('APP_DIR',     dirname(__FILE__));
     define('APP_VERSION', '0.0.1');
 
     require_once('autoloader.php');
 
+    // Application core
     use App\Utils;
     use App\Logger;
     use App\Renderer;
     use App\Security;
+    // Data handling
     use Data\Database;
     use Data\Files;
-    use Functions\Home;
-    use Functions\About;
+    // Functions
     use Functions\MapDetails;
     use Functions\Download;
     use Functions\Upload;
     use Functions\Rate;
-    use Functions\Dashboard;
-    use Functions\NewMap;
+    // Views
+    use Functions\Views\Home;
+    use Functions\Views\About;
+    use Functions\Views\Dashboard;
+    use Functions\Views\NewMap;
 
+    // Global variables
     $config  = require_once(__DIR__ . '/include/config/' . APP_ENV . '_config.php');
     $request = null;
     $logger  = new App\Logger(APP_DIR . '/logs/' . date('Y-m-d') . '.log');
@@ -53,7 +60,7 @@
             $this -> security -> checkRememberMe($this -> dbHandler);
 
             if ($request['call'] === 'about') {
-                $aboutFunc  = new Functions\About();
+                $aboutFunc  = new Functions\Views\About();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
                               '    <li class="active">About</li>' . PHP_EOL .
                               '</ol>' . PHP_EOL .
@@ -113,7 +120,7 @@
             } elseif ($request['call'] === 'dashboard' &&
                       property_exists($_SESSION['user'], 'id') &&
                       $_SESSION['user'] -> id != 0) {
-                $dashboardFunc   = new Functions\Dashboard($this -> utils);
+                $dashboardFunc   = new Functions\Views\Dashboard($this -> utils);
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
                               '    <li class="active">Dashboard</li>' . PHP_EOL .
                               '</ol>' . PHP_EOL .
@@ -134,7 +141,7 @@
                       property_exists($_SESSION['user'], 'id') &&
                       $_SESSION['user'] -> id != 0 &&
                       $_SESSION['user'] -> group != 0) {
-                $newMapFunc   = new Functions\NewMap();
+                $newMapFunc   = new Functions\Views\NewMap();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
                               '    <li><a href="/dashboard">Dashboard</a></li>' . PHP_EOL .
                               '    <li class="active">New Map</li>' . PHP_EOL .
@@ -178,7 +185,7 @@
                 // Set the content
                 $this -> renderer -> setContent($content);
             } else {
-                $homeFunc   = new Functions\Home();
+                $homeFunc   = new Functions\Views\Home();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
                               '    <li class="active">All Maps</li>' . PHP_EOL .
                               '</ol>' . PHP_EOL .
@@ -202,6 +209,7 @@
         }
     }
 
+    // Create and start the applocation
     $app = new App();
     $app -> start();
 ?>

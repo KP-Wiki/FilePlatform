@@ -1,5 +1,5 @@
 <?php
-    namespace Functions;
+    namespace Functions\Views;
 
     class Dashboard
     {

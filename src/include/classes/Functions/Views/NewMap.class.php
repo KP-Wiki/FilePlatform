@@ -1,5 +1,5 @@
 <?php
-    namespace Functions;
+    namespace Functions\Views;
 
     class NewMap
     {
@@ -7,8 +7,6 @@
         }
 
         public function getContent(&$dbHandler) {
-            $mapListItems = null;
-
             $selectQuery = 'SELECT ' .
                            '    * ' .
                            'FROM ' .
