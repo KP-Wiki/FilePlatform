@@ -69,7 +69,7 @@
                     };
 
                     // Try to create the new archive
-                    if ($mapArchive -> open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE) !== True)
+                    if (!$mapArchive -> open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE))
                         throw new Exception('Unable to create the archive');
 
                     // Create a new directory

@@ -8,7 +8,7 @@
     use App\Utils;
     use Data\Database;
     use Data\Files;
-    use Functions\MapDetails;
+    use Functions\MapInfo;
     use Functions\Download;
     use Functions\Rate;
 
@@ -54,26 +54,26 @@
 
             if ($request['call_parts'][2] === 'maps') {
                 header('Content-type: application/json');
-                $mapDetailFunc = new Functions\MapDetails($this -> utils);
+                $mapInfoFunc = new Functions\MapInfo($this -> utils);
 
                 switch ($this -> method) {
-                    case 'POST': {
+                    case 'POST': { // Create new map
                         $this -> utils -> http_response_code(501);
                         $response['status']  = 'Error';
                         $response['message'] = $this -> utils -> http_code_to_text(501);
                         break;
                     }
-                    case 'GET': {
-                        $response = $mapDetailFunc -> getMapDetails($this -> dbHandler);
+                    case 'GET': { // Get map info
+                        $response = $mapInfoFunc -> getMapDetails($this -> dbHandler);
                         break;
                     }
-                    case 'PUT': {
+                    case 'PUT': { // Edit/Update map/info
                         $this -> utils -> http_response_code(501);
                         $response['status']  = 'Error';
                         $response['message'] = $this -> utils -> http_code_to_text(501);
                         break;
                     }
-                    case 'DELETE': {
+                    case 'DELETE': { // Delete map
                         $this -> utils -> http_response_code(501);
                         $response['status']  = 'Error';
                         $response['message'] = $this -> utils -> http_code_to_text(501);
@@ -92,7 +92,7 @@
                 $downloadFunc = new Functions\Download($this -> utils);
 
                 switch ($this -> method) {
-                    case 'GET': {
+                    case 'GET': { // Get download
                         $fullPath = $downloadFunc -> getDownload($this -> dbHandler);
                         break;
                     }
@@ -146,11 +146,11 @@
                     $response['message'] = $this -> utils -> http_code_to_text(404);
                 } else {
                     switch ($this -> method) {
-                        case 'POST': {
+                        case 'POST': { // Create new rating
                             $response = $rateFunc -> insertRating($this -> dbHandler);
                             break;
                         }
-                        case 'GET': {
+                        case 'GET': { // Get rating info
                             $response = $rateFunc -> getRating($this -> dbHandler);
                             break;
                         }
@@ -163,7 +163,7 @@
                 };
 
                 print(json_encode($response, JSON_PRETTY_PRINT));
-            } elseif ($request['call_parts'][2] === 'resizedefault') {
+            } elseif ($request['call_parts'][2] === 'resizedefault') { // More of a util to resize the default images
                 header('Content-type: application/json');
 
                 $images   = Array();
