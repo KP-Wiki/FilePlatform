@@ -165,7 +165,6 @@
                 print(json_encode($response, JSON_PRETTY_PRINT));
             } elseif ($request['call_parts'][2] === 'resizedefault') { // More of a util to resize the default images
                 header('Content-type: application/json');
-
                 $images   = Array();
                 $images[] = APP_DIR . '/uploads/images/kp_2016-08-30_21-29-44.png';
                 $images[] = APP_DIR . '/uploads/images/kp_2016-09-03_18-34-31.png';
@@ -179,6 +178,7 @@
 
                 print(json_encode('Success', JSON_PRETTY_PRINT));
             } else {
+                header('Content-type: application/json');
                 $this -> utils -> http_response_code(404);
                 $response['status']  = 'Error';
                 $response['message'] = $this -> utils -> http_code_to_text(404);
