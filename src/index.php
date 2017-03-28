@@ -7,6 +7,7 @@
     define('APP_DIR',     dirname(__FILE__));
     define('APP_VERSION', '0.0.1');
 
+    // Import the class loader
     require_once('autoloader.php');
 
     // Application core
@@ -16,7 +17,6 @@
     use App\Security;
     // Data handling
     use Data\Database;
-    use Data\Files;
     // Functions
     use Functions\MapInfo;
     use Functions\Upload;
@@ -36,21 +36,31 @@
 
     class App
     {
+        /**
+         **  The utilities class
+         **/
         private $utils       = null;
+        /**
+         **  The HTML renderer class
+         **/
         private $renderer    = null;
+        /**
+         **  The security class
+         **/
         private $security    = null;
+        /**
+         **  The database handler class
+         **/
         private $dbHandler   = null;
-        private $fileHandler = null;
 
         public function __construct() {
             global $config, $request, $logger;
 
             // Initialize the globally required classes
-            $this -> utils       = new App\Utils();
-            $this -> renderer    = new App\Renderer();
-            $this -> security    = new App\Security($this -> utils);
-            $this -> dbHandler   = new Data\Database();
-            $this -> fileHandler = new Data\Files();
+            $this -> utils     = new App\Utils();
+            $this -> dbHandler = new Data\Database();
+            $this -> renderer  = new App\Renderer();
+            $this -> security  = new App\Security($this -> utils);
 
             // Parse the request to usable variables
             $request = $this -> utils -> parse_path();

@@ -1,17 +1,22 @@
 <?php
+    // Application global constants
     define('APP_ENV',     'dev');
     define('APP_DIR',     dirname(__FILE__));
     define('APP_VERSION', '0.0.1');
 
+    // Import the class loader
     require_once('autoloader.php');
 
+    // Application core
     use App\Utils;
+    // Data handling
     use Data\Database;
-    use Data\Files;
+    // Functions
     use Functions\MapInfo;
     use Functions\Download;
     use Functions\Rate;
 
+    // Global variables
     $config  = require_once(__DIR__ . '/include/config/' . APP_ENV . '_config.php');
     $request = null;
 
@@ -29,18 +34,13 @@
          **  The database handler class
          **/
         private $dbHandler   = null;
-        /**
-         **  The file handler class ( Superfluous? )
-         **/
-        private $fileHandler = null;
 
         public function __construct() {
             global $config, $request;
 
-            $this -> utils       = new App\Utils();
-            $this -> dbHandler   = new Data\Database();
-            $this -> fileHandler = new Data\Files();
-            $this -> method      = $_SERVER['REQUEST_METHOD'];
+            $this -> utils     = new App\Utils();
+            $this -> dbHandler = new Data\Database();
+            $this -> method    = $_SERVER['REQUEST_METHOD'];
 
             $request = $this -> utils -> parse_path();
         }
@@ -186,9 +186,11 @@
                 print(json_encode($response, JSON_PRETTY_PRINT));
             };
 
+            // Cleanup
             $this -> dbHandler -> Destroy();
         }
     }
 
+    // Create and start the API
     $api = new Apiv1();
     $api -> start();
