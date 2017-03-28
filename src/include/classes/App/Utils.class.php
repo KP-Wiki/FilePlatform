@@ -194,4 +194,21 @@
                     mkdir($rebuild);
             };
         }
+
+        /**
+         ** Get a Gravatar image tag for the specified email address
+         **
+         ** @param string $emailAddress The email address
+         ** @param string $size Size in pixels, defaults to 80px [ 1 - 2048 ]
+         ** @param string $defaultImg Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+         ** @param string $rate Maximum rating (inclusive) [ g | pg | r | x ]
+         ** @return string Image tag
+         **/
+        function getGravatar($emailAddress, $size = 80, $defaultImg = 'mm', $rate = 'g') {
+            $url    = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($emailAddress))) .
+                      '?s=' . $size . '&d=' . $defaultImg . '&r=' . $rate;
+            $result = '<img class="img-rounded img-responsive" alt="" src="' . $url . '" />';
+
+            return $result;
+        }
     }
