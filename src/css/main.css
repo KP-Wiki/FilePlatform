@@ -46,6 +46,10 @@ code {
     margin-top: 20px;
 }
 
+.space-right {
+    margin-right: 15px;
+}
+
 .helpermarginfix {
     margin-top: -5px;
     margin-bottom: 5px !important;
@@ -54,6 +58,15 @@ code {
 .form-group.required .control-label:after { 
    content: "  *";
    color: red;
+}
+
+.table-user-information > tbody > tr {
+    border-top: 1px solid rgb(221, 221, 221);
+}
+
+.table-user-information > tbody > tr:first-child,
+.table-user-information > tbody > tr > td {
+    border-top: 0;
 }
 
 /* Starrr */
