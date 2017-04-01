@@ -180,7 +180,9 @@
                        '                <tbody>' . PHP_EOL .
                        '                    <tr>' . PHP_EOL .
                        '                        <td class="col-sm-3"><b>Author</b></td>' . PHP_EOL .
-                       '                        <td class="col-sm-9">' . $mapItem['data']['user_name'] . '</td>' . PHP_EOL .
+                       '                        <td class="col-sm-9">' . PHP_EOL .
+                       '                            <a href="/profile/' . $mapItem['data']['user_pk'] . '">' . $mapItem['data']['user_name'] . '</a>' . PHP_EOL .
+                       '                        </td>' . PHP_EOL .
                        '                    </tr>' . PHP_EOL .
                        '                    <tr>' . PHP_EOL .
                        '                        <td class="col-sm-3"><b>Downloads</b></td>' . PHP_EOL .

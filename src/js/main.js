@@ -1,25 +1,10 @@
-window.rateMap = function(mapID, score) {
-    // Retrieve current hostname, allow both http and https protocols
-    var urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
-
-    $.ajax({
-        url: urlBase + '/api/v1/rating/' + mapID,
-        error: function(xhr, status, error) {
-            alert('Unable to handle the request due to an AJAX fault! \r\nStatus : ' + status + ' <|> Error : ' + error);
-        },
-        data: {'score': score},
-        dataType: 'json',
-        success: function(result, status, xhr) {
-            alert(result);
-            location.reload();
-        },
-        type: 'POST'
-    });
+// Format the name to an a link
+window.mapNameFormatter = function(value, row, index) {
+    return '<a href="/mapdetails/' + row.map_pk + '"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;' + value + '</a>';
 }
 
-// Format the name to an a link
-window.detailUrlFormatter = function(value, row, index) {
-    return '<a href="/mapdetails/' + row.map_pk + '"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;' + value + '</a>';
+window.mapAuthorFormatter = function(value, row, index) {
+    return '<a href="/profile/' + row.user_pk + '"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;' + value + '</a>';
 }
 
 window.toggleForgot = function() {

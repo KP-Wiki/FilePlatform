@@ -26,6 +26,7 @@
     use Functions\Views\Home;
     use Functions\Views\About;
     use Functions\Views\Dashboard;
+    use Functions\Views\Profile;
     use Functions\Views\Settings;
     use Functions\Views\MapDetails;
     use Functions\Views\NewMap;
@@ -206,6 +207,25 @@
                 $this -> renderer -> setValue('about-active', '');
 
                 $content = $dashboardFunc -> getContent($this -> dbHandler);
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call_parts'][0] === 'profile' &&
+                      isset($request['call_parts'][1])) { // Show the user's profile
+                $profileFunc = new Functions\Views\Profile($this -> utils);
+                $pageHeader  = '<ol class="breadcrumb">' . PHP_EOL .
+                               '    <li class="active">Profile</li>' . PHP_EOL .
+                               '</ol>' . PHP_EOL .
+                               '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Profile');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', '');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $profileFunc -> getContent($this -> dbHandler);
 
                 // Set the content
                 $this -> renderer -> setContent($content);

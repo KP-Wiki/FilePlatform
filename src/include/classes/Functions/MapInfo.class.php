@@ -31,6 +31,7 @@
                              '    `Revisions`.`rev_map_description_short`, ' .
                              '    `Revisions`.`rev_map_description`, ' .
                              '    `Revisions`.`rev_upload_date`, ' .
+                             '    `Users`.`user_pk`, ' .
                              '    `Users`.`user_name`, ' .
                              '    `MapTypes`.`map_type_name` ' .
                              'FROM ' .
@@ -70,6 +71,7 @@
                                                  'rev_map_description_short' => $mapItem['rev_map_description_short'],
                                                  'rev_map_description'       => $mapItem['rev_map_description'],
                                                  'rev_upload_date'           => $lastChangeDate -> format('Y-m-d H:i'),
+                                                 'user_pk'                   => $mapItem['user_pk'],
                                                  'user_name'                 => $mapItem['user_name'],
                                                  'map_type_name'             => $mapItem['map_type_name'],
                                                  'avg_rating'                => ($avgRating['avg_rating'] === null ? 'n/a' : FloatVal($avgRating['avg_rating'])));
@@ -100,6 +102,7 @@
                               '    `Revisions`.`rev_map_description`, ' .
                               '    `Revisions`.`rev_upload_date`, ' .
                               '    `Revisions`.`rev_map_version`, ' .
+                              '    `Users`.`user_pk`, ' .
                               '    `Users`.`user_name`, ' .
                               '    `MapTypes`.`map_type_name`, ' .
                               '    ROUND(AVG(CAST(`Ratings`.`rating_amount` AS DECIMAL(12,2))), 1) AS avg_rating, ' .
@@ -137,6 +140,7 @@
                         $content['data']['rev_map_description']       = $mapItem['rev_map_description'];
                         $content['data']['rev_upload_date']           = $lastChangeDate -> format('Y-m-d H:i');
                         $content['data']['rev_map_version']           = $mapItem['rev_map_version'];
+                        $content['data']['user_pk']                   = $mapItem['user_pk'];
                         $content['data']['user_name']                 = $mapItem['user_name'];
                         $content['data']['map_type_name']             = $mapItem['map_type_name'];
                         $content['data']['avg_rating']                = ($mapItem['avg_rating'] === null ? 'n/a' : FloatVal($mapItem['avg_rating']));
@@ -158,6 +162,7 @@
                              '    `Maps`.`map_name`, ' .
                              '    `Maps`.`map_downloads`, ' .
                              '    `Revisions`.`rev_map_description_short`, ' .
+                             '    `Users`.`user_pk`, ' .
                              '    `Users`.`user_name`, ' .
                              '    `MapTypes`.`map_type_name` ' .
                              'FROM ' .
@@ -194,6 +199,7 @@
                                                  'map_name'                  => $mapItem['map_name'],
                                                  'map_downloads'             => IntVal($mapItem['map_downloads']),
                                                  'rev_map_description_short' => $mapItem['rev_map_description_short'],
+                                                 'user_pk'                   => $mapItem['user_pk'],
                                                  'user_name'                 => $mapItem['user_name'],
                                                  'map_type_name'             => $mapItem['map_type_name'],
                                                  'avg_rating'                => ($avgRating['avg_rating'] === null ? 'n/a' : FloatVal($avgRating['avg_rating'])));
