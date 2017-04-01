@@ -46,7 +46,6 @@
                         '                                        <th class="col-xs-2" data-field="map_type_name" data-sortable="true">Type</th>' . PHP_EOL .
                         '                                        <th class="col-xs-2" data-field="map_name" data-formatter="detailUrlFormatter"' .
                         ' data-sortable="true">Name</th>' . PHP_EOL .
-                        '                                        <th class="col-xs-2" data-field="user_name" data-sortable="true">Author</th>' . PHP_EOL .
                         '                                        <th class="col-xs-4" data-field="rev_map_description_short" data-sortable="false">Description</th>' . PHP_EOL .
                         '                                        <th class="col-xs-1" data-field="avg_rating" data-sortable="true">Rating</th>' . PHP_EOL .
                         '                                        <th class="col-xs-1" data-field="map_downloads" data-sortable="true">Downloads</th>' . PHP_EOL .
