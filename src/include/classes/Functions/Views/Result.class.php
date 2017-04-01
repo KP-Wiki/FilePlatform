@@ -7,8 +7,6 @@
         }
 
         public function getContent($type, $message, &$dbHandler) {
-            global $request;
-            
             if ($type == 'Success') {
                 $resultDiv = '<div class="alert alert-success" role="alert">' . PHP_EOL .
                              '    ' . $message . PHP_EOL .
