@@ -15,3 +15,4 @@ This project is in it's early stages, expect changes!
  * Bootstrap FileStyle : [Project page](http://markusslima.github.io/bootstrap-filestyle/)
  * Google reCaptcha2 ( noCaptcha ) : [Project page](https://www.google.com/recaptcha/)
  * Starrr : [Project page](http://dobtco.github.io/starrr/)
+ * Gravatar : [Project page](https://gravatar.com/)
