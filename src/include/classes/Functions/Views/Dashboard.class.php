@@ -37,14 +37,14 @@
                         'data-show-refresh="true" ' .
                         'data-show-pagination-switch="true" ' .
                         'data-pagination="true" ' .
-                        'data-page-list="[5, 10, 25, 50, 100, ALL]" ' .
-                        'data-page-size="10" ' .
+                        'data-page-list="[25, 50, 100, ALL]" ' .
+                        'data-page-size="25" ' .
                         'data-show-footer="false" ' .
                         'data-side-pagination="client">' . PHP_EOL .
                         '                                <thead>' . PHP_EOL .
                         '                                    <tr>' . PHP_EOL .
                         '                                        <th class="col-xs-2" data-field="map_type_name" data-sortable="true">Type</th>' . PHP_EOL .
-                        '                                        <th class="col-xs-2" data-field="map_name" data-formatter="detailUrlFormatter"' .
+                        '                                        <th class="col-xs-2" data-field="map_name" data-formatter="mapNameFormatter"' .
                         ' data-sortable="true">Name</th>' . PHP_EOL .
                         '                                        <th class="col-xs-4" data-field="rev_map_description_short" data-sortable="false">Description</th>' . PHP_EOL .
                         '                                        <th class="col-xs-1" data-field="avg_rating" data-sortable="true">Rating</th>' . PHP_EOL .
