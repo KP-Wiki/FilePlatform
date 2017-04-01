@@ -32,10 +32,7 @@
                     throw new Exception('Invalid request, inputs missing');
 
                 if (isset($_POST['map_pk']) && !Empty($_POST['map_pk'])) {
-                    $content = '<div class="alert alert-warning" role="alert">' . PHP_EOL .
-                               '    There is nothing here, yet.<br />' . PHP_EOL .
-                               '    Redirecting you now.' . PHP_EOL .
-                               '</div>' . PHP_EOL;
+                    throw new Exception('There is nothing here, yet.');
                 } else {
                     $mapName         = $_POST['mapName'];
                     $mapType         = IntVal($_POST['mapType']);
@@ -126,17 +123,13 @@
                     if (!$this -> uploadImages($dbHandler, $mapName, $mapDirOnDisk, $revId))
                         throw new Exception('Could not add the screenshots to the map');
 
-                    $content = '<div class="alert alert-success" role="alert">' . PHP_EOL .
-                               '    Map has been added successfully!<br />' . PHP_EOL .
-                               '    Redirecting you now.' . PHP_EOL .
-                               '</div>' . PHP_EOL;
+                    $content['status']  = 'Success';
+                    $content['message'] = 'Map has been added successfully!<br />' . PHP_EOL .
+                                          'Redirecting you now.';
                 };
             } catch (Exception $e) {
-                $content = '<div class="alert alert-danger" role="alert">' . PHP_EOL .
-                           '    Something went wrong, please try again later' . PHP_EOL .
-                           PHP_EOL .
-                           '    Message : ' . $e -> getMessage();
-                           '</div>' . PHP_EOL;
+                $content['status']  = 'Error';
+                $content['message'] = $e -> getMessage();
             };
 
             return $content;

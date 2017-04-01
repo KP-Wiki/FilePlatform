@@ -29,6 +29,7 @@
     use Functions\Views\Settings;
     use Functions\Views\MapDetails;
     use Functions\Views\NewMap;
+    use Functions\Views\Result;
 
     // Global variables
     $config  = require_once(__DIR__ . '/include/config/' . APP_ENV . '_config.php');
@@ -126,11 +127,68 @@
                     $this -> utils -> http_response_code(400);
                     Die($this -> utils -> http_code_to_text(400));
                 };
-                $this -> security -> register($this -> dbHandler);
+                $resultFunc = new Functions\Views\Result();
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li><a href="/dashboard">Home</a></li>' . PHP_EOL .
+                              '    <li class="active">Register</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Register');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $result  = $this -> security -> register($this -> dbHandler);
+                $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
+
+                header('Refresh:5; url=/home');
+                // Set the content
+                $this -> renderer -> setContent($content);
             } elseif ($request['call'] === 'login') { // Handle the login request
-                $this -> security -> login($this -> dbHandler);
+                $resultFunc = new Functions\Views\Result();
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li><a href="/dashboard">Home</a></li>' . PHP_EOL .
+                              '    <li class="active">Login</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Login');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $result  = $this -> security -> login($this -> dbHandler);
+                $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
+
+                header('Refresh:5; url=/home');
+                // Set the content
+                $this -> renderer -> setContent($content);
             } elseif ($request['call'] === 'logout') { // Handle the logout request
-                $this -> security -> logout($this -> dbHandler);
+                $resultFunc = new Functions\Views\Result();
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li><a href="/dashboard">Home</a></li>' . PHP_EOL .
+                              '    <li class="active">Logout</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Logout');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $result  = $this -> security -> logout($this -> dbHandler);
+                $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
+
+                header('Refresh:5; url=/home');
+                // Set the content
+                $this -> renderer -> setContent($content);
             } elseif ($request['call'] === 'dashboard' &&
                       property_exists($_SESSION['user'], 'id') &&
                       $_SESSION['user'] -> id != 0) { // Show the dashboard
@@ -179,6 +237,7 @@
                       $_SESSION['user'] -> group >= 5 &&
                       $_SERVER['REQUEST_METHOD'] == 'POST') { // Handle the upload request
                 $uploadFunc = new Functions\Upload($this -> utils);
+                $resultFunc = new Functions\Views\Result();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
                               '    <li><a href="/dashboard">Dashboard</a></li>' . PHP_EOL .
                               '    <li><a href="/newmap">New Map</a></li>' . PHP_EOL .
@@ -193,7 +252,8 @@
                 $this -> renderer -> setValue('home-active', '');
                 $this -> renderer -> setValue('about-active', '');
 
-                $content = $uploadFunc -> getContent($this -> dbHandler);
+                $result  = $uploadFunc -> getContent($this -> dbHandler);
+                $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
 
                 header('Refresh:5; url=/dashboard');
                 // Set the content

@@ -155,18 +155,20 @@
             $logger -> log('Register -> googleResponse = ' . $googleResponse, Logger::DEBUG);
 
             if ($userCount['user_count'] != 0) {
-                header('Refresh:5; url=/home');
                 $this -> utils -> http_response_code(403);
                 $logger -> log('Register -> User already exists', Logger::DEBUG);
-                Die('User already exists');
+                $content['status']  = 'Error';
+                $content['message'] = 'User already exists';
+                return $content;
             };
 
             if (($LevenshteinForpasswords !== 0) ||
                 !$googleResponse) {
-                header('Refresh:5; url=/home');
                 $this -> utils -> http_response_code(400);
                 $logger -> log('Register -> Passwords don\'t match', Logger::DEBUG);
-                Die($this -> utils -> http_code_to_text(400));
+                $content['status']  = 'Error';
+                $content['message'] = $this -> utils -> http_code_to_text(400);
+                return $content;
             };
 
             $bytes   = openssl_random_pseudo_bytes(128, $crypto_strong);
@@ -188,14 +190,19 @@
             $logger -> log('Register -> googleResponse = ' . $googleResponse, Logger::DEBUG);
 
             if (Empty($insertId)) {
-                header('Refresh:5; url=/home');
                 $this -> utils -> http_response_code(500);
                 $logger -> log('Register -> Unable to create user', Logger::DEBUG);
-                Die('Unable to create user, please try again later');
+                $content['status']  = 'Error';
+                $content['message'] = 'Unable to create user, please try again later';
+                return $content;
             };
 
             $logger -> log('Register -> Registration successful', Logger::DEBUG);
             $this -> login($dbHandler);
+
+            $content['status']  = 'Success';
+            $content['message'] = 'Registration successful!';
+            return $content;
         }
 
         public function login(&$dbHandler) {
@@ -228,19 +235,21 @@
             $logger -> log('Login -> user : ' . print_r($user, True), Logger::DEBUG);
 
             if (!isset($user['user_pk'])) {
-                header('Refresh:5; url=/home');
                 $this -> utils -> http_response_code(401);
                 $logger -> log('Login -> Invalid credentials', Logger::DEBUG);
-                Die('Invalid credentials, try again.');
+                $content['status']  = 'Error';
+                $content['message'] = 'Invalid credentials, try again.';
+                return $content;
             };
 
             $passwordCheck = $this -> isValidPassword($password, $user['user_salt'], $user['user_password']);
 
             if (!$passwordCheck) {
-                header('Refresh:5; url=/home');
                 $this -> utils -> http_response_code(401);
                 $logger -> log('Login -> Invalid credentials', Logger::DEBUG);
-                Die('Invalid credentials, try again.');
+                $content['status']  = 'Error';
+                $content['message'] = 'Invalid credentials, try again.';
+                return $content;
             };
 
             $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
@@ -259,19 +268,21 @@
             $dbHandler -> Clean();
 
             if (Empty($insertId)) {
-                header('Refresh:5; url=/home');
                 $this -> utils -> http_response_code(500);
                 $logger -> log('Login -> Unable to create rememberme token', Logger::DEBUG);
-                Die('Unable to create rememberme token, please try again later');
+                $content['status']  = 'Error';
+                $content['message'] = 'Unable to create rememberme token, please try again later';
+                return $content;
             };
 
             setcookie('userId', $user['user_pk'], time() + $config['security']['cookieLifetime'], '/');
             setcookie('token', $token, time() + $config['security']['cookieLifetime'], '/');
 
-            header('Refresh:5; url=/home');
             $this -> utils -> http_response_code(200);
             $logger -> log('Login -> Login successful', Logger::DEBUG);
-            Die('Login successful, redirecting you to the homepage');
+            $content['status']  = 'Success';
+            $content['message'] = 'Login successful, redirecting you to the homepage';
+            return $content;
         }
 
         public function checkRememberMe(&$dbHandler) {
@@ -388,9 +399,10 @@
 
             session_unset();   // Remove all session variables
             session_destroy(); // Destroy the session
-            $logger -> log('logout -> End', Logger::DEBUG);
 
-            header('Refresh:5; url=/home');
-            Die('Successfully logged out, redirecting you to the homepage');
+            $logger -> log('logout -> End', Logger::DEBUG);
+            $content['status']  = 'Success';
+            $content['message'] = 'Successfully logged out, redirecting you to the homepage';
+            return $content;
         }
     }
