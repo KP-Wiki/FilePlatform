@@ -104,76 +104,26 @@
                        '                </div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '            <div class="col-sm-6">' . PHP_EOL .
-                       '                <h4>Rating breakdown</h4>' . PHP_EOL .
-                       '                <div class="pull-left">' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
-                       '                        <div style="height:9px; margin:5px 0;">5 <span class="glyphicon glyphicon-star"></span></div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:180px;">' . PHP_EOL .
-                       '                        <div class="progress" style="height:9px; margin:8px 0;">' . PHP_EOL .
-                       '                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="5" aria-valuemin="0"' .
-                       ' aria-valuemax="5" style="width: 1000%">' . PHP_EOL .
-                       '                                <span class="sr-only">80% Complete (danger)</span>' . PHP_EOL .
-                       '                            </div>' . PHP_EOL .
-                       '                        </div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div id="ratingFive" class="pull-right" style="margin-left:10px;">' . $mapItem['data']['rating_five'] . '</div>' . PHP_EOL .
+                       '                <h4>Breakdown</h4>' . PHP_EOL .
+                       '                <div class="row" style="margin-left:2px;">' . PHP_EOL .
+                       '                    5 <span class="glyphicon glyphicon-star"></span>' . PHP_EOL .
+                       '                    <span style="margin-left:10px;">' . $mapItem['data']['rating_five'] . ' Vote</span>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-left">' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
-                       '                        <div style="height:9px; margin:5px 0;">4 <span class="glyphicon glyphicon-star"></span></div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:180px;">' . PHP_EOL .
-                       '                        <div class="progress" style="height:9px; margin:8px 0;">' . PHP_EOL .
-                       '                            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="4" aria-valuemin="0"' .
-                       ' aria-valuemax="5" style="width: 80%">' . PHP_EOL .
-                       '                                <span class="sr-only">80% Complete (danger)</span>' . PHP_EOL .
-                       '                            </div>' . PHP_EOL .
-                       '                        </div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div id="ratingFour" class="pull-right" style="margin-left:10px;">' . $mapItem['data']['rating_four'] . '</div>' . PHP_EOL .
+                       '                <div class="row" style="margin-left:2px;">' . PHP_EOL .
+                       '                    4 <span class="glyphicon glyphicon-star"></span>' . PHP_EOL .
+                       '                    <span style="margin-left:10px;">' . $mapItem['data']['rating_four'] . ' Votes</span>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-left">' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
-                       '                        <div style="height:9px; margin:5px 0;">3 <span class="glyphicon glyphicon-star"></span></div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:180px;">' . PHP_EOL .
-                       '                        <div class="progress" style="height:9px; margin:8px 0;">' . PHP_EOL .
-                       '                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="3" aria-valuemin="0"' .
-                       ' aria-valuemax="5" style="width: 60%">' . PHP_EOL .
-                       '                                <span class="sr-only">80% Complete (danger)</span>' . PHP_EOL .
-                       '                            </div>' . PHP_EOL .
-                       '                        </div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div id="ratingThree" class="pull-right" style="margin-left:10px;">' . $mapItem['data']['rating_three'] . '</div>' . PHP_EOL .
+                       '                <div class="row" style="margin-left:2px;">' . PHP_EOL .
+                       '                    3 <span class="glyphicon glyphicon-star"></span>' . PHP_EOL .
+                       '                    <span style="margin-left:10px;">' . $mapItem['data']['rating_three'] . ' Votes</span>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-left">' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
-                       '                        <div style="height:9px; margin:5px 0;">2 <span class="glyphicon glyphicon-star"></span></div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:180px;">' . PHP_EOL .
-                       '                        <div class="progress" style="height:9px; margin:8px 0;">' . PHP_EOL .
-                       '                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="2" aria-valuemin="0"' .
-                       ' aria-valuemax="5" style="width: 40%">' . PHP_EOL .
-                       '                                <span class="sr-only">80% Complete (danger)</span>' . PHP_EOL .
-                       '                            </div>' . PHP_EOL .
-                       '                        </div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div id="ratingTwo" class="pull-right" style="margin-left:10px;">' . $mapItem['data']['rating_two'] . '</div>' . PHP_EOL .
+                       '                <div class="row" style="margin-left:2px;">' . PHP_EOL .
+                       '                    2 <span class="glyphicon glyphicon-star"></span>' . PHP_EOL .
+                       '                    <span style="margin-left:10px;">' . $mapItem['data']['rating_two'] . ' Votes</span>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
-                       '                <div class="pull-left">' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:35px; line-height:1;">' . PHP_EOL .
-                       '                        <div style="height:9px; margin:5px 0;">1 <span class="glyphicon glyphicon-star"></span></div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div class="pull-left" style="width:180px;">' . PHP_EOL .
-                       '                        <div class="progress" style="height:9px; margin:8px 0;">' . PHP_EOL .
-                       '                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="1" aria-valuemin="0"' .
-                       ' aria-valuemax="5" style="width: 20%">' . PHP_EOL .
-                       '                                <span class="sr-only">80% Complete (danger)</span>' . PHP_EOL .
-                       '                            </div>' . PHP_EOL .
-                       '                        </div>' . PHP_EOL .
-                       '                    </div>' . PHP_EOL .
-                       '                    <div id="ratingOne" class="pull-right" style="margin-left:10px;">' . $mapItem['data']['rating_one'] . '</div>' . PHP_EOL .
+                       '                <div class="row" style="margin-left:2px;">' . PHP_EOL .
+                       '                    1 <span class="glyphicon glyphicon-star"></span>' . PHP_EOL .
+                       '                    <span style="margin-left:10px;">' . $mapItem['data']['rating_one'] . ' Votes</span>' . PHP_EOL .
                        '                </div>' . PHP_EOL .
                        '            </div>' . PHP_EOL .
                        '            <table class="table table-user-information">' . PHP_EOL .
