@@ -22,6 +22,7 @@
     use Functions\Upload;
     use Functions\Download;
     use Functions\Rate;
+    use Functions\User;
     // Views
     use Functions\Views\Home;
     use Functions\Views\About;
@@ -93,31 +94,9 @@
 
                 // Set the content
                 $this -> renderer -> setContent($content);
-            } elseif ($request['call_parts'][0] === 'mapdetails') { // Show the 'Map Details' page
-                if (Empty($request['call_parts'][1])) {
-                    header('HTTP/1.1 404 Not Found');
-                    header('Location: /home');
-                    Exit;
-                };
-
-                $mapDetailFunc = new Functions\Views\MapDetails($this -> utils);
-                $pageHeader    = '<ol class="breadcrumb">' . PHP_EOL .
-                                 '    <li><a href="/home">All Maps</a></li>' . PHP_EOL .
-                                 '    <li class="active">Map Details</li>' . PHP_EOL .
-                                 '</ol>' . PHP_EOL .
-                                 '<div class="row spacer"></div>' . PHP_EOL;
-
-                // Set the page title
-                $this -> renderer -> setValue('title', 'Map Details');
-                $this -> renderer -> setValue('header', $pageHeader);
-                // Set the active tab
-                $this -> renderer -> setValue('home-active', 'class="active"');
-                $this -> renderer -> setValue('about-active', '');
-
-                $content = $mapDetailFunc -> getContent($this -> dbHandler);
-
-                // Set the content
-                $this -> renderer -> setContent($content);
+//////////////////////////////////////////////////////////////////////////////
+/// User calls
+///
             } elseif ($request['call'] === 'register') { // Handle the registration request
                 if (!isset($_POST['username']) ||
                     !isset($_POST['emailAddress']) ||
@@ -192,7 +171,9 @@
                 $this -> renderer -> setContent($content);
             } elseif ($request['call'] === 'dashboard' &&
                       property_exists($_SESSION['user'], 'id') &&
-                      $_SESSION['user'] -> id != 0) { // Show the dashboard
+                      property_exists($_SESSION['user'], 'group') &&
+                      $_SESSION['user'] -> id != 0 &&
+                      $_SESSION['user'] -> group >= 5) { // Show the dashboard
                 $dashboardFunc = new Functions\Views\Dashboard($this -> utils);
                 $pageHeader    = '<ol class="breadcrumb">' . PHP_EOL .
                                  '    <li class="active">Dashboard</li>' . PHP_EOL .
@@ -226,6 +207,55 @@
                 $this -> renderer -> setValue('about-active', '');
 
                 $content = $profileFunc -> getContent($this -> dbHandler);
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call'] === 'settings' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0) { // Show the 'user settings' page
+                $settingsFunc = new Functions\Views\Settings($this -> utils);
+                $pageHeader   = '<ol class="breadcrumb">' . PHP_EOL .
+                                '    <li><a href="/home">Home</a></li>' . PHP_EOL .
+                                '    <li class="active">Settings</li>' . PHP_EOL .
+                                '</ol>' . PHP_EOL .
+                                '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Settings');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', '');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $settingsFunc -> getContent($this -> dbHandler);
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+//////////////////////////////////////////////////////////////////////////////
+/// Map calls
+///
+            } elseif ($request['call_parts'][0] === 'mapdetails') { // Show the 'Map Details' page
+                if (Empty($request['call_parts'][1])) {
+                    header('HTTP/1.1 404 Not Found');
+                    header('Location: /home');
+                    Exit;
+                };
+
+                $mapDetailFunc = new Functions\Views\MapDetails($this -> utils);
+                $pageHeader    = '<ol class="breadcrumb">' . PHP_EOL .
+                                 '    <li><a href="/home">All Maps</a></li>' . PHP_EOL .
+                                 '    <li class="active">Map Details</li>' . PHP_EOL .
+                                 '</ol>' . PHP_EOL .
+                                 '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Map Details');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $mapDetailFunc -> getContent($this -> dbHandler);
 
                 // Set the content
                 $this -> renderer -> setContent($content);
@@ -278,27 +308,9 @@
                 header('Refresh:5; url=/dashboard');
                 // Set the content
                 $this -> renderer -> setContent($content);
-            } elseif ($request['call'] === 'settings' &&
-                      property_exists($_SESSION['user'], 'id') &&
-                      $_SESSION['user'] -> id != 0) { // Show the 'user settings' page
-                $settingsFunc = new Functions\Views\Settings($this -> utils);
-                $pageHeader   = '<ol class="breadcrumb">' . PHP_EOL .
-                                '    <li><a href="/dashboard">Dashboard</a></li>' . PHP_EOL .
-                                '    <li class="active">Settings</li>' . PHP_EOL .
-                                '</ol>' . PHP_EOL .
-                                '<div class="row spacer"></div>' . PHP_EOL;
-
-                // Set the page title
-                $this -> renderer -> setValue('title', 'Settings');
-                $this -> renderer -> setValue('header', $pageHeader);
-                // Set the active tab
-                $this -> renderer -> setValue('home-active', '');
-                $this -> renderer -> setValue('about-active', '');
-
-                $content = $settingsFunc -> getContent($this -> dbHandler);
-
-                // Set the content
-                $this -> renderer -> setContent($content);
+//////////////////////////////////////////////////////////////////////////////
+/// Default to home
+///
             } else { // Show the 'Home' page
                 $homeFunc   = new Functions\Views\Home();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
