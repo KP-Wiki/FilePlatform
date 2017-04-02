@@ -51,7 +51,8 @@
             if ($stripSpaces)
                 $result = str_replace(' ', '_', $result); // Replace spaces with underscores
 
-            $result = preg_replace('/-+/', '-', $result); // Replace multiple hyphens with a single one
+            $result = preg_replace('/-+/', '-', $result);        // Replace multiple hyphens with a single one
+            $result = str_replace(Array('<', '>'), '', $result); // Replace lower/greater then with nothing
 
             return $result;
         }
