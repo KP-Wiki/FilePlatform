@@ -19,19 +19,13 @@
                 if (isset($_POST['map_pk']) && !Empty($_POST['map_pk'])) {
                     throw new Exception('There is nothing here, yet.');
                 } else {
-                    if (!isset($_FILES['mapFile']['name']) ||
-                        Empty($_FILES['mapFile']['name']) ||
-                        !isset($_FILES['mapFile']['datFile']) ||
-                        Empty($_FILES['mapFile']['datFile']) ||
-                        !isset($_POST['mapName']) ||
-                        Empty($_POST['mapName']) ||
-                        !isset($_POST['mapType']) ||
-                        !isset($_POST['mapVersion']) ||
-                        Empty($_POST['mapVersion']) ||
-                        !isset($_POST['mapDescShort']) ||
-                        Empty($_POST['mapDescShort']) ||
-                        !isset($_POST['mapDescFull']) ||
-                        Empty($_POST['mapDescFull']))
+                    if ((!isset($_FILES['mapFile']['name'])    || Empty($_FILES['mapFile']['name'])) ||
+                        (!isset($_FILES['mapFile']['datFile']) || Empty($_FILES['mapFile']['datFile'])) ||
+                        (!isset($_POST['mapName'])             || Empty($_POST['mapName'])) ||
+                        (!isset($_POST['mapType']) ||          || $_POST['mapType'] < 0) ||
+                        (!isset($_POST['mapVersion'])          || Empty($_POST['mapVersion'])) ||
+                        (!isset($_POST['mapDescShort'])        || Empty($_POST['mapDescShort'])) ||
+                        (!isset($_POST['mapDescFull'])         || Empty($_POST['mapDescFull'])))
                         throw new Exception('Invalid request, inputs missing');
 
                     $mapName         = $_POST['mapName'];
@@ -43,11 +37,11 @@
                     $mapDirInArchive = $mapName . '/';
                     $mapDirOnDisk    = $config['files']['uploadDir'] . '/' . $mapName . '/' . $mapVersion . '/';
 
-                    $selectQuery = 'SELECT ' .
-                                   '    COUNT(*) AS map_count ' .
-                                   'FROM ' .
-                                   '    `Maps` ' .
-                                   'WHERE ' .
+                    $selectQuery = 'SELECT ' . PHP_EOL .
+                                   '    COUNT(*) AS map_count ' . PHP_EOL .
+                                   'FROM ' . PHP_EOL .
+                                   '    `Maps` ' . PHP_EOL .
+                                   'WHERE ' . PHP_EOL .
                                    '    `map_name` = :mapname;';
                     $dbHandler -> PrepareAndBind($selectQuery, Array('mapname' => $mapName));
                     $mapCount = $dbHandler -> ExecuteAndFetch();
@@ -88,9 +82,9 @@
 
                     $mapArchive -> close();
 
-                    $insertMapQuery = 'INSERT INTO ' .
-                                      '    `Maps` (`map_name`, `user_fk`, `map_Type_fk`) '.
-                                      'VALUES ' .
+                    $insertMapQuery = 'INSERT INTO ' . PHP_EOL .
+                                      '    `Maps` (`map_name`, `user_fk`, `map_Type_fk`) '. PHP_EOL .
+                                      'VALUES ' . PHP_EOL .
                                       '    (:mapname, :userid, :maptypeid);';
                     $dbHandler -> PrepareAndBind($insertMapQuery, Array('mapname'   => $mapName,
                                                                         'userid'    => $_SESSION['user'] -> id,
@@ -102,9 +96,10 @@
                     if ($mapId == null)
                         throw new Exception('Could not add the map to the database');
 
-                    $insertRevQuery = 'INSERT INTO ' .
-                                      '    `Revisions` (`map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, `rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '.
-                                      'VALUES ' .
+                    $insertRevQuery = 'INSERT INTO ' . PHP_EOL .
+                                      '    `Revisions` (`map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, ' .
+                                      '`rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '. PHP_EOL .
+                                      'VALUES ' . PHP_EOL .
                                       '    (:mapid, :filename, :filepath, :mapversion, :mapdescshort, :mapdescfull, :revstatusid);';
                     $dbHandler -> PrepareAndBind($insertRevQuery, Array('mapid' => $mapId,
                                                                         'filename' => $mapName . '.zip',
@@ -145,13 +140,13 @@
                 $screenshotFiles = Array();
 
                 if ($oldRevId !== null) {
-                    $selectQuery = 'SELECT ' .
-                                   '    * ' .
-                                   'FROM ' .
-                                   '    `Screenshots` ' .
-                                   'WHERE ' .
-                                   '    `rev_fk` = :revid ' .
-                                   'ORDER BY ' .
+                    $selectQuery = 'SELECT ' . PHP_EOL .
+                                   '    * ' . PHP_EOL .
+                                   'FROM ' . PHP_EOL .
+                                   '    `Screenshots` ' . PHP_EOL .
+                                   'WHERE ' . PHP_EOL .
+                                   '    `rev_fk` = :revid ' . PHP_EOL .
+                                   'ORDER BY ' . PHP_EOL .
                                    '    `screen_order` ASC;';
                     $dbHandler -> PrepareAndBind($selectQuery, Array('revid' => $oldRevId));
                     $oldScreenshotFiles = $dbHandler -> ExecuteAndFetchAll();
@@ -250,9 +245,9 @@
                     $imageObject -> writeImage(APP_DIR . $mapDir . $imageFileName);
                     $imageObject -> destroy();
 
-                    $insertQuery = 'INSERT INTO ' .
-                                   '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' .
-                                   'VALUES ' .
+                    $insertQuery = 'INSERT INTO ' . PHP_EOL .
+                                   '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' . PHP_EOL .
+                                   'VALUES ' . PHP_EOL .
                                    '    (:revid, :screentitle, :screenalt, :screenfilename, :screenpath, :screenorder);';
                     $dbHandler -> PrepareAndBind($insertQuery, Array('revid'          => $revId,
                                                                      'screentitle'    => $screenshotFile['imageTitle'],
@@ -264,9 +259,9 @@
                 };
 
                 foreach ($oldScreenshotFiles as $oldScreenshotFile) { // Only append these to the revision but keep original location
-                    $insertQuery = 'INSERT INTO ' .
-                                   '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' .
-                                   'VALUES ' .
+                    $insertQuery = 'INSERT INTO ' . PHP_EOL .
+                                   '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' . PHP_EOL .
+                                   'VALUES ' . PHP_EOL .
                                    '    (:revid, :screentitle, :screenalt, :screenfilename, :screenpath, :screenorder);';
                     $dbHandler -> PrepareAndBind($insertQuery, Array('revid'          => $revId,
                                                                      'screentitle'    => $oldScreenshotFile['screen_title'],
