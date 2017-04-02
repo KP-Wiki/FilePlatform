@@ -114,10 +114,12 @@
                                             <li>Confirm Password</li>
                                             <li>
                                                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" class="form-control" required>
-                                            </li><br />
+                                            </li>
+                                            <br />
                                             <li>
                                                 <div id="captchaContainer"></div>
-                                            </li><br />
+                                            </li>
+                                            <br />
                                             <li>
                                                 <button type="submit" id="userRegBtn" name="userRegBtn" class="btn btn-default">Signup Now</button>
                                                 <button type="button" id="userRegResetBtn" name="userRegResetBtn" class="btn btn-default">Reset</button>
