@@ -231,6 +231,30 @@
 
                 // Set the content
                 $this -> renderer -> setContent($content);
+            } elseif ($request['call'] === 'updatesettings' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0) { // Update the user's info
+                $userFunc   = new Functions\User($this -> utils);
+                $resultFunc = new Functions\Views\Result();
+                $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
+                              '    <li><a href="/home">Home</a></li>' . PHP_EOL .
+                              '    <li class="active">Update Settings</li>' . PHP_EOL .
+                              '</ol>' . PHP_EOL .
+                              '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Update Settings');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', '');
+                $this -> renderer -> setValue('about-active', '');
+
+                $result  = $userFunc -> updateUserInfo($this -> security, $this -> dbHandler);
+                $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
+
+                header('Refresh:5; url=/settings');
+                // Set the content
+                $this -> renderer -> setContent($content);
 //////////////////////////////////////////////////////////////////////////////
 /// Map calls
 ///
