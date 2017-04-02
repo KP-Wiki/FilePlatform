@@ -77,7 +77,7 @@
          **
          ** Returns: A boolean to indicate if the password with salt is equal to the hash
          **/
-        private function isValidPassword($password, $salt, $hash) {
+        public function isValidPassword($password, $salt, $hash) {
             global $logger;
 
             $logger -> log('isValidPassword -> start( salt = ' . $salt . ' )', Logger::DEBUG);
@@ -85,8 +85,7 @@
             $iterationCount = 1024;
             $keyLength      = 1024;
             $outputRaw      = False;
-
-            $hashVal = $this -> pbkdf2($algorithm, $password, $salt, $iterationCount, $keyLength, $outputRaw);
+            $hashVal        = $this -> pbkdf2($algorithm, $password, $salt, $iterationCount, $keyLength, $outputRaw);
 
             // We can't use Levenshtein because our hashes are too large. :-(
             if ($hashVal === $hash)
@@ -103,8 +102,8 @@
             if (Empty($reCaptchaResponse))
                 return False;
 
-            $secret  = $config['reCaptcha']['secretKey'];
-            $curl    = curl_init(); // Create curl resource
+            $secret = $config['reCaptcha']['secretKey'];
+            $curl   = curl_init(); // Create curl resource
 
             curl_setopt_array($curl, Array(CURLOPT_RETURNTRANSFER => 1, // Return the server's response data as a string rather then a boolean
                                            CURLOPT_URL            => 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret .
@@ -382,11 +381,11 @@
                            ', token = ' . $token .
                            ', ipAddress = ' . $ipAddress . ' )', Logger::DEBUG);
 
-            $query = 'DELETE FROM ' .
-                     '    `RememberMe`' . 
-                     'WHERE ' .
-                     '    `user_fk` = :userid AND ' .
-                     '    `token` = :token AND ' .
+            $query = 'DELETE FROM ' . PHP_EOL .
+                     '    `RememberMe`' .  PHP_EOL .
+                     'WHERE ' . PHP_EOL .
+                     '    `user_fk` = :userid AND ' . PHP_EOL .
+                     '    `token` = :token AND ' . PHP_EOL .
                      '    `ip_address` = :ipaddr;';
             $dbHandler -> PrepareAndBind($query, Array('userid' => $userId,
                                                        'token'  => $token,
