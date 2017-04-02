@@ -129,8 +129,8 @@
 
             $username          = $this -> utils -> cleanInput($_POST['username']);
             $emailAddress      = $this -> utils -> cleanInput($_POST['emailAddress']);
-            $password          = $this -> utils -> cleanInput($_POST['password']);
-            $confirmPassword   = $this -> utils -> cleanInput($_POST['confirmPassword']);
+            $password          = $_POST['password'];             // Don't clean this, passwords should be left untouched as they are hashed
+            $confirmPassword   = $_POST['confirmPassword'];      // Don't clean this, passwords should be left untouched as they are hashed
             $reCaptchaResponse = $_POST['g-recaptcha-response']; // Don't clean this, it's provided by Google
             $logger -> log('Register -> start( username = ' . $username .
                            ', emailAddress = '. $emailAddress .
