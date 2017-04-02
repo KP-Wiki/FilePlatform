@@ -16,24 +16,24 @@
             global $config, $request;
 
             try {
-                if (!isset($_FILES['mapFile']['name']) ||
-                    Empty($_FILES['mapFile']['name']) ||
-                    !isset($_FILES['mapFile']['datFile']) ||
-                    Empty($_FILES['mapFile']['datFile']) ||
-                    !isset($_POST['mapName']) ||
-                    Empty($_POST['mapName']) ||
-                    !isset($_POST['mapType']) ||
-                    !isset($_POST['mapVersion']) ||
-                    Empty($_POST['mapVersion']) ||
-                    !isset($_POST['mapDescShort']) ||
-                    Empty($_POST['mapDescShort']) ||
-                    !isset($_POST['mapDescFull']) ||
-                    Empty($_POST['mapDescFull']))
-                    throw new Exception('Invalid request, inputs missing');
-
                 if (isset($_POST['map_pk']) && !Empty($_POST['map_pk'])) {
                     throw new Exception('There is nothing here, yet.');
                 } else {
+                    if (!isset($_FILES['mapFile']['name']) ||
+                        Empty($_FILES['mapFile']['name']) ||
+                        !isset($_FILES['mapFile']['datFile']) ||
+                        Empty($_FILES['mapFile']['datFile']) ||
+                        !isset($_POST['mapName']) ||
+                        Empty($_POST['mapName']) ||
+                        !isset($_POST['mapType']) ||
+                        !isset($_POST['mapVersion']) ||
+                        Empty($_POST['mapVersion']) ||
+                        !isset($_POST['mapDescShort']) ||
+                        Empty($_POST['mapDescShort']) ||
+                        !isset($_POST['mapDescFull']) ||
+                        Empty($_POST['mapDescFull']))
+                        throw new Exception('Invalid request, inputs missing');
+
                     $mapName         = $_POST['mapName'];
                     $mapType         = IntVal($_POST['mapType']);
                     $mapVersion      = $_POST['mapVersion'];
