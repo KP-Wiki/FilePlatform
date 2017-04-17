@@ -45,6 +45,15 @@
             $request = $this -> utils -> parse_path();
         }
 
+        function guidv4() {
+            $guidKey = openssl_random_pseudo_bytes(16);
+
+            $guidKey[6] = chr(ord($guidKey[6]) & 0x0f | 0x40); // set version to 0100
+            $guidKey[8] = chr(ord($guidKey[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+            return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($guidKey), 4));
+        }
+
         public function start() {
             global $config, $request;
 
@@ -177,6 +186,80 @@
                 };
 
                 print(json_encode('Success', JSON_PRETTY_PRINT));
+            } elseif ($request['call_parts'][2] === 'testscript') { // Test scripts to see if they work, as playground
+                header('Content-type: application/json');
+
+                switch ($this -> method) {
+                    case 'POST': {
+                        if (isset($_POST['ScriptText']) && !Empty(filter_input(INPUT_POST, 'ScriptText', FILTER_DEFAULT))) {
+                            // Write the contents to a temp file
+                            $guid           = $this -> guidv4();
+                            $scriptFilePath = APP_DIR . '/tmp/' . $guid . '.script';
+                            $scriptFile     = fopen($scriptFilePath, 'w') or die('Unable to open file!');
+
+                            fwrite($scriptFile, filter_input(INPUT_POST, 'ScriptText', FILTER_DEFAULT));
+                            fclose($scriptFile);
+
+                            //$response['status'] = 'Success';
+                            //$response['data']   = '';
+
+                            $descriptorSpec = Array(
+                               0 => Array('pipe', 'r'), // stdin is a pipe that the child will read from
+                               1 => Array('pipe', 'w'), // stdout is a pipe that the child will write standard output to
+                               2 => Array('pipe', 'w')  // stderr is a pipe that the child will write error output to
+                            );
+                            $cwd     = APP_DIR . '/../';
+                            $env     = array('SHELL'    => '/bin/bash',
+                                             'WINEARCH' => 'win64',
+                                             'HOME'     => $cwd,
+                                             'LANGUAGE' => 'en_US:en');
+                            $command = 'wine ' . APP_DIR . '/ScriptValidatorCLI.exe -v -V ' . $scriptFilePath;
+                            $process = proc_open($env['SHELL'], $descriptorSpec, $pipes, $cwd, $env);
+
+                            if (is_resource($process)) {
+                                /** $pipes now looks like this:
+                                 **   0 => Writeable handle connected to child stdin
+                                 **   1 => Readable handle connected to child stdout
+                                 **   2 => Readable handle connected to child stderr
+                                 **/
+                                // Write the command to the stdin pipe and close it to avoid a deadlock
+                                fwrite($pipes[0], $command);
+                                fclose($pipes[0]);
+
+                                // Retrieve the output and error output
+                                $shellResponse = stream_get_contents($pipes[1]);
+                                $shellErrorOutput = stream_get_contents($pipes[2]);
+
+                                // It is important that you close any pipes before calling proc_close in order to avoid a deadlock
+                                fclose($pipes[1]);
+                                fclose($pipes[2]);
+                                proc_close($process);
+                                $response['status']  = 'Success';
+                                $response['data']    = $shellResponse;
+                                $response['errData'] = $shellErrorOutput;
+                            } else {
+                                $response['status']  = 'Error';
+                                $response['message'] = 'PHP goofed us. :(';
+                                Die('Error!!!! :(');
+                            };
+
+                            unlink($scriptFilePath);
+                        } else {
+                            $this -> utils -> http_response_code(404);
+                            $response['status']  = 'Error';
+                            $response['message'] = $this -> utils -> http_code_to_text(404);
+                        };
+
+                        break;
+                    }
+                    default: {
+                        $this -> utils -> http_response_code(405);
+                        $response['status']  = 'Error';
+                        $response['message'] = $this -> utils -> http_code_to_text(405);
+                    }
+                };
+
+                print(json_encode($response, JSON_PRETTY_PRINT));
             } else {
                 header('Content-type: application/json');
                 $this -> utils -> http_response_code(404);
