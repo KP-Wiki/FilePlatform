@@ -118,7 +118,7 @@
         }
 
         public function register(&$dbHandler) {
-            global $config, $logger;
+            global $logger;
 
             $algorithm      = 'sha512';
             $iterationCount = 1024;
@@ -126,11 +126,13 @@
             $outputRaw      = False;
             $defaultGroup   = 1;
 
-            $username          = $this -> utils -> cleanInput($_POST['username']);
-            $emailAddress      = $this -> utils -> cleanInput($_POST['emailAddress']);
-            $password          = $_POST['password'];             // Don't clean this, passwords should be left untouched as they are hashed
-            $confirmPassword   = $_POST['confirmPassword'];      // Don't clean this, passwords should be left untouched as they are hashed
-            $reCaptchaResponse = $_POST['g-recaptcha-response']; // Don't clean this, it's provided by Google
+            $username          = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                                                                                              FILTER_FLAG_STRIP_HIGH ||
+                                                                                              FILTER_FLAG_STRIP_BACKTICK);
+            $emailAddress      = filter_input(INPUT_POST, 'emailAddress', FILTER_SANITIZE_EMAIL);
+            $password          = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);             // Don't clean this, passwords should be left untouched as they are hashed
+            $confirmPassword   = filter_input(INPUT_POST, 'confirmPassword', FILTER_UNSAFE_RAW);      // Don't clean this, passwords should be left untouched as they are hashed
+            $reCaptchaResponse = filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_UNSAFE_RAW); // Don't clean this, it's provided by Google
             $logger -> log('Register -> start( username = ' . $username .
                            ', emailAddress = '. $emailAddress .
                            ', reCaptchaResponse = '. $reCaptchaResponse . ' )', Logger::DEBUG);
@@ -145,7 +147,7 @@
             $dbHandler -> PrepareAndBind($query, Array('username'     => $username,
                                                        'emailaddress' => $emailAddress));
             $userCount               = $dbHandler -> ExecuteAndFetch();
-            $LevenshteinForpasswords = Levenshtein ($password, $confirmPassword);
+            $LevenshteinForpasswords = Levenshtein($password, $confirmPassword);
             $googleResponse          = $this -> isValidReCaptcha($reCaptchaResponse);
             $dbHandler -> Clean();
 
@@ -208,13 +210,15 @@
             global $config, $logger;
 
             $_SESSION['user'] = (object)[];
-            $username         = $this -> utils -> cleanInput($_POST['username']);
-            $password         = $this -> utils -> cleanInput($_POST['password']);
+            $username         = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                                                                                             FILTER_FLAG_STRIP_HIGH ||
+                                                                                             FILTER_FLAG_STRIP_BACKTICK);
+            $password         = filter_input(INPUT_POST, 'password', FILTER_DEFAULT);
             $ipAddress        = $this -> utils -> getClientIp();
             $logger -> log('Login -> start( username = ' . $username . ', ipAddress = ' . $ipAddress . ' )', Logger::DEBUG);
 
             $query1 = 'SET @username = :username;';
-            $dbHandler -> PrepareAndBind ($query1, Array('username' => $username));
+            $dbHandler -> PrepareAndBind($query1, Array('username' => $username));
             $dbHandler -> Execute();
 
             $query2 = 'SELECT ' . PHP_EOL .
@@ -290,8 +294,10 @@
             $_SESSION['user'] = (object)[];
 
             if (isset($_COOKIE['userId']) && isset($_COOKIE['token'])) {
-                $userId    = $_COOKIE['userId'];
-                $token     = $_COOKIE['token'];
+                $userId    = filter_input(INPUT_COOKIE, 'userId', FILTER_SANITIZE_NUMBER_INT);
+                $token     = filter_input(INPUT_COOKIE, 'token', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                                                                                         FILTER_FLAG_STRIP_HIGH ||
+                                                                                         FILTER_FLAG_STRIP_BACKTICK);
                 $ipAddress = $this -> utils -> getClientIp();
                 $logger -> log('checkRememberMe -> start( userId = ' . $userId .
                                ', token = ' . $token .
@@ -366,7 +372,7 @@
                 setcookie('userId', $user['user_pk'], time() + $config['security']['cookieLifetime'], '/');
                 setcookie('token', $newToken, time() + $config['security']['cookieLifetime'], '/');
             } else {
-                $_SESSION['user'] -> group = 0;
+                $_SESSION['user'] -> group = -1;
                 $logger -> log('checkRememberMe -> No rememberme cookie set', Logger::DEBUG);
                 return;
             };

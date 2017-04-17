@@ -98,14 +98,14 @@
 /// User calls
 ///
             } elseif ($request['call'] === 'register') { // Handle the registration request
-                if (!Empty(filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW || 
-                                                                                   FILTER_FLAG_STRIP_HIGH ||
-                                                                                   FILTER_FLAG_STRIP_BACKTICK)) ||
+                if (!Empty(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                                                                                        FILTER_FLAG_STRIP_HIGH ||
+                                                                                        FILTER_FLAG_STRIP_BACKTICK)) ||
                     !Empty(filter_input(INPUT_POST, 'emailAddress', FILTER_SANITIZE_EMAIL)) ||
-                    !Empty(filter_input(INPUT_POST, 'emailAddress', FILTER_SANITIZE_EMAIL)) || // Simple 'dumb' bot prevention
-                    !Empty(filter_input(INPUT_POST, 'password', FILTER_DEFAULT)) ||
-                    !Empty(filter_input(INPUT_POST, 'confirmPassword', FILTER_DEFAULT)) ||
-                    !Empty(filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_DEFAULT))) {
+                    Empty(filter_input(INPUT_POST, 'confirmEmailAddress', FILTER_UNSAFE_RAW)) || // Simple 'dumb' bot prevention
+                    !Empty(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)) ||
+                    !Empty(filter_input(INPUT_POST, 'confirmPassword', FILTER_UNSAFE_RAW)) ||
+                    !Empty(filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_UNSAFE_RAW))) {
                     $this -> utils -> http_response_code(400);
                     Die($this -> utils -> http_code_to_text(400));
                 };
@@ -312,7 +312,7 @@
                       property_exists($_SESSION['user'], 'id') &&
                       $_SESSION['user'] -> id != 0 &&
                       $_SESSION['user'] -> group >= 5 &&
-                      $_SERVER['REQUEST_METHOD'] == 'POST') { // Handle the upload request
+                      filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'POST') { // Handle the upload request
                 $uploadFunc = new Functions\Upload($this -> utils);
                 $resultFunc = new Functions\Views\Result();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .

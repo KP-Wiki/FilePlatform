@@ -1,6 +1,6 @@
 <?php
     namespace App;
-    use Exception;
+    use \Exception;
 
     class LoggerException extends Exception {}
 

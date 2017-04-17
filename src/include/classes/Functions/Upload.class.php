@@ -13,26 +13,64 @@
         }
 
         public function getContent(&$dbHandler) {
-            global $config, $request;
+            global $config;
 
             try {
-                if (isset($_POST['map_pk']) && !Empty($_POST['map_pk'])) {
+                if (!Empty(filter_input(INPUT_POST, 'map_pk', FILTER_SANITIZE_NUMBER_INT))) {
                     throw new Exception('There is nothing here, yet.');
                 } else {
-                    if ((!isset($_FILES['mapFile']['name'])    || Empty($_FILES['mapFile']['name'])) ||
-                        (!isset($_FILES['mapFile']['datFile']) || Empty($_FILES['mapFile']['datFile'])) ||
-                        (!isset($_POST['mapName'])             || Empty($_POST['mapName'])) ||
-                        (!isset($_POST['mapType']) ||          || $_POST['mapType'] < 0) ||
-                        (!isset($_POST['mapVersion'])          || Empty($_POST['mapVersion'])) ||
-                        (!isset($_POST['mapDescShort'])        || Empty($_POST['mapDescShort'])) ||
-                        (!isset($_POST['mapDescFull'])         || Empty($_POST['mapDescFull'])))
+                    if (Empty($_FILES['mapFile']['name']) ||
+                        Empty($_FILES['mapFile']['datFile']) ||
+                        Empty(filter_input(INPUT_POST, 'mapName', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                          FILTER_FLAG_ENCODE_LOW ||
+                                                                                          FILTER_FLAG_ENCODE_HIGH ||
+                                                                                          FILTER_FLAG_ENCODE_AMP)) ||
+                        (filter_input(INPUT_POST, 'mapType', FILTER_SANITIZE_NUMBER_INT) < 0) ||
+                        Empty(filter_input(INPUT_POST, 'mapVersion', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                             FILTER_FLAG_ENCODE_LOW ||
+                                                                                             FILTER_FLAG_ENCODE_HIGH ||
+                                                                                             FILTER_FLAG_ENCODE_AMP)) ||
+                        Empty(filter_input(INPUT_POST, 'mapDescShort', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                               FILTER_FLAG_ENCODE_LOW ||
+                                                                                               FILTER_FLAG_ENCODE_HIGH ||
+                                                                                               FILTER_FLAG_ENCODE_AMP)) ||
+                        Empty(filter_input(INPUT_POST, 'mapDescFull', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                              FILTER_FLAG_ENCODE_LOW ||
+                                                                                              FILTER_FLAG_ENCODE_HIGH ||
+                                                                                              FILTER_FLAG_ENCODE_AMP)))
                         throw new Exception('Invalid request, inputs missing');
 
-                    $mapName         = $_POST['mapName'];
-                    $mapType         = IntVal($_POST['mapType']);
-                    $mapVersion      = $_POST['mapVersion'];
-                    $mapDescShort    = $_POST['mapDescShort'];
-                    $mapDescFull     = $_POST['mapDescFull'];
+                    $mapName         = filter_input(INPUT_POST,
+                                                    'mapName',
+                                                    FILTER_SANITIZE_STRING,
+                                                    FILTER_FLAG_STRIP_BACKTICK ||
+                                                    FILTER_FLAG_ENCODE_LOW ||
+                                                    FILTER_FLAG_ENCODE_HIGH ||
+                                                    FILTER_FLAG_ENCODE_AMP);
+                    $mapType         = IntVal(filter_input(INPUT_POST,
+                                                           'mapType',
+                                                           FILTER_SANITIZE_NUMBER_INT));
+                    $mapVersion      = filter_input(INPUT_POST,
+                                                    'mapVersion',
+                                                    FILTER_SANITIZE_STRING,
+                                                    FILTER_FLAG_STRIP_BACKTICK ||
+                                                    FILTER_FLAG_ENCODE_LOW ||
+                                                    FILTER_FLAG_ENCODE_HIGH ||
+                                                    FILTER_FLAG_ENCODE_AMP);
+                    $mapDescShort    = filter_input(INPUT_POST,
+                                                    'mapDescShort',
+                                                    FILTER_SANITIZE_STRING,
+                                                    FILTER_FLAG_STRIP_BACKTICK ||
+                                                    FILTER_FLAG_ENCODE_LOW ||
+                                                    FILTER_FLAG_ENCODE_HIGH ||
+                                                    FILTER_FLAG_ENCODE_AMP);
+                    $mapDescFull     = filter_input(INPUT_POST,
+                                                    'mapDescFull',
+                                                    FILTER_SANITIZE_STRING,
+                                                    FILTER_FLAG_STRIP_BACKTICK ||
+                                                    FILTER_FLAG_ENCODE_LOW ||
+                                                    FILTER_FLAG_ENCODE_HIGH ||
+                                                    FILTER_FLAG_ENCODE_AMP);
                     $mapArchive      = new ZipArchive();
                     $mapDirInArchive = $mapName . '/';
                     $mapDirOnDisk    = $config['files']['uploadDir'] . '/' . $mapName . '/' . $mapVersion . '/';
@@ -69,7 +107,7 @@
                     $mapArchive -> addFile($_FILES['mapFile']['tmp_name'], $mapDirInArchive . $mapName . '.map');
                     $mapArchive -> addFile($_FILES['datFile']['tmp_name'], $mapDirInArchive . $mapName . '.dat');
 
-                    if (isset($_FILES['scriptFile']['name']) && !Empty($_FILES['scriptFile']['name']))
+                    if (!Empty($_FILES['scriptFile']['name']))
                         $mapArchive -> addFile($_FILES['scriptFile']['tmp_name'], $mapDirInArchive . $mapName . '.script');
 
                     //add the files
@@ -101,13 +139,13 @@
                                       '`rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '. PHP_EOL .
                                       'VALUES ' . PHP_EOL .
                                       '    (:mapid, :filename, :filepath, :mapversion, :mapdescshort, :mapdescfull, :revstatusid);';
-                    $dbHandler -> PrepareAndBind($insertRevQuery, Array('mapid' => $mapId,
-                                                                        'filename' => $mapName . '.zip',
-                                                                        'filepath' => $mapDirOnDisk,
-                                                                        'mapversion' => $mapVersion,
+                    $dbHandler -> PrepareAndBind($insertRevQuery, Array('mapid'        => $mapId,
+                                                                        'filename'     => $mapName . '.zip',
+                                                                        'filepath'     => $mapDirOnDisk,
+                                                                        'mapversion'   => $mapVersion,
                                                                         'mapdescshort' => $mapDescShort,
-                                                                        'mapdescfull' => $mapDescFull,
-                                                                        'revstatusid' => 1));
+                                                                        'mapdescfull'  => $mapDescFull,
+                                                                        'revstatusid'  => 1));
                     $dbHandler -> Execute();
                     $revId = $dbHandler -> GetLastInsertId();
                     $dbHandler -> Clean();
@@ -131,11 +169,10 @@
         }
 
         private function uploadImages(&$dbHandler, $mapName, $mapDir, $revId, $oldRevId = null) {
-            global $config, $request;
+            global $config;
 
             try {
                 $cleanMapName    = $this -> utils -> cleanInput($mapName, True);
-                $imageDir        = $config['files']['uploadDir'] . '/images/' . $cleanMapName;
                 $imageOrderNum   = 0;
                 $screenshotFiles = Array();
 
@@ -160,9 +197,21 @@
                     $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
 
                     if ($validFile) {
-                        $_FILES['screenshotFileOne']['imageTitle']    = (Empty($_POST['screenshotTitleOne'])
+                        $_FILES['screenshotFileOne']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                            'screenshotTitleOne',
+                                                                                            FILTER_SANITIZE_STRING,
+                                                                                            FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                            FILTER_FLAG_STRIP_LOW ||
+                                                                                            FILTER_FLAG_STRIP_HIGH ||
+                                                                                            FILTER_FLAG_STRIP_AMP))
                                                                          ? $cleanMapName . '-' . $imageOrderNum
-                                                                         : $_POST['screenshotTitleOne']);
+                                                                         : filter_input(INPUT_POST,
+                                                                                        'screenshotTitleOne',
+                                                                                        FILTER_SANITIZE_STRING,
+                                                                                        FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                        FILTER_FLAG_STRIP_LOW ||
+                                                                                        FILTER_FLAG_STRIP_HIGH ||
+                                                                                        FILTER_FLAG_STRIP_AMP));
                         $_FILES['screenshotFileOne']['imageOrderNum'] = $imageOrderNum;
                         $_FILES['screenshotFileOne']['imageType']     = $detectedType;
                         $screenshotFiles[]                            = $_FILES['screenshotFileOne'];
@@ -175,9 +224,21 @@
                     $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
 
                     if ($validFile) {
-                        $_FILES['screenshotFileTwo']['imageTitle']    = (Empty($_POST['screenshotTitleTwo'])
+                        $_FILES['screenshotFileTwo']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                            'screenshotTitleTwo',
+                                                                                            FILTER_SANITIZE_STRING,
+                                                                                            FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                            FILTER_FLAG_STRIP_LOW ||
+                                                                                            FILTER_FLAG_STRIP_HIGH ||
+                                                                                            FILTER_FLAG_STRIP_AMP))
                                                                          ? $cleanMapName . '-' . $imageOrderNum
-                                                                         : $_POST['screenshotTitleTwo']);
+                                                                         : filter_input(INPUT_POST,
+                                                                                        'screenshotTitleTwo',
+                                                                                        FILTER_SANITIZE_STRING,
+                                                                                        FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                        FILTER_FLAG_STRIP_LOW ||
+                                                                                        FILTER_FLAG_STRIP_HIGH ||
+                                                                                        FILTER_FLAG_STRIP_AMP));
                         $_FILES['screenshotFileTwo']['imageOrderNum'] = $imageOrderNum;
                         $_FILES['screenshotFileTwo']['imageType']     = $detectedType;
                         $screenshotFiles[]                            = $_FILES['screenshotFileTwo'];
@@ -190,9 +251,21 @@
                     $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
 
                     if ($validFile) {
-                        $_FILES['screenshotFileThree']['imageTitle']    = (Empty($_POST['screenshotTitleThree'])
+                        $_FILES['screenshotFileThree']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                              'screenshotTitleThree',
+                                                                                              FILTER_SANITIZE_STRING,
+                                                                                              FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                              FILTER_FLAG_STRIP_LOW ||
+                                                                                              FILTER_FLAG_STRIP_HIGH ||
+                                                                                              FILTER_FLAG_STRIP_AMP))
                                                                            ? $cleanMapName . '-' . $imageOrderNum
-                                                                           : $_POST['screenshotTitleThree']);
+                                                                           : filter_input(INPUT_POST,
+                                                                                          'screenshotTitleThree',
+                                                                                          FILTER_SANITIZE_STRING,
+                                                                                          FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                          FILTER_FLAG_STRIP_LOW ||
+                                                                                          FILTER_FLAG_STRIP_HIGH ||
+                                                                                          FILTER_FLAG_STRIP_AMP));
                         $_FILES['screenshotFileThree']['imageOrderNum'] = $imageOrderNum;
                         $_FILES['screenshotFileThree']['imageType']     = $detectedType;
                         $screenshotFiles[]                              = $_FILES['screenshotFileThree'];
@@ -205,9 +278,21 @@
                     $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
 
                     if ($validFile) {
-                        $_FILES['screenshotFileFour']['imageTitle']    = (Empty($_POST['screenshotTitleFour'])
+                        $_FILES['screenshotFileFour']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                             'screenshotTitleFour',
+                                                                                             FILTER_SANITIZE_STRING,
+                                                                                             FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                             FILTER_FLAG_STRIP_LOW ||
+                                                                                             FILTER_FLAG_STRIP_HIGH ||
+                                                                                             FILTER_FLAG_STRIP_AMP))
                                                                           ? $cleanMapName . '-' . $imageOrderNum
-                                                                          : $_POST['screenshotTitleFour']);
+                                                                          : filter_input(INPUT_POST,
+                                                                                         'screenshotTitleFour',
+                                                                                         FILTER_SANITIZE_STRING,
+                                                                                         FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                         FILTER_FLAG_STRIP_LOW ||
+                                                                                         FILTER_FLAG_STRIP_HIGH ||
+                                                                                         FILTER_FLAG_STRIP_AMP));
                         $_FILES['screenshotFileFour']['imageOrderNum'] = $imageOrderNum;
                         $_FILES['screenshotFileFour']['imageType']     = $detectedType;
                         $screenshotFiles[]                             = $_FILES['screenshotFileFour'];
@@ -220,9 +305,21 @@
                     $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
 
                     if ($validFile) {
-                        $_FILES['screenshotFileFive']['imageTitle']    = (Empty($_POST['screenshotTitleFive'])
+                        $_FILES['screenshotFileFive']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                             'screenshotTitleFive',
+                                                                                             FILTER_SANITIZE_STRING,
+                                                                                             FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                             FILTER_FLAG_STRIP_LOW ||
+                                                                                             FILTER_FLAG_STRIP_HIGH ||
+                                                                                             FILTER_FLAG_STRIP_AMP))
                                                                           ? $cleanMapName . '-' . $imageOrderNum
-                                                                          : $_POST['screenshotTitleFive']);
+                                                                          : filter_input(INPUT_POST,
+                                                                                         'screenshotTitleFive',
+                                                                                         FILTER_SANITIZE_STRING,
+                                                                                         FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                         FILTER_FLAG_STRIP_LOW ||
+                                                                                         FILTER_FLAG_STRIP_HIGH ||
+                                                                                         FILTER_FLAG_STRIP_AMP));
                         $_FILES['screenshotFileFive']['imageOrderNum'] = $imageOrderNum;
                         $_FILES['screenshotFileFive']['imageType']     = $detectedType;
                         $screenshotFiles[]                             = $_FILES['screenshotFileFive'];
@@ -230,7 +327,7 @@
                 };
 
                 foreach ($screenshotFiles as $screenshotFile) {
-                    $imageObject   = new Imagick($screenshotFile['tmp_name']);
+                    $imageObject = new Imagick($screenshotFile['tmp_name']);
                     $this -> utils -> resizeImage($imageObject, $config['images']['maxWidth'], $config['images']['maxHeight']);
 
                     if ($screenshotFile['imageType'] == IMAGETYPE_GIF) {

@@ -16,6 +16,8 @@
     use Functions\Download;
     use Functions\Rate;
 
+    use \Imagick;
+
     // Global variables
     $config  = require_once(__DIR__ . '/include/config/' . APP_ENV . '_config.php');
     $request = null;
@@ -36,11 +38,11 @@
         private $dbHandler   = null;
 
         public function __construct() {
-            global $config, $request;
+            global $request;
 
             $this -> utils     = new App\Utils();
             $this -> dbHandler = new Data\Database();
-            $this -> method    = $_SERVER['REQUEST_METHOD'];
+            $this -> method    = filter_input(INPUT_SERVER, 'REQUEST_METHOD');
 
             $request = $this -> utils -> parse_path();
         }
@@ -179,7 +181,7 @@
                 $images[] = APP_DIR . '/uploads/images/kp_2016-09-03_18-34-31.png';
 
                 foreach ($images as $image) {
-                    $imageObject = new \Imagick($image);
+                    $imageObject = new Imagick($image);
                     $this -> utils -> resizeImage($imageObject, $config['images']['maxWidth'], $config['images']['maxHeight']);
                     $imageObject -> writeImage($image);
                     $imageObject -> destroy(); 
@@ -208,8 +210,9 @@
                                1 => Array('pipe', 'w'), // stdout is a pipe that the child will write standard output to
                                2 => Array('pipe', 'w')  // stderr is a pipe that the child will write error output to
                             );
+                            $pipes   = Array();
                             $cwd     = APP_DIR . '/../';
-                            $env     = array('SHELL'    => '/bin/bash',
+                            $env     = Array('SHELL'    => '/bin/bash',
                                              'WINEARCH' => 'win64',
                                              'HOME'     => $cwd,
                                              'LANGUAGE' => 'en_US:en');
@@ -218,7 +221,7 @@
 
                             if (is_resource($process)) {
                                 /** $pipes now looks like this:
-                                 **   0 => Writeable handle connected to child stdin
+                                 **   0 => Writable handle connected to child stdin
                                  **   1 => Readable handle connected to child stdout
                                  **   2 => Readable handle connected to child stderr
                                  **/
@@ -227,7 +230,7 @@
                                 fclose($pipes[0]);
 
                                 // Retrieve the output and error output
-                                $shellResponse = stream_get_contents($pipes[1]);
+                                $shellResponse    = stream_get_contents($pipes[1]);
                                 $shellErrorOutput = stream_get_contents($pipes[2]);
 
                                 // It is important that you close any pipes before calling proc_close in order to avoid a deadlock

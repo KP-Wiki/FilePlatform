@@ -38,10 +38,6 @@
          ** Array of values, the keys should match the tags in the template files
          **/
         private $values = Array();
-        /**
-         ** Identifier to determine whether to show the admin menu or not
-         **/
-        private $showAdmin = False;
 
         public function __construct() {
             global $config;
@@ -78,9 +74,9 @@
                 return 'Error loading navbar template file (' . $this -> mainTemplate . ').<br />';
 
             // Load the main template into the output variable
-            $output  = file_get_contents($this -> mainTemplate);
+            $output = file_get_contents($this -> mainTemplate);
             // Insert the content into the output variable
-            $output  = str_replace('[@content]', $this -> content, $output);
+            $output = str_replace('[@content]', $this -> content, $output);
 
             // Determine which menu to show
             switch ($_SESSION['user'] -> group) {
@@ -101,7 +97,7 @@
             }
 
             // Insert the nav bar into the output variable
-            $output  = str_replace('[@nav]', $navMenu, $output);
+            $output = str_replace('[@nav]', $navMenu, $output);
 
             // Replace tags with the defined values
             foreach ($this -> values as $key => $value) {

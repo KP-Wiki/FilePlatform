@@ -1,5 +1,6 @@
 <?php
     namespace App;
+    use \Imagick;
 
     class Utils
     {
@@ -14,24 +15,24 @@
         public function parse_path() {
             $path = Array();
 
-            if (isset($_SERVER['REQUEST_URI'])) {
-                $request_path = explode('?', $_SERVER['REQUEST_URI']);
+            if (!Empty(filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_DEFAULT))) {
+                $request_path = explode('?', filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_DEFAULT));
 
-                $path['base']      = rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/');
+                $path['base']      = rtrim(dirname(filter_input(INPUT_SERVER, 'SCRIPT_NAME', FILTER_DEFAULT)), '\/');
                 $path['call_utf8'] = @substr(urldecode($request_path[0]), strlen($path['base']) + 1);
                 $path['call']      = @utf8_decode($path['call_utf8']);
 
-                if ($path['call'] == basename($_SERVER['PHP_SELF']))
+                if ($path['call'] == basename(filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_DEFAULT)))
                     $path['call'] = '';
 
                 $path['call_parts'] = explode('/', $path['call']);
 
                 $path['query_utf8'] = @urldecode($request_path[1]);
                 $path['query']      = @utf8_decode($path['query_utf8']);
-                $variables          = @explode('&', $path['query']);
+                $variables          = explode('&', $path['query']);
 
                 foreach ($variables as $var) {
-                    $kvPair                    = @explode('=', $var);
+                    $kvPair                         = explode('=', $var);
                     $path['query_vars'][$kvPair[0]] = @$kvPair[1];
                 };
             };
@@ -58,18 +59,20 @@
         }
 
         /**
-         ** Get the client's IP addres
+         ** Get the client's IP address
          **
          ** @param  boolean $checkProxy
          ** @return string
          **/
         public function getClientIp($checkProxy = True) {
-            if ($checkProxy && isset($_SERVER['HTTP_CLIENT_IP'])) {
-                $ipAddr = $_SERVER['HTTP_CLIENT_IP'];
-            } else if ($checkProxy && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ipAddr = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            if ($checkProxy && !Empty(filter_input(INPUT_SERVER, 'HTTP_CLIENT_IP', FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ||
+                                                                                                       FILTER_FLAG_IPV6))) {
+                $ipAddr = filter_input(INPUT_SERVER, 'HTTP_CLIENT_IP', FILTER_DEFAULT);
+            } else if ($checkProxy && !Empty(filter_input(INPUT_SERVER, 'HTTP_X_FORWARDED_FOR', FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ||
+                                                                                                                    FILTER_FLAG_IPV6))) {
+                $ipAddr = filter_input(INPUT_SERVER, 'HTTP_X_FORWARDED_FOR', FILTER_DEFAULT);
             } else {
-                $ipAddr = $_SERVER['REMOTE_ADDR'];
+                $ipAddr = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_DEFAULT);
             };
 
             return $ipAddr;
@@ -136,11 +139,15 @@
             if ($Code !== null) {
                 $Text = $this -> http_code_to_text($Code);
 
-                $Protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+                $Protocol = (!Empty(filter_input(INPUT_SERVER, 'SERVER_PROTOCOL', FILTER_DEFAULT))
+                                ? filter_input(INPUT_SERVER, 'SERVER_PROTOCOL', FILTER_DEFAULT)
+                                : 'HTTP/1.0');
                 header($Protocol . ' ' . $Code . ' ' . $Text);
                 $GLOBALS['http_response_code'] = $Code;
             } else {
-                $Code = (isset($GLOBALS['http_response_code']) ? $GLOBALS['http_response_code'] : 200);
+                $Code = (isset($GLOBALS['http_response_code'])
+                            ? $GLOBALS['http_response_code']
+                            : 200);
             };
 
             return $Code;
@@ -153,12 +160,12 @@
                 $imageObject = $imageObject -> coalesceImages();
 
                 foreach ($imageObject as $frame) { // Gaussian seems better for animations
-                    $frame -> resizeImage($maxWidth , $maxHeight , \Imagick::FILTER_GAUSSIAN, 1, True);
-                }
+                    $frame -> resizeImage($maxWidth , $maxHeight , Imagick::FILTER_GAUSSIAN, 1, True);
+                };
 
                 $imageObject = $imageObject -> deconstructImages();
             } else { // Lanczos seems better for static images
-                $imageObject -> resizeImage($maxWidth , $maxHeight , \Imagick::FILTER_LANCZOS, 1, True);
+                $imageObject -> resizeImage($maxWidth , $maxHeight , Imagick::FILTER_LANCZOS, 1, True);
             };
         }
 
@@ -201,7 +208,7 @@
          **
          ** @param string $emailAddress The email address
          ** @param string $size Size in pixels, defaults to 80px [ 1 - 2048 ]
-         ** @param string $defaultImg Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+         ** @param string $defaultImg Default image set to use [ 404 | mm | identicon | monsterid | wavatar ]
          ** @param string $rate Maximum rating (inclusive) [ g | pg | r | x ]
          ** @return string Image tag
          **/
