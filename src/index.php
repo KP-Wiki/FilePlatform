@@ -58,7 +58,7 @@
         private $dbHandler   = null;
 
         public function __construct() {
-            global $config, $request, $logger;
+            global $request, $logger;
 
             // Initialize the globally required classes
             $this -> utils     = new App\Utils();
@@ -72,7 +72,7 @@
         }
 
         public function start() {
-            global $config, $request;
+            global $request;
 
             $this -> security -> checkRememberMe($this -> dbHandler);
 
@@ -98,15 +98,18 @@
 /// User calls
 ///
             } elseif ($request['call'] === 'register') { // Handle the registration request
-                if (!isset($_POST['username']) ||
-                    !isset($_POST['emailAddress']) ||
-                    !Empty($_POST['confirmEmailAddress']) || // Simple 'dumb' bot prevention
-                    !isset($_POST['password']) ||
-                    !isset($_POST['confirmPassword']) ||
-                    !isset($_POST['g-recaptcha-response'])) {
+                if (!Empty(filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW || 
+                                                                                   FILTER_FLAG_STRIP_HIGH ||
+                                                                                   FILTER_FLAG_STRIP_BACKTICK)) ||
+                    !Empty(filter_input(INPUT_POST, 'emailAddress', FILTER_SANITIZE_EMAIL)) ||
+                    !Empty(filter_input(INPUT_POST, 'emailAddress', FILTER_SANITIZE_EMAIL)) || // Simple 'dumb' bot prevention
+                    !Empty(filter_input(INPUT_POST, 'password', FILTER_DEFAULT)) ||
+                    !Empty(filter_input(INPUT_POST, 'confirmPassword', FILTER_DEFAULT)) ||
+                    !Empty(filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_DEFAULT))) {
                     $this -> utils -> http_response_code(400);
                     Die($this -> utils -> http_code_to_text(400));
                 };
+
                 $resultFunc = new Functions\Views\Result();
                 $pageHeader = '<ol class="breadcrumb">' . PHP_EOL .
                               '    <li><a href="/dashboard">Home</a></li>' . PHP_EOL .
@@ -365,4 +368,3 @@
     // Create and start the applocation
     $app = new App();
     $app -> start();
-?>
