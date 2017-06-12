@@ -198,6 +198,20 @@
 
                 $rebuild .= '/' . $p;
 
+                if ($rebuild == '/') {
+                    $rebuild = '';
+                    continue;
+                };
+
+                if ($rebuild == ':/') {
+                    $rebuild = ':';
+                    continue;
+                };
+
+                if (($rebuild == '/var')     || ($rebuild == ':/var') ||
+                    ($rebuild == '/var/www') || ($rebuild == ':/var/www'))
+                    continue;
+
                 if (!is_dir($rebuild))
                     mkdir($rebuild);
             };

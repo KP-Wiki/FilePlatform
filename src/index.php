@@ -332,7 +332,12 @@
                 $result  = $uploadFunc -> getContent($this -> dbHandler);
                 $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
 
-                header('Refresh:5; url=/dashboard');
+                if (array_key_exists('data', $result)) {
+                    header('Refresh:5; url=/mapdetails/' . $result['data']);
+                } else {
+                    header('Refresh:5; url=/newmap');
+                };
+
                 // Set the content
                 $this -> renderer -> setContent($content);
 //////////////////////////////////////////////////////////////////////////////

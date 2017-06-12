@@ -3,6 +3,7 @@
     use \ZipArchive;
     use \Exception;
     use \Imagick;
+    use \App\Logger;
 
     class Upload
     {
@@ -13,64 +14,50 @@
         }
 
         public function getContent(&$dbHandler) {
-            global $config;
+            global $config, $logger;
+            $logger -> log('Upload::getContent -> start()', Logger::DEBUG);
+            $logger -> log('POST = ' . print_r($_POST, True), Logger::DEBUG);
+            $logger -> log('FILES = ' . print_r($_FILES, True), Logger::DEBUG);
 
             try {
                 if (!Empty(filter_input(INPUT_POST, 'map_pk', FILTER_SANITIZE_NUMBER_INT))) {
                     throw new Exception('There is nothing here, yet.');
                 } else {
-                    if (Empty($_FILES['mapFile']['name']) ||
-                        Empty($_FILES['mapFile']['datFile']) ||
-                        Empty(filter_input(INPUT_POST, 'mapName', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
-                                                                                          FILTER_FLAG_ENCODE_LOW ||
-                                                                                          FILTER_FLAG_ENCODE_HIGH ||
-                                                                                          FILTER_FLAG_ENCODE_AMP)) ||
-                        (filter_input(INPUT_POST, 'mapType', FILTER_SANITIZE_NUMBER_INT) < 0) ||
-                        Empty(filter_input(INPUT_POST, 'mapVersion', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
-                                                                                             FILTER_FLAG_ENCODE_LOW ||
-                                                                                             FILTER_FLAG_ENCODE_HIGH ||
-                                                                                             FILTER_FLAG_ENCODE_AMP)) ||
-                        Empty(filter_input(INPUT_POST, 'mapDescShort', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
-                                                                                               FILTER_FLAG_ENCODE_LOW ||
-                                                                                               FILTER_FLAG_ENCODE_HIGH ||
-                                                                                               FILTER_FLAG_ENCODE_AMP)) ||
-                        Empty(filter_input(INPUT_POST, 'mapDescFull', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
-                                                                                              FILTER_FLAG_ENCODE_LOW ||
-                                                                                              FILTER_FLAG_ENCODE_HIGH ||
-                                                                                              FILTER_FLAG_ENCODE_AMP)))
-                        throw new Exception('Invalid request, inputs missing');
+                    $mapName      = filter_input(INPUT_POST, 'mapName', FILTER_SANITIZE_STRING,      FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapVersion   = filter_input(INPUT_POST, 'mapVersion', FILTER_SANITIZE_STRING,   FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapDescShort = filter_input(INPUT_POST, 'mapDescShort', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapDescFull  = filter_input(INPUT_POST, 'mapDescFull', FILTER_SANITIZE_STRING,  FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapType      = IntVal(filter_input(INPUT_POST, 'mapType', FILTER_SANITIZE_NUMBER_INT));
 
-                    $mapName         = filter_input(INPUT_POST,
-                                                    'mapName',
-                                                    FILTER_SANITIZE_STRING,
-                                                    FILTER_FLAG_STRIP_BACKTICK ||
-                                                    FILTER_FLAG_ENCODE_LOW ||
-                                                    FILTER_FLAG_ENCODE_HIGH ||
-                                                    FILTER_FLAG_ENCODE_AMP);
-                    $mapType         = IntVal(filter_input(INPUT_POST,
-                                                           'mapType',
-                                                           FILTER_SANITIZE_NUMBER_INT));
-                    $mapVersion      = filter_input(INPUT_POST,
-                                                    'mapVersion',
-                                                    FILTER_SANITIZE_STRING,
-                                                    FILTER_FLAG_STRIP_BACKTICK ||
-                                                    FILTER_FLAG_ENCODE_LOW ||
-                                                    FILTER_FLAG_ENCODE_HIGH ||
-                                                    FILTER_FLAG_ENCODE_AMP);
-                    $mapDescShort    = filter_input(INPUT_POST,
-                                                    'mapDescShort',
-                                                    FILTER_SANITIZE_STRING,
-                                                    FILTER_FLAG_STRIP_BACKTICK ||
-                                                    FILTER_FLAG_ENCODE_LOW ||
-                                                    FILTER_FLAG_ENCODE_HIGH ||
-                                                    FILTER_FLAG_ENCODE_AMP);
-                    $mapDescFull     = filter_input(INPUT_POST,
-                                                    'mapDescFull',
-                                                    FILTER_SANITIZE_STRING,
-                                                    FILTER_FLAG_STRIP_BACKTICK ||
-                                                    FILTER_FLAG_ENCODE_LOW ||
-                                                    FILTER_FLAG_ENCODE_HIGH ||
-                                                    FILTER_FLAG_ENCODE_AMP);
+                    if (Empty($_FILES['mapFile']['name']) ||
+                        Empty($_FILES['datFile']['name']) ||
+                        Empty($mapName) ||
+                        ($mapType < 0) ||
+                        Empty($mapVersion) ||
+                        Empty($mapDescShort) ||
+                        Empty($mapDescFull)) {
+                        $logger -> log('FILES->mapFile->name Empty? = ' . print_r(Empty($_FILES['mapFile']['name']), True), Logger::DEBUG);
+                        $logger -> log('FILES->datFile->name Empty? = ' . print_r(Empty($_FILES['datFile']['name']), True), Logger::DEBUG);
+                        $logger -> log('POST->mapName Empty? = ' .        print_r(Empty($mapName), True),                   Logger::DEBUG);
+                        $logger -> log('POST->mapType < 0? = ' .          print_r(($mapType < 0), True),                    Logger::DEBUG);
+                        $logger -> log('POST->mapVersion Empty? = ' .     print_r(Empty($mapVersion), True),                Logger::DEBUG);
+                        $logger -> log('POST->mapDescShort Empty? = ' .   print_r(Empty($mapDescShort), True),              Logger::DEBUG);
+                        $logger -> log('POST->mapDescFull Empty? = ' .    print_r(Empty($mapDescFull), True),               Logger::DEBUG);
+                        throw new Exception('Invalid request, inputs missing');
+                    };
+
                     $mapArchive      = new ZipArchive();
                     $mapDirInArchive = $mapName . '/';
                     $mapDirOnDisk    = $config['files']['uploadDir'] . '/' . $mapName . '/' . $mapVersion . '/';
@@ -90,13 +77,6 @@
                     // Create the directory that will hold our newly created ZIP archive
                     $this -> utils -> mkdirRecursive(APP_DIR . $mapDirOnDisk);
 
-                    // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
-                    if (count($_FILES['libxFiles']['name']) > 0) {
-                        $libxFiles = $this -> utils -> reArrayFiles($_FILES['libxFiles']);
-                    } else {
-                        $libxFiles = Array();
-                    };
-
                     // Try to create the new archive
                     if (!$mapArchive -> open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE))
                         throw new Exception('Unable to create the archive');
@@ -110,12 +90,17 @@
                     if (!Empty($_FILES['scriptFile']['name']))
                         $mapArchive -> addFile($_FILES['scriptFile']['tmp_name'], $mapDirInArchive . $mapName . '.script');
 
-                    //add the files
-                    foreach ($libxFiles as $libxFile) {
-                        $fileBitsArr   = Explode('.', $libxFile['name']);
-                        $fileBitsCount = count($fileBitsArr);
-                        $fileExtention = '.' . $fileBitsArr[$fileBitsCount - 2] . '.libx'; // Get the language part as well
-                        $mapArchive -> addFile($libxFile['tmp_name'], $mapDirInArchive . $mapName . $fileExtention);
+                    // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
+                    if (!Empty($_FILES['libxFiles']['name'][0])) {
+                        $libxFiles = $this -> utils -> reArrayFiles($_FILES['libxFiles']);
+
+                        // Add the files
+                        foreach ($libxFiles as $libxFile) {
+                            $fileBitsArr   = Explode('.', $libxFile['name']);
+                            $fileBitsCount = count($fileBitsArr);
+                            $fileExtention = '.' . $fileBitsArr[$fileBitsCount - 2] . '.libx'; // Get the language part as well
+                            $mapArchive -> addFile($libxFile['tmp_name'], $mapDirInArchive . $mapName . $fileExtention);
+                        };
                     };
 
                     $mapArchive -> close();
@@ -159,6 +144,7 @@
                     $content['status']  = 'Success';
                     $content['message'] = 'Map has been added successfully!<br />' . PHP_EOL .
                                           'Redirecting you now.';
+                    $content['data']    = $mapId;
                 };
             } catch (Exception $e) {
                 $content['status']  = 'Error';
