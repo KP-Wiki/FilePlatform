@@ -72,7 +72,7 @@
         }
 
         public function start() {
-            global $request;
+            global $request, $logger;
 
             $this -> security -> checkRememberMe($this -> dbHandler);
 
@@ -98,14 +98,16 @@
 /// User calls
 ///
             } elseif ($request['call'] === 'register') { // Handle the registration request
-                if (!Empty(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
-                                                                                        FILTER_FLAG_STRIP_HIGH ||
-                                                                                        FILTER_FLAG_STRIP_BACKTICK)) ||
-                    !Empty(filter_input(INPUT_POST, 'emailAddress', FILTER_SANITIZE_EMAIL)) ||
-                    Empty(filter_input(INPUT_POST, 'confirmEmailAddress', FILTER_UNSAFE_RAW)) || // Simple 'dumb' bot prevention
-                    !Empty(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)) ||
-                    !Empty(filter_input(INPUT_POST, 'confirmPassword', FILTER_UNSAFE_RAW)) ||
-                    !Empty(filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_UNSAFE_RAW))) {
+                $logger -> log('Register ( _POST = ' . print_r($_POST, True) . ' )', Logger::DEBUG);
+
+                if (Empty(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                                                                                       FILTER_FLAG_STRIP_HIGH ||
+                                                                                       FILTER_FLAG_STRIP_BACKTICK)) ||
+                    Empty(filter_input(INPUT_POST, 'emailAddress', FILTER_SANITIZE_EMAIL)) ||
+                    !Empty(filter_input(INPUT_POST, 'confirmEmailAddress', FILTER_UNSAFE_RAW)) || // Simple 'dumb' bot prevention
+                    Empty(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)) ||
+                    Empty(filter_input(INPUT_POST, 'confirmPassword', FILTER_UNSAFE_RAW)) ||
+                    Empty(filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_UNSAFE_RAW))) {
                     $this -> utils -> http_response_code(400);
                     Die($this -> utils -> http_code_to_text(400));
                 };
@@ -283,6 +285,72 @@
                 $this -> renderer -> setValue('about-active', '');
 
                 $content = $mapDetailFunc -> getContent($this -> dbHandler);
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call_parts'][0] === 'editmapinfo' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0 &&
+                      $_SESSION['user'] -> group != 0) { // Show the 'Edit Map Info' page
+                if (Empty($request['call_parts'][1])) {
+                    header('HTTP/1.1 404 Not Found');
+                    header('Location: /home');
+                    Exit;
+                };
+
+                $mapDetailFunc = new Functions\Views\MapDetails($this -> utils);
+                $pageHeader    = '<ol class="breadcrumb">' . PHP_EOL .
+                                 '    <li><a href="/home">All Maps</a></li>' . PHP_EOL .
+                                 '    <li><a href="/mapdetails/' . $request['call_parts'][1] . '">Map Details</a></li>' . PHP_EOL .
+                                 '    <li class="active">Edit Map Info</li>' . PHP_EOL .
+                                 '</ol>' . PHP_EOL .
+                                 '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Edit Map Info');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $mapDetailFunc -> getEditContent($this -> dbHandler);
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call_parts'][0] === 'updatemapinfo' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0 &&
+                      $_SESSION['user'] -> group != 0) { // Show the 'Edit Map Info' page
+                if (Empty($request['call_parts'][1])) {
+                    header('HTTP/1.1 404 Not Found');
+                    header('Location: /home');
+                    Exit;
+                };
+
+                $mapInfoFunc = new Functions\MapInfo($this -> utils);
+                $resultFunc  = new Functions\Views\Result();
+                $pageHeader  = '<ol class="breadcrumb">' . PHP_EOL .
+                               '    <li><a href="/home">All Maps</a></li>' . PHP_EOL .
+                               '    <li><a href="/mapdetails/' . $request['call_parts'][1] . '">Map Details</a></li>' . PHP_EOL .
+                               '    <li class="active">Edit Map Info</li>' . PHP_EOL .
+                               '</ol>' . PHP_EOL .
+                               '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'Edit Map Info');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $result  = $mapInfoFunc -> updateMapInfo($this -> dbHandler);
+                $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
+
+                if (array_key_exists('data', $result)) {
+                    header('Refresh:5; url=/mapdetails/' . $result['data']);
+                } else {
+                    header('Refresh:5; url=/home');
+                };
 
                 // Set the content
                 $this -> renderer -> setContent($content);

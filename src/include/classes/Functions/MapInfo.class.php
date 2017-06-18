@@ -2,6 +2,7 @@
     namespace Functions;
     use \Exception;
     use \DateTime;
+    use \App\Logger;
 
     class MapInfo
     {
@@ -216,6 +217,100 @@
                 $this -> utils -> http_response_code(404);
                 $content['status']  = 'Error';
                 $content['message'] = 'Error retrieving data from the database.';
+            };
+
+            return $content;
+        }
+
+        public function updateMapInfo(&$dbHandler, $aMapId = null) {
+            global $request, $logger;
+
+            $content = Array();
+
+            try {
+                $editMapDescShort = filter_input(INPUT_POST, 'editMapDescShort', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                         FILTER_FLAG_ENCODE_LOW ||
+                                                                                                         FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                         FILTER_FLAG_ENCODE_AMP);
+                $editMapDescFull  = filter_input(INPUT_POST, 'editMapDescFull', FILTER_SANITIZE_STRING,  FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                         FILTER_FLAG_ENCODE_LOW ||
+                                                                                                         FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                         FILTER_FLAG_ENCODE_AMP);
+
+                if (Empty($editMapDescShort) ||
+                    Empty($editMapDescFull)) {
+                    $logger -> log('POST->editMapDescShort Empty? = ' . print_r(Empty($editMapDescShort), True), Logger::DEBUG);
+                    $logger -> log('POST->editMapDescFull Empty? = ' .  print_r(Empty($editMapDescFull), True),  Logger::DEBUG);
+                    throw new Exception('Invalid request, inputs missing');
+                };
+
+                $mapItem       = null;
+                $mapRevisionId = IntVal($request['call_parts'][1]);
+
+                $selectQuery = 'SELECT ' . PHP_EOL .
+                               '    `Revisions`.`map_fk`, ' . PHP_EOL .
+                               '    `Revisions`.`rev_map_file_name`, ' . PHP_EOL .
+                               '    `Revisions`.`rev_map_file_path`, ' . PHP_EOL .
+                               '    `Revisions`.`rev_map_version`, ' . PHP_EOL .
+                               '    `Revisions`.`rev_map_description_short`, ' . PHP_EOL .
+                               '    `Revisions`.`rev_map_description`, ' . PHP_EOL .
+                               '    `Revisions`.`rev_status_fk`, ' . PHP_EOL .
+                               '    `Maps`.`user_fk` ' . PHP_EOL .
+                               'FROM ' . PHP_EOL .
+                               '    `Revisions` ' . PHP_EOL .
+                               'LEFT JOIN ' . PHP_EOL .
+                               '    `Maps` ON `Revisions`.`map_fk` = `Maps`.`map_pk` ' . PHP_EOL .
+                               'WHERE ' . PHP_EOL .
+                               '    `Revisions`.`rev_status_fk` = 1 AND ' . PHP_EOL .
+                               '    `Revisions`.`rev_pk` = :maprevid;';
+                $dbHandler -> PrepareAndBind($selectQuery, Array('maprevid' => $mapRevisionId));
+                $mapItem = $dbHandler -> ExecuteAndFetch();
+                $dbHandler -> Clean();
+
+                if (Empty($mapItem) || $mapItem['user_fk'] != $_SESSION['user'] -> id) {
+                    $logger -> log('mapItem Empty? = ' . print_r(Empty($mapItem), True), Logger::DEBUG);
+                    $logger -> log('mapItem->user_fk Equal to SESSION->user->id? = ' .  print_r(($mapItem['user_fk'] == $_SESSION['user'] -> id), True),  Logger::DEBUG);
+                    throw new Exception('Unable to find the map, please try again.');
+                };
+
+                $logger -> log('mapItem = ' . print_r($mapItem, True), Logger::DEBUG);
+                $insertQuery = 'INSERT INTO ' . PHP_EOL .
+                               '    `Revisions` (`map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, ' .
+                               '`rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '. PHP_EOL .
+                               'VALUES ' . PHP_EOL .
+                               '    (:mapid, :filename, :filepath, :mapversion, :mapdescshort, :mapdescfull, :revstatusid);';
+                $dbHandler -> PrepareAndBind($insertQuery, Array('mapid'        => $mapItem['map_fk'],
+                                                                 'filename'     => $mapItem['rev_map_file_name'],
+                                                                 'filepath'     => $mapItem['rev_map_file_path'],
+                                                                 'mapversion'   => $mapItem['rev_map_version'],
+                                                                 'mapdescshort' => $editMapDescShort,
+                                                                 'mapdescfull'  => $editMapDescFull,
+                                                                 'revstatusid'  => $mapItem['rev_status_fk']));
+                $dbHandler -> Execute();
+                $revId = $dbHandler -> GetLastInsertId();
+                $dbHandler -> Clean();
+
+                if ($revId == null)
+                    throw new Exception('Could not add the new revision to the database');
+
+                $updateQuery = 'UPDATE ' . PHP_EOL .
+                               '    `Revisions` '. PHP_EOL .
+                               'SET ' . PHP_EOL .
+                               '    `rev_status_fk` = 3 '. PHP_EOL .
+                               'WHERE ' . PHP_EOL .
+                               '    `rev_pk` = :maprevid;';
+                $dbHandler -> PrepareAndBind($updateQuery, Array('maprevid' => $mapRevisionId));
+                $dbHandler -> Execute();
+                $dbHandler -> Clean();
+
+                $content['status']  = 'Success';
+                $content['message'] = 'Map information has been updated successfully!<br />' . PHP_EOL .
+                                      'Redirecting you now.';
+                $content['data']    = $mapItem['map_fk'];
+            } catch (Exception $e) {
+                $content['status']  = 'Error';
+                $content['message'] = $e -> getMessage();
+                $logger -> log('updateMapInfo > ' . print_r($e -> getMessage(), True), Logger::ERROR);
             };
 
             return $content;
