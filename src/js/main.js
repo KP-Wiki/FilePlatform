@@ -7,6 +7,10 @@ window.mapAuthorFormatter = function(value, row, index) {
     return '<a href="/profile/' + row.user_pk + '"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;' + value + '</a>';
 }
 
+window.newMapRevFormatter = function(value, row, index) {
+    return '<center><a href="/newmaprev/' + row.map_pk + '"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;Update</a></center>';
+}
+
 window.toggleForgot = function() {
     $(".logreg-forgot").slideToggle('slow');
 }

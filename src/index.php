@@ -31,6 +31,7 @@
     use Functions\Views\Settings;
     use Functions\Views\MapDetails;
     use Functions\Views\NewMap;
+    use Functions\Views\NewMapRevision;
     use Functions\Views\Result;
 
     // Global variables
@@ -320,7 +321,7 @@
             } elseif ($request['call_parts'][0] === 'updatemapinfo' &&
                       property_exists($_SESSION['user'], 'id') &&
                       $_SESSION['user'] -> id != 0 &&
-                      $_SESSION['user'] -> group != 0) { // Show the 'Edit Map Info' page
+                      $_SESSION['user'] -> group != 0) { // Handle the map info update request
                 if (Empty($request['call_parts'][1])) {
                     header('HTTP/1.1 404 Not Found');
                     header('Location: /home');
@@ -331,7 +332,6 @@
                 $resultFunc  = new Functions\Views\Result();
                 $pageHeader  = '<ol class="breadcrumb">' . PHP_EOL .
                                '    <li><a href="/home">All Maps</a></li>' . PHP_EOL .
-                               '    <li><a href="/mapdetails/' . $request['call_parts'][1] . '">Map Details</a></li>' . PHP_EOL .
                                '    <li class="active">Edit Map Info</li>' . PHP_EOL .
                                '</ol>' . PHP_EOL .
                                '<div class="row spacer"></div>' . PHP_EOL;
@@ -344,6 +344,71 @@
                 $this -> renderer -> setValue('about-active', '');
 
                 $result  = $mapInfoFunc -> updateMapInfo($this -> dbHandler);
+                $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
+
+                if (array_key_exists('data', $result)) {
+                    header('Refresh:5; url=/mapdetails/' . $result['data']);
+                } else {
+                    header('Refresh:5; url=/home');
+                };
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call_parts'][0] === 'newmaprev' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0 &&
+                      $_SESSION['user'] -> group != 0) { // Show the 'New Map Revision' page
+                if (Empty($request['call_parts'][1])) {
+                    header('HTTP/1.1 404 Not Found');
+                    header('Location: /dashboard');
+                    Exit;
+                };
+
+                $mapDetailFunc = new Functions\Views\NewMapRevision($this -> utils);
+                $pageHeader    = '<ol class="breadcrumb">' . PHP_EOL .
+                                 '    <li><a href="/dashboard">Dashboard</a></li>' . PHP_EOL .
+                                 '    <li><a href="/mapdetails/' . $request['call_parts'][1] . '">Map Details</a></li>' . PHP_EOL .
+                                 '    <li class="active">New Map Revision</li>' . PHP_EOL .
+                                 '</ol>' . PHP_EOL .
+                                 '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'New Map Revision');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $content = $mapDetailFunc -> getContent($this -> dbHandler);
+
+                // Set the content
+                $this -> renderer -> setContent($content);
+            } elseif ($request['call_parts'][0] === 'uploadmaprev' &&
+                      property_exists($_SESSION['user'], 'id') &&
+                      $_SESSION['user'] -> id != 0 &&
+                      $_SESSION['user'] -> group != 0) { // Handle the new revision upload request
+                if (Empty($request['call_parts'][1])) {
+                    header('HTTP/1.1 404 Not Found');
+                    header('Location: /dashboard');
+                    Exit;
+                };
+
+                $mapInfoFunc = new Functions\Upload($this -> utils);
+                $resultFunc  = new Functions\Views\Result();
+                $pageHeader  = '<ol class="breadcrumb">' . PHP_EOL .
+                               '    <li><a href="/dashboard">Dashboard</a></li>' . PHP_EOL .
+                               '    <li class="active">New Map Revision</li>' . PHP_EOL .
+                               '</ol>' . PHP_EOL .
+                               '<div class="row spacer"></div>' . PHP_EOL;
+
+                // Set the page title
+                $this -> renderer -> setValue('title', 'New Map Revision');
+                $this -> renderer -> setValue('header', $pageHeader);
+                // Set the active tab
+                $this -> renderer -> setValue('home-active', 'class="active"');
+                $this -> renderer -> setValue('about-active', '');
+
+                $result  = $mapInfoFunc -> getContent($this -> dbHandler);
                 $content = $resultFunc -> getContent($result['status'], $result['message'], $this -> dbHandler);
 
                 if (array_key_exists('data', $result)) {

@@ -14,14 +14,106 @@
         }
 
         public function getContent(&$dbHandler) {
-            global $config, $logger;
+            global $config, $request, $logger;
             $logger -> log('Upload::getContent -> start()', Logger::DEBUG);
             $logger -> log('POST = ' . print_r($_POST, True), Logger::DEBUG);
             $logger -> log('FILES = ' . print_r($_FILES, True), Logger::DEBUG);
 
             try {
-                if (!Empty(filter_input(INPUT_POST, 'map_pk', FILTER_SANITIZE_NUMBER_INT))) {
-                    throw new Exception('There is nothing here, yet.');
+                if (!Empty($request['call_parts'][1])) {
+                    $mapVersion = filter_input(INPUT_POST, 'newMapRevVersion', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                       FILTER_FLAG_ENCODE_LOW ||
+                                                                                                       FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                       FILTER_FLAG_ENCODE_AMP);
+
+                    if (Empty($_FILES['newMapRevMapFile']['name']) ||
+                        Empty($_FILES['newMapRevDatFile']['name']) ||
+                        Empty($mapVersion)) {
+                        $logger -> log('FILES->newMapRevMapFile->name Empty? = ' . print_r(Empty($_FILES['newMapRevMapFile']['name']), True), Logger::DEBUG);
+                        $logger -> log('FILES->newMapRevDatFile->name Empty? = ' . print_r(Empty($_FILES['newMapRevDatFile']['name']), True), Logger::DEBUG);
+                        $logger -> log('POST->newMapRevVersion Empty? = ' .        print_r(Empty($mapVersion), True),                         Logger::DEBUG);
+                        throw new Exception('Invalid request, inputs missing');
+                    };
+
+                    $mapItem     = null;
+                    $mapId       = IntVal($request['call_parts'][1]);
+                    $mapInfoFunc = new \Functions\MapInfo($this -> utils);
+                    $mapItem     = $mapInfoFunc -> getMapDetails($dbHandler, $mapId);
+
+                    if (Empty($mapItem) || $mapItem['data']['rev_map_version'] === $mapVersion)
+                        throw new Exception('Map versions are identical, please change it.');
+
+                    $mapArchive      = new ZipArchive();
+                    $mapName         = $mapItem['data']['map_name'];
+                    $mapDescShort    = $mapItem['data']['rev_map_description_short'];
+                    $mapDescFull     = $mapItem['data']['rev_map_description'];
+                    $mapDirInArchive = $mapName . '/';
+                    $mapDirOnDisk    = $config['files']['uploadDir'] . '/' . $mapName . '/' . $mapVersion . '/';
+
+                    // Create the directory that will hold our newly created ZIP archive
+                    $this -> utils -> mkdirRecursive(APP_DIR . $mapDirOnDisk);
+
+                    // Try to create the new archive
+                    if (!$mapArchive -> open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE))
+                        throw new Exception('Unable to create the archive');
+
+                    // Create a new directory
+                    $mapArchive -> addEmptyDir($mapDirInArchive);
+                    // Add the required files
+                    $mapArchive -> addFile($_FILES['newMapRevMapFile']['tmp_name'], $mapDirInArchive . $mapName . '.map');
+                    $mapArchive -> addFile($_FILES['newMapRevDatFile']['tmp_name'], $mapDirInArchive . $mapName . '.dat');
+
+                    if (!Empty($_FILES['newMapRevScriptFile']['name']))
+                        $mapArchive -> addFile($_FILES['newMapRevScriptFile']['tmp_name'], $mapDirInArchive . $mapName . '.script');
+
+                    // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
+                    if (!Empty($_FILES['newMapRevLibxFiles']['name'][0])) {
+                        $libxFiles = $this -> utils -> reArrayFiles($_FILES['newMapRevLibxFiles']);
+
+                        // Add the files
+                        foreach ($libxFiles as $libxFile) {
+                            $fileBitsArr   = Explode('.', $libxFile['name']);
+                            $fileBitsCount = count($fileBitsArr);
+                            $fileExtention = '.' . $fileBitsArr[$fileBitsCount - 2] . '.libx'; // Get the language part as well
+                            $mapArchive -> addFile($libxFile['tmp_name'], $mapDirInArchive . $mapName . $fileExtention);
+                        };
+                    };
+
+                    $mapArchive -> close();
+
+                    $insertRevQuery = 'INSERT INTO ' . PHP_EOL .
+                                      '    `Revisions` (`map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, ' .
+                                      '`rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '. PHP_EOL .
+                                      'VALUES ' . PHP_EOL .
+                                      '    (:mapid, :filename, :filepath, :mapversion, :mapdescshort, :mapdescfull, :revstatusid);';
+                    $dbHandler -> PrepareAndBind($insertRevQuery, Array('mapid'        => $mapId,
+                                                                        'filename'     => $mapName . '.zip',
+                                                                        'filepath'     => $mapDirOnDisk,
+                                                                        'mapversion'   => $mapVersion,
+                                                                        'mapdescshort' => $mapDescShort,
+                                                                        'mapdescfull'  => $mapDescFull,
+                                                                        'revstatusid'  => 1));
+                    $dbHandler -> Execute();
+                    $revId = $dbHandler -> GetLastInsertId();
+                    $dbHandler -> Clean();
+
+                    if ($revId == null)
+                        throw new Exception('Could not add the map to the database');
+
+                    $updateQuery = 'UPDATE ' . PHP_EOL .
+                                   '    `Revisions` '. PHP_EOL .
+                                   'SET ' . PHP_EOL .
+                                   '    `rev_status_fk` = 3 '. PHP_EOL .
+                                   'WHERE ' . PHP_EOL .
+                                   '    `rev_pk` = :maprevid;';
+                    $dbHandler -> PrepareAndBind($updateQuery, Array('maprevid' => $mapItem['data']['rev_pk']));
+                    $dbHandler -> Execute();
+                    $dbHandler -> Clean();
+
+                    $content['status']  = 'Success';
+                    $content['message'] = 'Map has been added successfully!<br />' . PHP_EOL .
+                                          'Redirecting you now.';
+                    $content['data']    = $mapId;
                 } else {
                     $mapName      = filter_input(INPUT_POST, 'mapName', FILTER_SANITIZE_STRING,      FILTER_FLAG_STRIP_BACKTICK ||
                                                                                                      FILTER_FLAG_ENCODE_LOW ||
