@@ -25,33 +25,37 @@
         $this->get('[/{catchall}]', Controllers\VMInventoryController::class . ':home')->setName('vminventory');
     });
 
+    // API routes
     $app->group('/api', function () {
         $this->group('/v1', function () {
-            $this->get('/custlist', Controllers\Api\CustomerController::class);
-
-            $this->group('/utils', function () {
-                $this->get('/devicetypes', Controllers\Api\UtilityController::class . ':getDeviceTypes');
-            });
-
-            $this->group('/ippools', function () {
-                $this->group('/customer', function () {
-                    $this->post('', Controllers\Api\IPPoolController::class . ':addRange');                            // C
-                    $this->get('/{customername}', Controllers\Api\IPPoolController::class . ':getPoolByCustomerName'); // R
-                    $this->put('', Controllers\Api\IPPoolController::class . ':updateRange');                          // U
-                    $this->delete('', Controllers\Api\IPPoolController::class . ':deleteRange');                       // D
+            $this->group('/maps', function () {
+                $this->group('/user', function () {
+                    $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser'); // R
                 });
 
-                $this->group('/netaddr', function () {
-                    $this->post('', Controllers\Api\IPPoolController::class . ':addIPAddress');                     // C
-                    $this->get('/{netaddr}', Controllers\Api\IPPoolController::class . ':getPoolByNetworkAddress'); // R
-                    $this->put('', Controllers\Api\IPPoolController::class . ':updateIPAddress');                   // U
-                    $this->delete('', Controllers\Api\IPPoolController::class . ':deleteIPAddress');                // D
-                });
-
-                // Default route to /api/v1/ippools
-                $this->get('[/{catchall}]', Controllers\Api\IPPoolController::class . ':getAll'); // R
+                $this->post('', Controllers\Api\MapController::class . ':addMap');        // C
+                $this->get('', Controllers\Api\MapController::class . ':getAllMaps');     // R
+                $this->get('/{mapId}', Controllers\Api\MapController::class . ':getMap'); // R
+                $this->put('', Controllers\Api\MapController::class . ':updateMap');      // U
+                $this->delete('', Controllers\Api\MapController::class . ':deleteMap');   // D
             });
 
+            $this->group('/download', function () {
+                $this->get('[/{catchall}]', Controllers\Api\DownloadController::class);
+            });
+
+            $this->group('/rating', function () {
+                $this->post('', Controllers\Api\RatingController::class . ':addRating');        // C
+                $this->get('/{mapId}', Controllers\Api\RatingController::class . ':getRating'); // R
+            });
+
+            $this->group('/testscript', function () {
+                $this->post('[/{catchall}]', Controllers\Api\MiscController::class . ':testScript');
+            });
+
+            $this->group('/resizedefault', function () {
+                $this->get('[/{catchall}]', Controllers\Api\MiscController::class . ':resizeDefault');
+            });
         });
     });
 
