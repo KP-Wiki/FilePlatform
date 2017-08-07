@@ -4,17 +4,17 @@
      *
      * PHP version 7
      *
-     * @package ManagementTools
-     * @author  Thimo Braker <t.braker@sigmax.nl>
-     * @version 1.0.1
+     * @package MapPlatform
+     * @author  Thimo Braker <thibmorozier@gmail.com>
+     * @version 1.0.0
      * @since   First available since Release 1.0.0
      */
     use Slim\Views\PhpRenderer;
     use Monolog\Logger;
     use Monolog\Processor\UidProcessor;
     use Monolog\Handler\StreamHandler;
-    use ManagementTools\Core;
-    use ManagementTools\Core\Utils;
+    use MapPlatform\Core;
+    use MapPlatform\Core\Utils;
 
     // DIC configuration
     $container = $app->getContainer();
@@ -49,20 +49,19 @@
         return new Utils\FormattingUtils();
     };
 
-    $container['ipPoolDb'] = function ($c) {
+    $container['miscUtils'] = function ($c) {
+        return new Utils\MiscUtils();
+    };
+
+    $container['dataBase'] = function ($c) {
         $dbClient = new Core\SQLConnector($c);
 
-        if (!$dbClient->connect('ippool'))
+        if (!$dbClient->connect())
             throw new Exception('Unable to connect to the database!');
 
         return $dbClient;
     };
-
-    $container['meteringDb'] = function ($c) {
-        $dbClient = new Core\InfluxConnector($c);
-
-        if (!$dbClient->connect('metering'))
-            throw new Exception('Unable to connect to the database!');
-
-        return $dbClient;
-    };
+	
+	$container['security'] = function ($c) {
+		return new Core\Security($c);
+	};

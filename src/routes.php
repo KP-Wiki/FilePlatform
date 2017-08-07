@@ -4,12 +4,12 @@
      *
      * PHP version 7
      *
-     * @package ManagementTools
-     * @author  Thimo Braker <t.braker@sigmax.nl>
-     * @version 1.0.6
+     * @package MapPlatform
+     * @author  Thimo Braker <thibmorozier@gmail.com>
+     * @version 1.0.0
      * @since   First available since Release 1.0.0
      */
-    use ManagementTools\Controllers;
+    use MapPlatform\Controllers;
 
     // IP Pool routes
     $app->group('/ippools', function () {

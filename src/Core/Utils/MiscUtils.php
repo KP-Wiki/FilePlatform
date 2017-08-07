@@ -16,7 +16,7 @@
     use InvalidArgumentException;
 
     /**
-     * File utilities
+     * Misc utilities
      *
      * @package    MapPlatform
      * @subpackage Core\Utils
@@ -24,7 +24,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class FileUtils
+    class MiscUtils
     {
         /** @var \Slim\Container $container The framework container */
         private $container;

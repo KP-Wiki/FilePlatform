@@ -4,8 +4,8 @@
      *
      * PHP version 7
      *
-     * @package ManagementTools
-     * @author  Thimo Braker <t.braker@sigmax.nl>
+     * @package MapPlatform
+     * @author  Thimo Braker <thibmorozier@gmail.com>
      * @version 1.0.0
      * @since   First available since Release 1.0.0
      */
