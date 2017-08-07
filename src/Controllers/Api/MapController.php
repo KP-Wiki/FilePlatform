@@ -43,7 +43,7 @@
         }
 
         /**
-         * MapController default page.
+         * MapController Get all maps.
          *
          * @param \Slim\Http\Request $request
          * @param \Slim\Http\Response $response
@@ -51,9 +51,99 @@
          *
          * @return \Slim\Http\Response
          */
-        public function home(Request $request, Response $response, $args) {
-            $this->container->logger->info("ManagementTools '/api/v1/testscript" . (Empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
-            $resultArr   = array();
+        public function getAllMaps(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps' route");
+            $resultArr = array();
+
+            return $response->withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Get a specific map.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getMap(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps' route");
+            $resultArr = array();
+
+            return $response->withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Get a map by user ID.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getMapsByUser(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps/user/" . $args['userId'] . "' route");
+            $userId = filter_var($args['userId'], FILTER_SANITIZE_NUMBER_INT);
+            $mapListItems = null;
+            $resultArr = array();
+
+            if ($userId === null || $userId <= 0)
+                throw new Exception('Ilegal user ID : ' . $userId);
+
+            
+
+            return $response->withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Add map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function addMap(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps' route");
+            $data = $request->getParsedBody();
+            $resultArr = array();
+
+            return $response->withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Update map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function updateMap(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps' route");
+            $data = $request->getParsedBody();
+            $resultArr = array();
+
+            return $response->withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Delete map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function deleteMap(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps' route");
+            $data = $request->getParsedBody();
+            $resultArr = array();
 
             return $response->withJson($resultArr, 200, JSON_PRETTY_PRINT);
         }
