@@ -4,13 +4,13 @@
      *
      * PHP version 7
      *
-     * @package    ManagementTools
+     * @package    MapPlatform
      * @subpackage Core\Utils
-     * @author     Thimo Braker <t.braker@sigmax.nl>
+     * @author     Thimo Braker <thibmorozier@gmail.com>
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    namespace ManagementTools\Core\Utils;
+    namespace MapPlatform\Core\Utils;
 
     use InvalidArgumentException;
     use Slim\Http\Response;
@@ -19,9 +19,9 @@
     /**
      * HTML page rendering utilities
      *
-     * @package    ManagementTools
+     * @package    MapPlatform
      * @subpackage Core\Utils
-     * @author     Thimo Braker <t.braker@sigmax.nl>
+     * @author     Thimo Braker <thibmorozier@gmail.com>
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
