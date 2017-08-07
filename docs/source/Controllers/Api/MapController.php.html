@@ -36,59 +36,62 @@
     <body>
         <pre class="brush: php">&lt;?php
     /**
-     * Generic data formatting and manipulation utilities
+     * The central controller for all map features
      *
      * PHP version 7
      *
      * @package    MapPlatform
-     * @subpackage Core\Utils
+     * @subpackage Controllers\Api
      * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    namespace MapPlatform\Core\Utils;
-
+    namespace MapPlatform\Controllers\Api;
+    
     use InvalidArgumentException;
+    use Slim\Http\Request;
+    use Slim\Http\Response;
+    use MapPlatform\Core;
+    use MapPlatform\AbstractClasses\ApiController;
 
     /**
-     * Data formatting/manipulation utilities
+     * Map controller
      *
      * @package    MapPlatform
-     * @subpackage Core\Utils
+     * @subpackage Controllers\Api
      * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class FormattingUtils
+    class MapController extends ApiController
     {
         /**
-         * FormattingUtils constructor.
+         * MapController invoker.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
          */
-        public function __construct() {
+        public function __invoke(Request $request, Response $response, $args) {
+            return $response;
         }
 
         /**
-         * Transform an array into a string of options for a 'select input'.
+         * MapController default page.
          *
-         * @param array $aValues Array of strings to form into options, if key-value pairs are used, then the key will be the value and the value will be the text.
-         * @param bool $setValues
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
          *
-         * @return string
-         *
-         * @throws InvalidArgumentException
-         * @throws RuntimeException
+         * @return \Slim\Http\Response
          */
-        public function arrayToOptions(array &amp;$aValues, bool $setValues = False) {
-            $result = '';
+        public function home(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;ManagementTools '/api/v1/testscript&quot; . (Empty($args['catchall']) ? &quot;&quot; : &quot;/&quot; . $args['catchall']) . &quot;' route&quot;);
+            $resultArr   = array();
 
-            foreach ($aValues as $k =&gt; $v) {
-                if ($result == '')
-                    $result .=&quot;&lt;option&quot; . ($setValues ? &quot; value=\&quot;&quot; . $k . &quot;\&quot;&quot; : &quot;&quot;) . &quot;&gt;&quot; . $v . &quot;&lt;/option&gt;&quot;;
-                else
-                    $result .= PHP_EOL . &quot;&lt;option&quot; . ($setValues ? &quot; value=\&quot;&quot; . $k . &quot;\&quot;&quot; : &quot;&quot;) . &quot;&gt;&quot; . $v . &quot;&lt;/option&gt;&quot;;
-            };
-
-            return $result;
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
         }
     }
 </pre>

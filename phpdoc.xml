@@ -24,5 +24,6 @@
     <files>
         <directory>./src</directory> <!-- Scan and parse all the php files except those found in the paths below -->
         <ignore>settings.php</ignore>
+        <ignore>classes/</ignore>
     </files>
 </phpdoc>

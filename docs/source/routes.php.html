@@ -40,12 +40,12 @@
      *
      * PHP version 7
      *
-     * @package ManagementTools
-     * @author  Thimo Braker &lt;t.braker@sigmax.nl&gt;
-     * @version 1.0.6
+     * @package MapPlatform
+     * @author  Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version 1.0.0
      * @since   First available since Release 1.0.0
      */
-    use ManagementTools\Controllers;
+    use MapPlatform\Controllers;
 
     // IP Pool routes
     $app-&gt;group('/ippools', function () {
@@ -61,33 +61,37 @@
         $this-&gt;get('[/{catchall}]', Controllers\VMInventoryController::class . ':home')-&gt;setName('vminventory');
     });
 
+    // API routes
     $app-&gt;group('/api', function () {
         $this-&gt;group('/v1', function () {
-            $this-&gt;get('/custlist', Controllers\Api\CustomerController::class);
-
-            $this-&gt;group('/utils', function () {
-                $this-&gt;get('/devicetypes', Controllers\Api\UtilityController::class . ':getDeviceTypes');
-            });
-
-            $this-&gt;group('/ippools', function () {
-                $this-&gt;group('/customer', function () {
-                    $this-&gt;post('', Controllers\Api\IPPoolController::class . ':addRange');                            // C
-                    $this-&gt;get('/{customername}', Controllers\Api\IPPoolController::class . ':getPoolByCustomerName'); // R
-                    $this-&gt;put('', Controllers\Api\IPPoolController::class . ':updateRange');                          // U
-                    $this-&gt;delete('', Controllers\Api\IPPoolController::class . ':deleteRange');                       // D
+            $this-&gt;group('/maps', function () {
+                $this-&gt;group('/user', function () {
+                    $this-&gt;get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser'); // R
                 });
 
-                $this-&gt;group('/netaddr', function () {
-                    $this-&gt;post('', Controllers\Api\IPPoolController::class . ':addIPAddress');                     // C
-                    $this-&gt;get('/{netaddr}', Controllers\Api\IPPoolController::class . ':getPoolByNetworkAddress'); // R
-                    $this-&gt;put('', Controllers\Api\IPPoolController::class . ':updateIPAddress');                   // U
-                    $this-&gt;delete('', Controllers\Api\IPPoolController::class . ':deleteIPAddress');                // D
-                });
-
-                // Default route to /api/v1/ippools
-                $this-&gt;get('[/{catchall}]', Controllers\Api\IPPoolController::class . ':getAll'); // R
+                $this-&gt;post('', Controllers\Api\MapController::class . ':addMap');        // C
+                $this-&gt;get('', Controllers\Api\MapController::class . ':getAllMaps');     // R
+                $this-&gt;get('/{mapId}', Controllers\Api\MapController::class . ':getMap'); // R
+                $this-&gt;put('', Controllers\Api\MapController::class . ':updateMap');      // U
+                $this-&gt;delete('', Controllers\Api\MapController::class . ':deleteMap');   // D
             });
 
+            $this-&gt;group('/download', function () {
+                $this-&gt;get('[/{catchall}]', Controllers\Api\DownloadController::class);
+            });
+
+            $this-&gt;group('/rating', function () {
+                $this-&gt;post('', Controllers\Api\RatingController::class . ':addRating');        // C
+                $this-&gt;get('/{mapId}', Controllers\Api\RatingController::class . ':getRating'); // R
+            });
+
+            $this-&gt;group('/testscript', function () {
+                $this-&gt;post('[/{catchall}]', Controllers\Api\MiscController::class . ':testScript');
+            });
+
+            $this-&gt;group('/resizedefault', function () {
+                $this-&gt;get('[/{catchall}]', Controllers\Api\MiscController::class . ':resizeDefault');
+            });
         });
     });
 
