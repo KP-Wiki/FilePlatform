@@ -1,0 +1,103 @@
+<?php
+    /**
+     * The application settings
+     *
+     * PHP version 7
+     *
+     * @package MapPlatform
+     * @author  Thimo Braker <thibmorozier@gmail.com>
+     * @version 1.0.0
+     * @since   First available since Release 1.0.0
+     */
+    use Monolog\Logger;
+
+    $jsDir  = __DIR__ . '/../public/js';
+    $cssDir = __DIR__ . '/../public/css';
+
+    return [
+        'settings' => [
+            'displayErrorDetails' => True, // set to False in production
+            'addContentLengthHeader' => False, // Allow the web server to send the content-length header
+
+            // Renderer settings
+            'renderer' => [
+                'template_path' => __DIR__ . '/../templates/',
+            ],
+
+            // Monolog settings
+            'logger' => [
+                'name' => 'Map Platform',
+                'path' => __DIR__ . '/../logs/app-' . date('Y-m-d', time()) . '.log', // To create one log file per day. Change 'Y' to 'o' for ISO-8601 compliance
+                'level' => Logger::DEBUG,
+            ],
+
+            /*
+             * Engine possibilities:
+             *   cubrid       > Cubrid !!(Needs recompilation of PHP)
+             *   dblib        > FreeTDS / Microsoft SQL Server / Sybase !!(DEPRECATED, DNU)
+             *   firebird     > Firebird/Interbase !!(Requires Interbase/Firebird tools)
+             *   ibm          > IBM DB2 !!(Needs recompilation of PHP)
+             *   informix     > IBM Informix Dynamic Server !!(Needs recompilation of PHP)
+             *   mysql        > MySQL 3.x/4.x/5.x
+             *   oci          > Oracle Call Interface !!(Requires Oracle tools)
+             *   odbc         > ODBC v3 (IBM DB2, unixODBC and win32 ODBC) !!(DNU)
+             *   pgsql        > PostgreSQL
+             *   sqlite       > SQLite 2/3
+             *   sqlsrv       > Microsoft SQL Server / SQL Azure !!(Requires an additional download:
+             *                  https://github.com/Microsoft/msphpsql/releases)
+             *   4d           > 4D !!(Needs recompilation of PHP)
+             *   influxdb     > Influx timeseries Database WebAPI
+             *   udp+influxdb > Influx timeseries Database UDP Socket
+             *
+             * If you choose the sqlite engine, you should use 'host' as the file path
+             */
+            'database' => [
+				'engine' => 'mysql',
+				'host' => 'localhost',
+				'user' => 'aUser',
+				'password' => 'aPassword',
+				'database' => 'MapPlatform'
+            ],
+			
+			'files' => [
+				'uploadDir' => __DIR__ . '../uploads/',
+				'queueDir' => __DIR__ . '../uploads/Queue/',
+				'defaultDir' => __DIR__ . '../uploads/Default/'
+			],
+			
+			'images' => [
+				'maxWidth' => 1280,
+				'maxHeight' => 720,
+				'allowedTypes' => [
+					IMAGETYPE_GIF,
+					IMAGETYPE_JPEG,
+					IMAGETYPE_PNG,
+					IMAGETYPE_BMP
+				]
+			],
+			
+			'reCaptcha' => [
+				'siteKey' => 'google site key',
+				'secretKey' => 'google secret key'
+			],
+			
+			'security' => [
+				'cookieLifetime' = 15778463 // ~6 months in seconds
+			],
+
+            // Minifier settings
+            'minifier' => [
+                'css' => [
+                    $cssDir . '/main.css'               => $cssDir . '/main.min.css'
+                ],
+                'js' => [
+                    $jsDir . '/bootstrap-table-export.js' => $jsDir . '/bootstrap-table-export.min.js',
+                    $jsDir . '/jquery.fileDownload.js'    => $jsDir . '/jquery.fileDownload.min.js',
+                    $jsDir . '/starrr.js'                 => $jsDir . '/starrr.min.js',
+                    $jsDir . '/tableExport.js'            => $jsDir . '/tableExport.min.js',
+                    $jsDir . '/main.js'                   => $jsDir . '/main.min.js'
+                ],
+                'hashFile' => __DIR__ . '/minifyHashes.json'
+            ]
+        ]
+    ];

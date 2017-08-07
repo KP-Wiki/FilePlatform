@@ -1,0 +1,235 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions\Views;
+
+    class NewMap
+    {
+        public function __construct() {
+        }
+
+        public function getContent(&amp;$dbHandler) {
+            $selectQuery = 'SELECT ' .
+                           '    * ' .
+                           'FROM ' .
+                           '    `MapTypes` ' .
+                           'ORDER BY ' .
+                           '    `map_type_pk` ASC;';
+            $dbHandler -&gt; PrepareAndBind($selectQuery);
+            $mapTypes = $dbHandler -&gt; ExecuteAndFetchAll();
+            $dbHandler -&gt; Clean();
+
+            $content = '                    &lt;div class=&quot;stepwizard col-md-offset-3&quot;&gt;' . PHP_EOL .
+                       '                        &lt;div class=&quot;stepwizard-row setup-panel&quot;&gt;' . PHP_EOL .
+                       '                            &lt;div class=&quot;stepwizard-step&quot;&gt;' . PHP_EOL .
+                       '                                &lt;a href=&quot;#step-1&quot; type=&quot;button&quot; class=&quot;btn btn-primary btn-circle&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;span class=&quot;glyphicon glyphicon-folder-open&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                                &lt;/a&gt;' . PHP_EOL .
+                       '                                &lt;p&gt;Step 1&lt;/p&gt;' . PHP_EOL .
+                       '                            &lt;/div&gt;' . PHP_EOL .
+                       '                            &lt;div class=&quot;stepwizard-step&quot;&gt;' . PHP_EOL .
+                       '                                &lt;a href=&quot;#step-2&quot; type=&quot;button&quot; class=&quot;btn btn-default btn-circle disabled&quot; disabled=&quot;disabled&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;span class=&quot;glyphicon glyphicon-edit&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                                &lt;/a&gt;' . PHP_EOL .
+                       '                                &lt;p&gt;Step 2&lt;/p&gt;' . PHP_EOL .
+                       '                            &lt;/div&gt;' . PHP_EOL .
+                       '                            &lt;div class=&quot;stepwizard-step&quot;&gt;' . PHP_EOL .
+                       '                                &lt;a href=&quot;#step-3&quot; type=&quot;button&quot; class=&quot;btn btn-default btn-circle disabled&quot; disabled=&quot;disabled&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;span class=&quot;glyphicon glyphicon-picture&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                                &lt;/a&gt;' . PHP_EOL .
+                       '                                &lt;p&gt;Step 3&lt;/p&gt;' . PHP_EOL .
+                       '                            &lt;/div&gt;' . PHP_EOL .
+                       '                        &lt;/div&gt;' . PHP_EOL .
+                       '                    &lt;/div&gt;' . PHP_EOL .
+                       '                    &lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/upload&quot; id=&quot;uploadMapFrm&quot; role=&quot;form&quot;&gt;' . PHP_EOL .
+                       '                        &lt;div class=&quot;row setup-content&quot; id=&quot;step-1&quot;&gt;' . PHP_EOL .
+                       '                            &lt;div class=&quot;col-xs-6 col-md-offset-3&quot;&gt;' . PHP_EOL .
+                       '                                &lt;div class=&quot;col-md-12&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;h3&gt;Select the map files&lt;/h3&gt;' . PHP_EOL .
+                       '                                    &lt;div class=&quot;form-group required&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;label for=&quot;mapFile&quot; class=&quot;control-label&quot;&gt;.MAP File&lt;/label&gt; ' . PHP_EOL .
+                       '                                        &lt;input type=&quot;file&quot; id=&quot;mapFile&quot; name=&quot;mapFile&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                       'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;.map&quot; required&gt;' . PHP_EOL .
+                       '                                    &lt;/div&gt;' . PHP_EOL .
+                       '                                    &lt;div class=&quot;form-group required&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;label for=&quot;datFile&quot; class=&quot;control-label&quot;&gt;.DAT File&lt;/label&gt; ' . PHP_EOL .
+                       '                                        &lt;input type=&quot;file&quot; id=&quot;datFile&quot; name=&quot;datFile&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                       'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;.dat&quot; required&gt;' . PHP_EOL .
+                       '                                    &lt;/div&gt;' . PHP_EOL .
+                       '                                    &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;label for=&quot;scriptFile&quot;&gt;.SCRIPT File&lt;/label&gt; ' . PHP_EOL .
+                       '                                        &lt;input type=&quot;file&quot; id=&quot;scriptFile&quot; name=&quot;scriptFile&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                       'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;.script&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;/div&gt;' . PHP_EOL .
+                       '                                    &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;label for=&quot;libxFiles&quot;&gt;.LIBX File&lt;/label&gt;' . PHP_EOL .
+                       '                                        &lt;span class=&quot;help-block helpermarginfix&quot;&gt;' . PHP_EOL .
+                       '                                            These are files that hold the translations for your dynamic script texts&lt;br /&gt;' . PHP_EOL .
+                       '                                            More information &lt;a href=&quot;https://github.com/Kromster80/knights_province/wiki&quot; target=&quot;_blank&quot;&gt;Github wiki&lt;/a&gt;' . PHP_EOL .
+                       '                                        &lt;/span&gt; ' . PHP_EOL .
+                       '                                        &lt;input type=&quot;file&quot; id=&quot;libxFiles&quot; name=&quot;libxFiles[]&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                       'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;.libx&quot; multiple&gt;' . PHP_EOL .
+                       '                                    &lt;/div&gt;' . PHP_EOL .
+                       '                                    &lt;button class=&quot;btn btn-primary nextBtn btn-lg pull-right&quot; type=&quot;button&quot; &gt;Next&lt;/button&gt;' . PHP_EOL .
+                       '                                &lt;/div&gt;' . PHP_EOL .
+                       '                            &lt;/div&gt;' . PHP_EOL .
+                       '                        &lt;/div&gt;' . PHP_EOL .
+                       '                        &lt;div class=&quot;row setup-content&quot; id=&quot;step-2&quot;&gt;' . PHP_EOL .
+                       '                            &lt;div class=&quot;col-xs-6 col-md-offset-3&quot;&gt;' . PHP_EOL .
+                       '                                &lt;div class=&quot;col-md-12&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;h3&gt;Provide information about the map&lt;/h3&gt;' . PHP_EOL .
+                       '                                    &lt;div class=&quot;form-group required&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;label for=&quot;mapName&quot; class=&quot;control-label&quot;&gt;Map Name&lt;/label&gt; ' . PHP_EOL .
+                       '                                        &lt;input type=&quot;text&quot; id=&quot;mapName&quot; name=&quot;mapName&quot; class=&quot;form-control&quot; required&gt;' . PHP_EOL .
+                       '                                    &lt;/div&gt;' . PHP_EOL .
+                       '                                    &lt;div class=&quot;form-group required&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;label for=&quot;mapType&quot; class=&quot;control-label&quot;&gt;Map Type&lt;/label&gt; ' . PHP_EOL .
+                       '                                        &lt;select id=&quot;mapType&quot; name=&quot;mapType&quot; class=&quot;form-control&quot; required&gt;' . PHP_EOL;
+
+            foreach ($mapTypes as $maptype) {
+                $content .= '                                            &lt;option value=&quot;' . $maptype['map_type_pk'] . '&quot;&gt;' . $maptype['map_type_name'] . '&lt;/option&gt;' . PHP_EOL;
+            };
+
+            $content .= '                                        &lt;/select&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;div class=&quot;form-group required&quot;&gt;' . PHP_EOL .
+                        '                                        &lt;label for=&quot;mapVersion&quot; class=&quot;control-label&quot;&gt;Map Version&lt;/label&gt; ' . PHP_EOL .
+                        '                                        &lt;input type=&quot;text&quot; id=&quot;mapVersion&quot; name=&quot;mapVersion&quot; class=&quot;form-control&quot; required&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;div class=&quot;form-group required&quot;&gt;' . PHP_EOL .
+                        '                                        &lt;label for=&quot;mapDescShort&quot; class=&quot;control-label&quot;&gt;Short Description&lt;/label&gt; ' . PHP_EOL .
+                        '                                        &lt;input type=&quot;text&quot; id=&quot;mapDescShort&quot; name=&quot;mapDescShort&quot; class=&quot;form-control&quot; required&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;div class=&quot;form-group required&quot;&gt;' . PHP_EOL .
+                        '                                        &lt;label for=&quot;mapDescFull&quot; class=&quot;control-label&quot;&gt;Full Description&lt;/label&gt; ' . PHP_EOL .
+                        '                                        &lt;textarea id=&quot;mapDescFull&quot; name=&quot;mapDescFull&quot; class=&quot;form-control&quot; rows=&quot;3&quot; required&gt;&lt;/textarea&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;button class=&quot;btn btn-primary nextBtn btn-lg pull-right&quot; type=&quot;button&quot; &gt;Next&lt;/button&gt;' . PHP_EOL .
+                        '                                &lt;/div&gt;' . PHP_EOL .
+                        '                            &lt;/div&gt;' . PHP_EOL .
+                        '                        &lt;/div&gt;' . PHP_EOL .
+                        '                        &lt;div class=&quot;row setup-content&quot; id=&quot;step-3&quot;&gt;' . PHP_EOL .
+                        '                            &lt;div class=&quot;col-xs-6 col-md-offset-3&quot;&gt;' . PHP_EOL .
+                        '                                &lt;div class=&quot;col-md-12&quot;&gt;' . PHP_EOL .
+                        '                                    &lt;h3&gt;Add some screenshots for the map&lt;/h3&gt;' . PHP_EOL .
+                        '                                    &lt;div class=&quot;panel panel-default&quot;&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-heading&quot;&gt;Screenshot 1&lt;/div&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-body&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotTitleOne&quot;&gt;Title&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;text&quot; id=&quot;screenshotTitleOne&quot; name=&quot;screenshotTitleOne&quot; class=&quot;form-control&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotFileOne&quot;&gt;File&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;file&quot; id=&quot;screenshotFileOne&quot; name=&quot;screenshotFileOne&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                        'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;image/*&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                        &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;div class=&quot;panel panel-default&quot;&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-heading&quot;&gt;Screenshot 2&lt;/div&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-body&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotTitleTwo&quot;&gt;Title&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;text&quot; id=&quot;screenshotTitleTwo&quot; name=&quot;screenshotTitleTwo&quot; class=&quot;form-control&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotFileTwo&quot;&gt;File&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;file&quot; id=&quot;screenshotFileTwo&quot; name=&quot;screenshotFileTwo&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                        'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;image/*&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                        &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;div class=&quot;panel panel-default&quot;&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-heading&quot;&gt;Screenshot 3&lt;/div&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-body&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotTitleThree&quot;&gt;Title&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;text&quot; id=&quot;screenshotTitleThree&quot; name=&quot;screenshotTitleThree&quot; class=&quot;form-control&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotFileThree&quot;&gt;File&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;file&quot; id=&quot;screenshotFileThree&quot; name=&quot;screenshotFileThree&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                        'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;image/*&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                        &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;div class=&quot;panel panel-default&quot;&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-heading&quot;&gt;Screenshot 4&lt;/div&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-body&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotTitleFour&quot;&gt;Title&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;text&quot; id=&quot;screenshotTitleFour&quot; name=&quot;screenshotTitleFour&quot; class=&quot;form-control&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotFileFour&quot;&gt;File&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;file&quot; id=&quot;screenshotFileFour&quot; name=&quot;screenshotFileFour&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                        'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;image/*&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                        &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;div class=&quot;panel panel-default&quot;&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-heading&quot;&gt;Screenshot 5&lt;/div&gt;'. PHP_EOL .
+                        '                                        &lt;div class=&quot;panel-body&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotTitleFive&quot;&gt;Title&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;text&quot; id=&quot;screenshotTitleFive&quot; name=&quot;screenshotTitleFive&quot; class=&quot;form-control&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                            &lt;div class=&quot;form-group&quot;&gt;' . PHP_EOL .
+                        '                                                &lt;label for=&quot;screenshotFileFive&quot;&gt;File&lt;/label&gt; ' . PHP_EOL .
+                        '                                                &lt;input type=&quot;file&quot; id=&quot;screenshotFileFive&quot; name=&quot;screenshotFileFive&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot; data-buttonBefore=&quot;true&quot; ' .
+                        'data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;image/*&quot;&gt;' . PHP_EOL .
+                        '                                            &lt;/div&gt;' . PHP_EOL .
+                        '                                        &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;/div&gt;' . PHP_EOL .
+                        '                                    &lt;button class=&quot;btn btn-success btn-lg pull-right&quot; type=&quot;submit&quot;&gt;Submit&lt;/button&gt;' . PHP_EOL .
+                        '                                &lt;/div&gt;' . PHP_EOL .
+                        '                            &lt;/div&gt;' . PHP_EOL .
+                        '                        &lt;/div&gt;' . PHP_EOL .
+                        '                    &lt;/form&gt;' . PHP_EOL;
+            return $content;
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

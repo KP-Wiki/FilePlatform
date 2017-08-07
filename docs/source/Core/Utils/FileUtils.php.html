@@ -1,0 +1,172 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    /**
+     * Generic file utilities
+     *
+     * PHP version 7
+     *
+     * @package    ManagementTools
+     * @subpackage Core\Utils
+     * @author     Thimo Braker &lt;t.braker@sigmax.nl&gt;
+     * @version    1.0.2
+     * @since      First available since Release 1.0.0
+     */
+    namespace ManagementTools\Core\Utils;
+
+    use Slim\Container;
+    use MatthiasMullie\Minify;
+    use InvalidArgumentException;
+
+    /**
+     * File utilities
+     *
+     * @package    ManagementTools
+     * @subpackage Core\Utils
+     * @author     Thimo Braker &lt;t.braker@sigmax.nl&gt;
+     * @version    1.0.2
+     * @since      First available since Release 1.0.0
+     */
+    class FileUtils
+    {
+        /** @var \Slim\Container $container The framework container */
+        private $container;
+
+        /**
+         * FileUtils constructor.
+         *
+         * @param \Slim\Container The application controller.
+         */
+        public function __construct($container) {
+            $this-&gt;container = $container;
+        }
+
+        /**
+         * Get the text inside of a file.
+         *
+         * @param string $aFile
+         *
+         * @return string
+         */
+        public function getFileText(string $aFile) {
+            $fileHandle = fopen($aFile, 'r');
+            $result     = '';
+
+            if ($fileHandle !== False) {
+                while ($line = fgets($fileHandle)) {
+                    $result .= $line;
+                };
+
+                fclose($fileHandle);
+            };
+
+            return $result;
+        }
+
+        /**
+         * Perform the main actions on the files and determine if it should/can be minified.
+         *
+         * @param array $arr
+         * @param string $type
+         */
+        private function minify($arr, $type) {
+            $settings = $this-&gt;container-&gt;get('settings')['minifier'];
+            $hashArr  = file_exists($settings['hashFile']) ? json_decode(file_get_contents($settings['hashFile']), True) : array();
+
+            foreach ($arr as $inFile =&gt; $outFile) {
+                // Skip the file if the source does not exist
+                if (!file_exists($inFile)) {
+                    $this-&gt;container-&gt;logger-&gt;err(&quot;Error: File '&quot; . $inFile . &quot;' does not exist, Skipping.&quot;);
+                    continue;
+                };
+
+                // Skip the file if the source hashes are equal
+                if (array_key_exists($inFile, $hashArr) &amp;&amp; $hashArr[$inFile] == sha1(file_get_contents($inFile)))
+                    continue;
+
+                $writeHandle = fopen($outFile, 'w');
+
+                // Skip the file if the destination can not be opened for writing
+                if (!$writeHandle) {
+                    $this-&gt;container-&gt;logger-&gt;err(&quot;Error: Unable to open file '&quot; . $outFile . &quot;', Skipping.&quot;);
+                    continue;
+                };
+
+                if ($type == 'CSS')
+                    $minifier = new Minify\CSS($inFile);
+                elseif ($type == 'JS')
+                    $minifier = new Minify\JS($inFile);
+                else // Completely ignore bad types
+                    continue;
+
+                fwrite($writeHandle, $minifier-&gt;minify());
+                fclose($writeHandle);
+
+                $hashArr[$inFile] = sha1(file_get_contents($inFile));
+                $this-&gt;container-&gt;logger-&gt;info(&quot;Successfully minified file '&quot; . $inFile . &quot;' to '&quot; . $outFile . &quot;'.&quot;);
+            };
+
+            file_put_contents($settings['hashFile'], json_encode($hashArr, JSON_PRETTY_PRINT));
+        }
+
+        /**
+         * Minify all JS files in the array.
+         *
+         * @param array $arr
+         */
+        public function minifyJS($arr){
+            $this-&gt;minify($arr, 'JS');
+        }
+
+        /**
+         * Minify all CSS files in the array.
+         *
+         * @param array $arr
+         */
+        public function minifyCSS($arr){
+            $this-&gt;minify($arr, 'CSS');
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

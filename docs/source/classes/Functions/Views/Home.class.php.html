@@ -1,0 +1,93 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions\Views;
+
+    class Home
+    {
+        public function __construct() {
+        }
+
+        public function getContent(&amp;$dbHandler) {
+            $mapListItems = null;
+
+            $content = '                    &lt;div class=&quot;panel panel-default&quot;&gt;' . PHP_EOL .
+                       '                        &lt;div class=&quot;panel-heading&quot;&gt;Knights Province Map database&lt;/div&gt;' . PHP_EOL .
+                       '                        &lt;div class=&quot;panel-body&quot;&gt;' . PHP_EOL .
+                       '                            &lt;table id=&quot;homeTable&quot; class=&quot;table table-striped table-bordered table-hover&quot; ' .
+                       'data-toggle=&quot;table&quot; ' .
+                       'data-search=&quot;true&quot; ' .
+                       'data-sort-name=&quot;avg_rating&quot; ' .
+                       'data-sort-order=&quot;desc&quot; ' .
+                       'data-show-toggle=&quot;true&quot; ' .
+                       'data-show-columns=&quot;true&quot; ' .
+                       'data-show-export=&quot;true&quot; ' .
+                       'data-minimum-count-columns=&quot;2&quot; ' .
+                       'data-url=&quot;/api/v1/maps&quot; ' .
+                       'data-show-refresh=&quot;true&quot; ' .
+                       'data-show-pagination-switch=&quot;true&quot; ' .
+                       'data-pagination=&quot;true&quot; ' .
+                       'data-page-list=&quot;[25, 50, 100, ALL]&quot; ' .
+                       'data-page-size=&quot;25&quot; ' .
+                       'data-show-footer=&quot;false&quot; ' .
+                       'data-side-pagination=&quot;client&quot;&gt;' . PHP_EOL .
+                       '                                &lt;thead&gt;' . PHP_EOL .
+                       '                                    &lt;tr&gt;' . PHP_EOL .
+                       '                                        &lt;th class=&quot;col-xs-2&quot; data-field=&quot;map_type_name&quot; data-sortable=&quot;true&quot;&gt;Type&lt;/th&gt;' . PHP_EOL .
+                       '                                        &lt;th class=&quot;col-xs-2&quot; data-field=&quot;map_name&quot; data-formatter=&quot;mapNameFormatter&quot; data-sortable=&quot;true&quot;&gt;Name&lt;/th&gt;' . PHP_EOL .
+                       '                                        &lt;th class=&quot;col-xs-2&quot; data-field=&quot;user_name&quot; data-formatter=&quot;mapAuthorFormatter&quot; data-sortable=&quot;true&quot;&gt;Author&lt;/th&gt;' . PHP_EOL .
+                       '                                        &lt;th class=&quot;col-xs-4&quot; data-field=&quot;rev_map_description_short&quot; data-sortable=&quot;false&quot;&gt;Description&lt;/th&gt;' . PHP_EOL .
+                       '                                        &lt;th class=&quot;col-xs-1&quot; data-field=&quot;avg_rating&quot; data-sortable=&quot;true&quot;&gt;Rating&lt;/th&gt;' . PHP_EOL .
+                       '                                        &lt;th class=&quot;col-xs-1&quot; data-field=&quot;map_downloads&quot; data-sortable=&quot;true&quot;&gt;Downloads&lt;/th&gt;' . PHP_EOL .
+                       '                                    &lt;/tr&gt;' . PHP_EOL .
+                       '                                &lt;/thead&gt;' . PHP_EOL .
+                       '                            &lt;/table&gt;' . PHP_EOL .
+                       '                        &lt;/div&gt;' . PHP_EOL .
+                       '                    &lt;/div&gt;' . PHP_EOL;
+
+            return $content;
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

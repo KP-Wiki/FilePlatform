@@ -1,2 +1,0 @@
-<?php
-    Die('Nope');

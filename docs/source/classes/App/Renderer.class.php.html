@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace App;
+
+    /**
+     ** HTML template rendering engine for 'maps.kp-wiki.org'
+     **
+     ** @link https://kp-wiki.org/ Knights Province fan community
+     ** @author Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     ** @version 1.0
+     **/
+    class Renderer
+    {
+        /**
+         ** Main template file
+         **/
+        private $mainTemplate = '';
+        /**
+         ** Navigation template file
+         **/
+        private $navTemplate = '';
+        /**
+         ** User navigation template file
+         **/
+        private $userNavTemplate = '';
+        /**
+         ** Contributor navigation template file
+         **/
+        private $contributorNavTemplate = '';
+        /**
+         ** Admin navigation template file
+         **/
+        private $adminNavTemplate = '';
+        /**
+         ** Main content template file
+         **/
+        private $content = null;
+        /**
+         ** Array of values, the keys should match the tags in the template files
+         **/
+        private $values = Array();
+
+        public function __construct() {
+            global $config;
+
+            $this -&gt; mainTemplate           = $config['tpl']['main'];
+            $this -&gt; navTemplate            = $config['tpl']['nav'];
+            $this -&gt; userNavTemplate        = $config['tpl']['userNav'];
+            $this -&gt; contributorNavTemplate = $config['tpl']['contribNav'];
+            $this -&gt; adminNavTemplate       = $config['tpl']['adminNav'];
+        }
+
+        /**
+         ** Sets a value for replacing a specific tag
+         **/
+        public function setValue($key, $value) {
+            $this -&gt; values[$key] = $value;
+        }
+
+        /**
+         ** Sets the page content
+         **/
+        public function setContent($value) {
+            $this -&gt; content = $value;
+        }
+        
+        /**
+         ** Outputs the content of the template, replacing the keys for its respective values
+         **/
+        public function output() {
+            if (!file_exists($this -&gt; mainTemplate))
+                return 'Error loading main template file (' . $this -&gt; mainTemplate . ').&lt;br /&gt;';
+
+            if (!file_exists($this -&gt; navTemplate))
+                return 'Error loading navbar template file (' . $this -&gt; mainTemplate . ').&lt;br /&gt;';
+
+            // Load the main template into the output variable
+            $output = file_get_contents($this -&gt; mainTemplate);
+            // Insert the content into the output variable
+            $output = str_replace('[@content]', $this -&gt; content, $output);
+
+            // Determine which menu to show
+            switch ($_SESSION['user'] -&gt; group) {
+                case 1: {
+                    $navMenu = file_get_contents($this -&gt; userNavTemplate);
+                    break;
+                }
+                case 5: {
+                    $navMenu = file_get_contents($this -&gt; contributorNavTemplate);
+                    break;
+                }
+                case 10: {
+                    $navMenu = file_get_contents($this -&gt; adminNavTemplate);
+                    break;
+                }
+                default:
+                    $navMenu = file_get_contents($this -&gt; navTemplate);
+            }
+
+            // Insert the nav bar into the output variable
+            $output = str_replace('[@nav]', $navMenu, $output);
+
+            // Replace tags with the defined values
+            foreach ($this -&gt; values as $key =&gt; $value) {
+                $tagToReplace = '[@' . $key . ']';
+                $output       = str_replace($tagToReplace, $value, $output);
+            };
+
+            return $output;
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

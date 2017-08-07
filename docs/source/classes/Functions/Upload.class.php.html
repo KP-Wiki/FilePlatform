@@ -1,0 +1,502 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions;
+    use \ZipArchive;
+    use \Exception;
+    use \Imagick;
+    use \App\Logger;
+
+    class Upload
+    {
+        private $utils = null;
+
+        public function __construct(&amp;$utilsClass) {
+            $this -&gt; utils = $utilsClass;
+        }
+
+        public function getContent(&amp;$dbHandler) {
+            global $config, $request, $logger;
+            $logger -&gt; log('Upload::getContent -&gt; start()', Logger::DEBUG);
+            $logger -&gt; log('POST = ' . print_r($_POST, True), Logger::DEBUG);
+            $logger -&gt; log('FILES = ' . print_r($_FILES, True), Logger::DEBUG);
+
+            try {
+                if (!Empty($request['call_parts'][1])) {
+                    $mapVersion = filter_input(INPUT_POST, 'newMapRevVersion', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                       FILTER_FLAG_ENCODE_LOW ||
+                                                                                                       FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                       FILTER_FLAG_ENCODE_AMP);
+
+                    if (Empty($_FILES['newMapRevMapFile']['name']) ||
+                        Empty($_FILES['newMapRevDatFile']['name']) ||
+                        Empty($mapVersion)) {
+                        $logger -&gt; log('FILES-&gt;newMapRevMapFile-&gt;name Empty? = ' . print_r(Empty($_FILES['newMapRevMapFile']['name']), True), Logger::DEBUG);
+                        $logger -&gt; log('FILES-&gt;newMapRevDatFile-&gt;name Empty? = ' . print_r(Empty($_FILES['newMapRevDatFile']['name']), True), Logger::DEBUG);
+                        $logger -&gt; log('POST-&gt;newMapRevVersion Empty? = ' .        print_r(Empty($mapVersion), True),                         Logger::DEBUG);
+                        throw new Exception('Invalid request, inputs missing');
+                    };
+
+                    $mapItem     = null;
+                    $mapId       = IntVal($request['call_parts'][1]);
+                    $mapInfoFunc = new \Functions\MapInfo($this -&gt; utils);
+                    $mapItem     = $mapInfoFunc -&gt; getMapDetails($dbHandler, $mapId);
+
+                    if (Empty($mapItem) || $mapItem['data']['rev_map_version'] === $mapVersion)
+                        throw new Exception('Map versions are identical, please change it.');
+
+                    $mapArchive      = new ZipArchive();
+                    $mapName         = $mapItem['data']['map_name'];
+                    $mapDescShort    = $mapItem['data']['rev_map_description_short'];
+                    $mapDescFull     = $mapItem['data']['rev_map_description'];
+                    $mapDirInArchive = $mapName . '/';
+                    $mapDirOnDisk    = $config['files']['uploadDir'] . '/' . $mapName . '/' . $mapVersion . '/';
+
+                    // Create the directory that will hold our newly created ZIP archive
+                    $this -&gt; utils -&gt; mkdirRecursive(APP_DIR . $mapDirOnDisk);
+
+                    // Try to create the new archive
+                    if (!$mapArchive -&gt; open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE))
+                        throw new Exception('Unable to create the archive');
+
+                    // Create a new directory
+                    $mapArchive -&gt; addEmptyDir($mapDirInArchive);
+                    // Add the required files
+                    $mapArchive -&gt; addFile($_FILES['newMapRevMapFile']['tmp_name'], $mapDirInArchive . $mapName . '.map');
+                    $mapArchive -&gt; addFile($_FILES['newMapRevDatFile']['tmp_name'], $mapDirInArchive . $mapName . '.dat');
+
+                    if (!Empty($_FILES['newMapRevScriptFile']['name']))
+                        $mapArchive -&gt; addFile($_FILES['newMapRevScriptFile']['tmp_name'], $mapDirInArchive . $mapName . '.script');
+
+                    // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
+                    if (!Empty($_FILES['newMapRevLibxFiles']['name'][0])) {
+                        $libxFiles = $this -&gt; utils -&gt; reArrayFiles($_FILES['newMapRevLibxFiles']);
+
+                        // Add the files
+                        foreach ($libxFiles as $libxFile) {
+                            $fileBitsArr   = Explode('.', $libxFile['name']);
+                            $fileBitsCount = count($fileBitsArr);
+                            $fileExtention = '.' . $fileBitsArr[$fileBitsCount - 2] . '.libx'; // Get the language part as well
+                            $mapArchive -&gt; addFile($libxFile['tmp_name'], $mapDirInArchive . $mapName . $fileExtention);
+                        };
+                    };
+
+                    $mapArchive -&gt; close();
+
+                    $insertRevQuery = 'INSERT INTO ' . PHP_EOL .
+                                      '    `Revisions` (`map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, ' .
+                                      '`rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '. PHP_EOL .
+                                      'VALUES ' . PHP_EOL .
+                                      '    (:mapid, :filename, :filepath, :mapversion, :mapdescshort, :mapdescfull, :revstatusid);';
+                    $dbHandler -&gt; PrepareAndBind($insertRevQuery, Array('mapid'        =&gt; $mapId,
+                                                                        'filename'     =&gt; $mapName . '.zip',
+                                                                        'filepath'     =&gt; $mapDirOnDisk,
+                                                                        'mapversion'   =&gt; $mapVersion,
+                                                                        'mapdescshort' =&gt; $mapDescShort,
+                                                                        'mapdescfull'  =&gt; $mapDescFull,
+                                                                        'revstatusid'  =&gt; 1));
+                    $dbHandler -&gt; Execute();
+                    $revId = $dbHandler -&gt; GetLastInsertId();
+                    $dbHandler -&gt; Clean();
+
+                    if ($revId == null)
+                        throw new Exception('Could not add the map to the database');
+
+                    $updateQuery = 'UPDATE ' . PHP_EOL .
+                                   '    `Revisions` '. PHP_EOL .
+                                   'SET ' . PHP_EOL .
+                                   '    `rev_status_fk` = 3 '. PHP_EOL .
+                                   'WHERE ' . PHP_EOL .
+                                   '    `rev_pk` = :maprevid;';
+                    $dbHandler -&gt; PrepareAndBind($updateQuery, Array('maprevid' =&gt; $mapItem['data']['rev_pk']));
+                    $dbHandler -&gt; Execute();
+                    $dbHandler -&gt; Clean();
+
+                    $content['status']  = 'Success';
+                    $content['message'] = 'Map has been added successfully!&lt;br /&gt;' . PHP_EOL .
+                                          'Redirecting you now.';
+                    $content['data']    = $mapId;
+                } else {
+                    $mapName      = filter_input(INPUT_POST, 'mapName', FILTER_SANITIZE_STRING,      FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapVersion   = filter_input(INPUT_POST, 'mapVersion', FILTER_SANITIZE_STRING,   FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapDescShort = filter_input(INPUT_POST, 'mapDescShort', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapDescFull  = filter_input(INPUT_POST, 'mapDescFull', FILTER_SANITIZE_STRING,  FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapType      = IntVal(filter_input(INPUT_POST, 'mapType', FILTER_SANITIZE_NUMBER_INT));
+
+                    if (Empty($_FILES['mapFile']['name']) ||
+                        Empty($_FILES['datFile']['name']) ||
+                        Empty($mapName) ||
+                        ($mapType &lt; 0) ||
+                        Empty($mapVersion) ||
+                        Empty($mapDescShort) ||
+                        Empty($mapDescFull)) {
+                        $logger -&gt; log('FILES-&gt;mapFile-&gt;name Empty? = ' . print_r(Empty($_FILES['mapFile']['name']), True), Logger::DEBUG);
+                        $logger -&gt; log('FILES-&gt;datFile-&gt;name Empty? = ' . print_r(Empty($_FILES['datFile']['name']), True), Logger::DEBUG);
+                        $logger -&gt; log('POST-&gt;mapName Empty? = ' .        print_r(Empty($mapName), True),                   Logger::DEBUG);
+                        $logger -&gt; log('POST-&gt;mapType &lt; 0? = ' .          print_r(($mapType &lt; 0), True),                    Logger::DEBUG);
+                        $logger -&gt; log('POST-&gt;mapVersion Empty? = ' .     print_r(Empty($mapVersion), True),                Logger::DEBUG);
+                        $logger -&gt; log('POST-&gt;mapDescShort Empty? = ' .   print_r(Empty($mapDescShort), True),              Logger::DEBUG);
+                        $logger -&gt; log('POST-&gt;mapDescFull Empty? = ' .    print_r(Empty($mapDescFull), True),               Logger::DEBUG);
+                        throw new Exception('Invalid request, inputs missing');
+                    };
+
+                    $mapArchive      = new ZipArchive();
+                    $mapDirInArchive = $mapName . '/';
+                    $mapDirOnDisk    = $config['files']['uploadDir'] . '/' . $mapName . '/' . $mapVersion . '/';
+
+                    $selectQuery = 'SELECT ' . PHP_EOL .
+                                   '    COUNT(*) AS map_count ' . PHP_EOL .
+                                   'FROM ' . PHP_EOL .
+                                   '    `Maps` ' . PHP_EOL .
+                                   'WHERE ' . PHP_EOL .
+                                   '    `map_name` = :mapname;';
+                    $dbHandler -&gt; PrepareAndBind($selectQuery, Array('mapname' =&gt; $mapName));
+                    $mapCount = $dbHandler -&gt; ExecuteAndFetch();
+
+                    if ($mapCount['map_count'] &gt; 0)
+                        throw new Exception('Map already exists!');
+
+                    // Create the directory that will hold our newly created ZIP archive
+                    $this -&gt; utils -&gt; mkdirRecursive(APP_DIR . $mapDirOnDisk);
+
+                    // Try to create the new archive
+                    if (!$mapArchive -&gt; open(APP_DIR . $mapDirOnDisk . $mapName . '.zip', ZIPARCHIVE::CREATE))
+                        throw new Exception('Unable to create the archive');
+
+                    // Create a new directory
+                    $mapArchive -&gt; addEmptyDir($mapDirInArchive);
+                    // Add the required files
+                    $mapArchive -&gt; addFile($_FILES['mapFile']['tmp_name'], $mapDirInArchive . $mapName . '.map');
+                    $mapArchive -&gt; addFile($_FILES['datFile']['tmp_name'], $mapDirInArchive . $mapName . '.dat');
+
+                    if (!Empty($_FILES['scriptFile']['name']))
+                        $mapArchive -&gt; addFile($_FILES['scriptFile']['tmp_name'], $mapDirInArchive . $mapName . '.script');
+
+                    // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
+                    if (!Empty($_FILES['libxFiles']['name'][0])) {
+                        $libxFiles = $this -&gt; utils -&gt; reArrayFiles($_FILES['libxFiles']);
+
+                        // Add the files
+                        foreach ($libxFiles as $libxFile) {
+                            $fileBitsArr   = Explode('.', $libxFile['name']);
+                            $fileBitsCount = count($fileBitsArr);
+                            $fileExtention = '.' . $fileBitsArr[$fileBitsCount - 2] . '.libx'; // Get the language part as well
+                            $mapArchive -&gt; addFile($libxFile['tmp_name'], $mapDirInArchive . $mapName . $fileExtention);
+                        };
+                    };
+
+                    $mapArchive -&gt; close();
+
+                    $insertMapQuery = 'INSERT INTO ' . PHP_EOL .
+                                      '    `Maps` (`map_name`, `user_fk`, `map_Type_fk`) '. PHP_EOL .
+                                      'VALUES ' . PHP_EOL .
+                                      '    (:mapname, :userid, :maptypeid);';
+                    $dbHandler -&gt; PrepareAndBind($insertMapQuery, Array('mapname'   =&gt; $mapName,
+                                                                        'userid'    =&gt; $_SESSION['user'] -&gt; id,
+                                                                        'maptypeid' =&gt; $mapType));
+                    $dbHandler -&gt; Execute();
+                    $mapId = $dbHandler -&gt; GetLastInsertId();
+                    $dbHandler -&gt; Clean();
+
+                    if ($mapId == null)
+                        throw new Exception('Could not add the map to the database');
+
+                    $insertRevQuery = 'INSERT INTO ' . PHP_EOL .
+                                      '    `Revisions` (`map_fk`, `rev_map_file_name`, `rev_map_file_path`, `rev_map_version`, ' .
+                                      '`rev_map_description_short`, `rev_map_description`, `rev_status_fk`) '. PHP_EOL .
+                                      'VALUES ' . PHP_EOL .
+                                      '    (:mapid, :filename, :filepath, :mapversion, :mapdescshort, :mapdescfull, :revstatusid);';
+                    $dbHandler -&gt; PrepareAndBind($insertRevQuery, Array('mapid'        =&gt; $mapId,
+                                                                        'filename'     =&gt; $mapName . '.zip',
+                                                                        'filepath'     =&gt; $mapDirOnDisk,
+                                                                        'mapversion'   =&gt; $mapVersion,
+                                                                        'mapdescshort' =&gt; $mapDescShort,
+                                                                        'mapdescfull'  =&gt; $mapDescFull,
+                                                                        'revstatusid'  =&gt; 1));
+                    $dbHandler -&gt; Execute();
+                    $revId = $dbHandler -&gt; GetLastInsertId();
+                    $dbHandler -&gt; Clean();
+
+                    if ($revId == null)
+                        throw new Exception('Could not add the map to the database');
+
+                    if (!$this -&gt; uploadImages($dbHandler, $mapName, $mapDirOnDisk, $revId))
+                        throw new Exception('Could not add the screenshots to the map');
+
+                    $content['status']  = 'Success';
+                    $content['message'] = 'Map has been added successfully!&lt;br /&gt;' . PHP_EOL .
+                                          'Redirecting you now.';
+                    $content['data']    = $mapId;
+                };
+            } catch (Exception $e) {
+                $content['status']  = 'Error';
+                $content['message'] = $e -&gt; getMessage();
+            };
+
+            return $content;
+        }
+
+        private function uploadImages(&amp;$dbHandler, $mapName, $mapDir, $revId, $oldRevId = null) {
+            global $config;
+
+            try {
+                $cleanMapName    = $this -&gt; utils -&gt; cleanInput($mapName, True);
+                $imageOrderNum   = 0;
+                $screenshotFiles = Array();
+
+                if ($oldRevId !== null) {
+                    $selectQuery = 'SELECT ' . PHP_EOL .
+                                   '    * ' . PHP_EOL .
+                                   'FROM ' . PHP_EOL .
+                                   '    `Screenshots` ' . PHP_EOL .
+                                   'WHERE ' . PHP_EOL .
+                                   '    `rev_fk` = :revid ' . PHP_EOL .
+                                   'ORDER BY ' . PHP_EOL .
+                                   '    `screen_order` ASC;';
+                    $dbHandler -&gt; PrepareAndBind($selectQuery, Array('revid' =&gt; $oldRevId));
+                    $oldScreenshotFiles = $dbHandler -&gt; ExecuteAndFetchAll();
+                    $dbHandler -&gt; Clean();
+                } else {
+                    $oldScreenshotFiles = Array();
+                };
+
+                if (!Empty($_FILES['screenshotFileOne']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileOne']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileOne']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                            'screenshotTitleOne',
+                                                                                            FILTER_SANITIZE_STRING,
+                                                                                            FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                            FILTER_FLAG_STRIP_LOW ||
+                                                                                            FILTER_FLAG_STRIP_HIGH ||
+                                                                                            FILTER_FLAG_STRIP_AMP))
+                                                                         ? $cleanMapName . '-' . $imageOrderNum
+                                                                         : filter_input(INPUT_POST,
+                                                                                        'screenshotTitleOne',
+                                                                                        FILTER_SANITIZE_STRING,
+                                                                                        FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                        FILTER_FLAG_STRIP_LOW ||
+                                                                                        FILTER_FLAG_STRIP_HIGH ||
+                                                                                        FILTER_FLAG_STRIP_AMP));
+                        $_FILES['screenshotFileOne']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileOne']['imageType']     = $detectedType;
+                        $screenshotFiles[]                            = $_FILES['screenshotFileOne'];
+                        $imageOrderNum++;
+                    };
+                };
+
+                if (!Empty($_FILES['screenshotFileTwo']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileTwo']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileTwo']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                            'screenshotTitleTwo',
+                                                                                            FILTER_SANITIZE_STRING,
+                                                                                            FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                            FILTER_FLAG_STRIP_LOW ||
+                                                                                            FILTER_FLAG_STRIP_HIGH ||
+                                                                                            FILTER_FLAG_STRIP_AMP))
+                                                                         ? $cleanMapName . '-' . $imageOrderNum
+                                                                         : filter_input(INPUT_POST,
+                                                                                        'screenshotTitleTwo',
+                                                                                        FILTER_SANITIZE_STRING,
+                                                                                        FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                        FILTER_FLAG_STRIP_LOW ||
+                                                                                        FILTER_FLAG_STRIP_HIGH ||
+                                                                                        FILTER_FLAG_STRIP_AMP));
+                        $_FILES['screenshotFileTwo']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileTwo']['imageType']     = $detectedType;
+                        $screenshotFiles[]                            = $_FILES['screenshotFileTwo'];
+                        $imageOrderNum++;
+                    };
+                };
+
+                if (!Empty($_FILES['screenshotFileThree']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileThree']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileThree']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                              'screenshotTitleThree',
+                                                                                              FILTER_SANITIZE_STRING,
+                                                                                              FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                              FILTER_FLAG_STRIP_LOW ||
+                                                                                              FILTER_FLAG_STRIP_HIGH ||
+                                                                                              FILTER_FLAG_STRIP_AMP))
+                                                                           ? $cleanMapName . '-' . $imageOrderNum
+                                                                           : filter_input(INPUT_POST,
+                                                                                          'screenshotTitleThree',
+                                                                                          FILTER_SANITIZE_STRING,
+                                                                                          FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                          FILTER_FLAG_STRIP_LOW ||
+                                                                                          FILTER_FLAG_STRIP_HIGH ||
+                                                                                          FILTER_FLAG_STRIP_AMP));
+                        $_FILES['screenshotFileThree']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileThree']['imageType']     = $detectedType;
+                        $screenshotFiles[]                              = $_FILES['screenshotFileThree'];
+                        $imageOrderNum++;
+                    };
+                };
+
+                if (!Empty($_FILES['screenshotFileFour']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileFour']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileFour']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                             'screenshotTitleFour',
+                                                                                             FILTER_SANITIZE_STRING,
+                                                                                             FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                             FILTER_FLAG_STRIP_LOW ||
+                                                                                             FILTER_FLAG_STRIP_HIGH ||
+                                                                                             FILTER_FLAG_STRIP_AMP))
+                                                                          ? $cleanMapName . '-' . $imageOrderNum
+                                                                          : filter_input(INPUT_POST,
+                                                                                         'screenshotTitleFour',
+                                                                                         FILTER_SANITIZE_STRING,
+                                                                                         FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                         FILTER_FLAG_STRIP_LOW ||
+                                                                                         FILTER_FLAG_STRIP_HIGH ||
+                                                                                         FILTER_FLAG_STRIP_AMP));
+                        $_FILES['screenshotFileFour']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileFour']['imageType']     = $detectedType;
+                        $screenshotFiles[]                             = $_FILES['screenshotFileFour'];
+                        $imageOrderNum++;
+                    };
+                };
+
+                if (!Empty($_FILES['screenshotFileFive']['tmp_name'])) {
+                    $detectedType = exif_imagetype($_FILES['screenshotFileFive']['tmp_name']);
+                    $validFile    = in_array($detectedType, $config['images']['allowedTypes']);
+
+                    if ($validFile) {
+                        $_FILES['screenshotFileFive']['imageTitle']    = (Empty(filter_input(INPUT_POST,
+                                                                                             'screenshotTitleFive',
+                                                                                             FILTER_SANITIZE_STRING,
+                                                                                             FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                             FILTER_FLAG_STRIP_LOW ||
+                                                                                             FILTER_FLAG_STRIP_HIGH ||
+                                                                                             FILTER_FLAG_STRIP_AMP))
+                                                                          ? $cleanMapName . '-' . $imageOrderNum
+                                                                          : filter_input(INPUT_POST,
+                                                                                         'screenshotTitleFive',
+                                                                                         FILTER_SANITIZE_STRING,
+                                                                                         FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                         FILTER_FLAG_STRIP_LOW ||
+                                                                                         FILTER_FLAG_STRIP_HIGH ||
+                                                                                         FILTER_FLAG_STRIP_AMP));
+                        $_FILES['screenshotFileFive']['imageOrderNum'] = $imageOrderNum;
+                        $_FILES['screenshotFileFive']['imageType']     = $detectedType;
+                        $screenshotFiles[]                             = $_FILES['screenshotFileFive'];
+                    };
+                };
+
+                foreach ($screenshotFiles as $screenshotFile) {
+                    $imageObject = new Imagick($screenshotFile['tmp_name']);
+                    $this -&gt; utils -&gt; resizeImage($imageObject, $config['images']['maxWidth'], $config['images']['maxHeight']);
+
+                    if ($screenshotFile['imageType'] == IMAGETYPE_GIF) {
+                        $imageExtention = '.gif';
+                    } else {
+                        $imageExtention = '.png';
+                        $imageObject -&gt; setImageFormat('png');
+                    };
+
+                    $imageFileName = $cleanMapName . '-' . $screenshotFile['imageOrderNum'] . $imageExtention;
+
+                    $imageObject -&gt; writeImage(APP_DIR . $mapDir . $imageFileName);
+                    $imageObject -&gt; destroy();
+
+                    $insertQuery = 'INSERT INTO ' . PHP_EOL .
+                                   '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' . PHP_EOL .
+                                   'VALUES ' . PHP_EOL .
+                                   '    (:revid, :screentitle, :screenalt, :screenfilename, :screenpath, :screenorder);';
+                    $dbHandler -&gt; PrepareAndBind($insertQuery, Array('revid'          =&gt; $revId,
+                                                                     'screentitle'    =&gt; $screenshotFile['imageTitle'],
+                                                                     'screenalt'      =&gt; $imageFileName,
+                                                                     'screenfilename' =&gt; $imageFileName,
+                                                                     'screenpath'     =&gt; $mapDir,
+                                                                     'screenorder'    =&gt; $screenshotFile['imageOrderNum']));
+                    $dbHandler -&gt; Execute();
+                };
+
+                foreach ($oldScreenshotFiles as $oldScreenshotFile) { // Only append these to the revision but keep original location
+                    $insertQuery = 'INSERT INTO ' . PHP_EOL .
+                                   '    `Screenshots` (`rev_fk`, `screen_title`, `screen_alt`, `screen_file_name`, `screen_path`, `screen_order`) ' . PHP_EOL .
+                                   'VALUES ' . PHP_EOL .
+                                   '    (:revid, :screentitle, :screenalt, :screenfilename, :screenpath, :screenorder);';
+                    $dbHandler -&gt; PrepareAndBind($insertQuery, Array('revid'          =&gt; $revId,
+                                                                     'screentitle'    =&gt; $oldScreenshotFile['screen_title'],
+                                                                     'screenalt'      =&gt; $oldScreenshotFile['screen_alt'],
+                                                                     'screenfilename' =&gt; $oldScreenshotFile['screen_file_name'],
+                                                                     'screenpath'     =&gt; $oldScreenshotFile['screen_path'],
+                                                                     'screenorder'    =&gt; $imageOrderNum));
+                    $dbHandler -&gt; Execute();
+
+                    $imageOrderNum++;
+                };
+
+                return True;
+            } catch (Exception $e) {
+                return False;
+            };
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

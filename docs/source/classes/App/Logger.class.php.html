@@ -1,0 +1,166 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace App;
+    use \Exception;
+
+    class LoggerException extends Exception {}
+
+    /**
+     * Logger
+     *
+     * Log notices, warnings, errors or fatal errors into a log file.
+     */
+    class Logger
+    {
+        /**
+         * Holds the file handle.
+         *
+         * @var resource
+         */
+        protected $fileHandle = null;
+        /**
+         * The time format to show in the log.
+         *
+         * @var string
+         */
+        protected $timeFormat = 'd.m.Y - H:i:s';
+        /**
+         * The file permissions.
+         */
+        const FILE_CHMOD = 664;
+        const DEBUG      = '[DEBUG]';
+        const NOTICE     = '[NOTICE]';
+        const WARNING    = '[WARNING]';
+        const ERROR      = '[ERROR]';
+        const FATAL      = '[FATAL]';
+
+        /**
+         * Opens the file handle.
+         *
+         * @param string $logfile The path to the loggable file.
+         */
+        public function __construct($logfile) {
+            if($this -&gt; fileHandle == null)
+                $this -&gt; openLogFile($logfile);
+        }
+
+        /**
+         * Closes the file handle.
+         */
+        public function __destruct() {
+            $this -&gt; closeLogFile();
+        }
+
+        /**
+         * Logs the message into the log file.
+         *
+         * @param  string $message     The log message.
+         * @param  int    $messageType Optional: urgency of the message.
+         */
+        public function log($message, $messageType = Logger::WARNING) {
+            if ($this -&gt; fileHandle == null)
+                throw new LoggerException('Logfile is not opened.');
+
+            if (!is_string($message))
+                throw new LoggerException('$message is not a string');
+
+            if ($messageType != Logger::DEBUG &amp;&amp;
+                $messageType != Logger::NOTICE &amp;&amp;
+                $messageType != Logger::WARNING &amp;&amp;
+                $messageType != Logger::ERROR &amp;&amp;
+                $messageType != Logger::FATAL)
+                throw new LoggerException('Wrong $messagetype given.');
+
+            $this -&gt; writeToLogFile('[' . $this -&gt; getTime() . ']' . $messageType . ' - ' . $message);
+        }
+
+        /**
+         * Writes content to the log file.
+         *
+         * @param string $message
+         */
+        private function writeToLogFile($message) {
+            flock($this -&gt; fileHandle, LOCK_EX);
+            fwrite($this -&gt; fileHandle, $message.PHP_EOL);
+            flock($this -&gt; fileHandle, LOCK_UN);
+        }
+
+        /**
+         * Returns the current timestamp.
+         *
+         * @return string with the current date
+         */
+        private function getTime() {
+            return date($this -&gt; timeFormat);
+        }
+
+        /**
+         * Closes the current log file.
+         */
+        protected function closeLogFile() {
+            if ($this -&gt; fileHandle != null) {
+                fclose($this -&gt; fileHandle);
+                $this -&gt; fileHandle = null;
+            }
+        }
+
+        /**
+         * Opens a file handle.
+         *
+         * @param string $logFile Path to log file.
+         */
+        public function openLogFile($logFile) {
+            $this -&gt; closeLogFile();
+
+            if (!is_dir(dirname($logFile)))
+                if (!mkdir(dirname($logFile), Logger::FILE_CHMOD, True))
+                    throw new LoggerException('Could not find or create directory for log file.');
+
+            if (!$this -&gt; fileHandle = fopen($logFile, 'a+'))
+                throw new LoggerException('Could not open file handle.');
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

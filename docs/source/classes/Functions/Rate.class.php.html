@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions;
+    use \Exception;
+
+    class Rate
+    {
+        private $utils = null;
+
+        public function __construct(&amp;$utilsClass) {
+            $this -&gt; utils = $utilsClass;
+        }
+
+        public function getRating(&amp;$dbHandler) {
+            global $request;
+
+            try {
+                $mapID = IntVal($request['call_parts'][3]);
+
+                if ($mapID === null || $mapID &lt;= 0)
+                    throw new Exception('Map ID out of acceptable range');
+
+                $query1 = 'SET @mapid = :mapid;';
+                $dbHandler -&gt; PrepareAndBind ($query1, Array('mapid' =&gt; $mapID));
+                $dbHandler -&gt; Execute();
+
+                $query2 = 'SELECT ' .
+                          '    ROUND(AVG(CAST(`rating_amount` AS DECIMAL(12,2))), 1) AS avg_rating, ' .
+                          '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 1 AND map_fk = @mapid), 0) AS rating_one, ' .
+                          '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 2 AND map_fk = @mapid), 0) AS rating_two, ' .
+                          '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 3 AND map_fk = @mapid), 0) AS rating_three, ' .
+                          '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 4 AND map_fk = @mapid), 0) AS rating_four, ' .
+                          '    IFNULL((SELECT COUNT(*) FROM `Ratings` WHERE `rating_amount` = 5 AND map_fk = @mapid), 0) AS rating_five ' .
+                          'FROM ' .
+                          '    `Ratings` ' .
+                          'WHERE ' .
+                          '    `map_fk` = @mapid;';
+                $dbHandler -&gt; PrepareAndBind ($query2);
+                $ratings = $dbHandler -&gt; ExecuteAndFetch();
+
+                $this -&gt; utils -&gt; http_response_code(200);
+                return Array('status' =&gt; 'Ok',
+                             'data'   =&gt; $ratings);
+            } catch (Exception $e) {
+                $this -&gt; utils -&gt; http_response_code(400);
+                return Array('status'  =&gt; 'Error',
+                             'message' =&gt; 'Map ID out of acceptable range');
+            };
+        }
+
+        public function insertRating(&amp;$dbHandler) {
+            global $request;
+
+            try {
+                if (!isset($_POST['score']))
+                    throw new Exception('Map ID or Score out of acceptable range');
+
+                $mapID    = IntVal($request['call_parts'][3]);
+                $score    = IntVal($_POST['score']);
+                $ratingIP = ip2long($this -&gt; utils -&gt; getClientIp());
+
+                if ($mapID === null || $mapID &lt;= 0 ||
+                    $score &lt;= 0 || $score &gt;= 6)
+                    throw new Exception('Map ID or Score out of acceptable range');
+
+                $spamCheckQuery = 'SELECT ' .
+                                  '    COUNT(*) AS rating_count ' .
+                                  'FROM ' .
+                                  '    `Ratings` ' .
+                                  'WHERE ' .
+                                  '    `rating_ip` = :ratingip AND' .
+                                  '    `map_fk` = :mapid';
+                $dbHandler -&gt; PrepareAndBind ($spamCheckQuery, Array('ratingip' =&gt; $ratingIP,
+                                                                     'mapid'    =&gt; $mapID));
+                $ratingCount = $dbHandler -&gt; ExecuteAndFetch();
+                $dbHandler -&gt; Clean();
+
+                if ($ratingCount['rating_count'] &gt;= 1) {
+                    $this -&gt; utils -&gt; http_response_code(409);
+                    return Array('status'  =&gt; 'Error',
+                                 'message' =&gt; 'You have already rated this map.');
+                };
+
+                $insertQuery = 'INSERT INTO ' .
+                               '    `Ratings` (`map_fk`, `rating_amount`, `rating_ip`) ' .
+                               'VALUES ' .
+                               '    (:mapid, :ratingamount, :ratingip);';
+                $dbHandler -&gt; PrepareAndBind ($insertQuery, Array('mapid'        =&gt; $mapID,
+                                                                  'ratingamount' =&gt; $score,
+                                                                  'ratingip'     =&gt; $ratingIP));
+                $dbHandler -&gt; Execute();
+
+                $this -&gt; utils -&gt; http_response_code(201);
+                return Array('status' =&gt; 'Ok',
+                             'data'   =&gt; 'Rating processed succesfully');
+            } catch (Exception $e) {
+                $this -&gt; utils -&gt; http_response_code(400);
+                return Array('status'  =&gt; 'Error',
+                             'message' =&gt; 'Unable to process rating' . PHP_EOL . 'Map ID or Score out of acceptable range');
+            };
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

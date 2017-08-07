@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Data;
+    use PDO;
+
+    class Database
+    {
+        private $DSN  = '';
+        private $PDO  = null;
+        private $STMT = null;
+
+        public function __construct() {
+            global $config;
+
+            $this -&gt; DSN = 'mysql:host=' . $config['db']['server'] . ';dbname=' . $config['db']['database'];
+            $this -&gt; PDO = new PDO($this -&gt; DSN, $config['db']['username'], $config['db']['password']);
+
+            $this -&gt; PDO -&gt; setAttribute(PDO::ATTR_ERRMODE,            PDO::ERRMODE_EXCEPTION);
+            $this -&gt; PDO -&gt; setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $this -&gt; PDO -&gt; setAttribute(PDO::ATTR_EMULATE_PREPARES,   False);
+        }
+
+        public function PrepareAndBind($Statement, $Params = null) {
+            $this -&gt; STMT = $this -&gt; PDO -&gt; prepare ($Statement);
+
+            if ($Params != null &amp;&amp; is_array($Params) &amp;&amp; !Empty($Params)) {
+                foreach ($Params as $K =&gt; $V) {
+                    $this -&gt; STMT -&gt; bindParam(':' . $K, $Params [$K]);
+                };
+            };
+        }
+
+        public function Execute() {
+            return $this -&gt; STMT -&gt; execute();
+        }
+
+        public function ExecuteAndFetch() {
+            $this -&gt; STMT -&gt; execute();
+            $Result = $this -&gt; STMT -&gt; fetch();
+
+            return $Result;
+        }
+
+        public function ExecuteAndFetchAll() {
+            $this -&gt; STMT -&gt; execute();
+            $Result = $this -&gt; STMT -&gt; fetchAll();
+
+            return $Result;
+        }
+
+        public function GetLastInsertId() {
+            return $this -&gt; PDO -&gt; lastInsertId();
+        }
+
+        public function Clean() {
+            global $config;
+
+            $this -&gt; STMT = null;
+            $this -&gt; PDO  = null;
+
+            $this -&gt; PDO = new PDO($this -&gt; DSN, $config['db']['username'], $config['db']['password']);
+            $this -&gt; PDO -&gt; setAttribute(PDO::ATTR_ERRMODE,            PDO::ERRMODE_EXCEPTION);
+            $this -&gt; PDO -&gt; setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $this -&gt; PDO -&gt; setAttribute(PDO::ATTR_EMULATE_PREPARES,   False);
+        }
+
+        public function Destroy() {
+            $this -&gt; STMT     = null;
+            $this -&gt; PDO      = null;
+            $this -&gt; DSN      = '';
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

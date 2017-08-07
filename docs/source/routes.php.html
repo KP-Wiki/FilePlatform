@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    /**
+     * The application route definitions
+     *
+     * PHP version 7
+     *
+     * @package ManagementTools
+     * @author  Thimo Braker &lt;t.braker@sigmax.nl&gt;
+     * @version 1.0.6
+     * @since   First available since Release 1.0.0
+     */
+    use ManagementTools\Controllers;
+
+    // IP Pool routes
+    $app-&gt;group('/ippools', function () {
+        $this-&gt;get('/customer/{customername}', Controllers\IPPoolController::class . ':getPoolByCustomerName')-&gt;setName('ippools-customer');
+        $this-&gt;get('/netaddr/{netaddr}', Controllers\IPPoolController::class . ':getPoolByNetworkAddress')-&gt;setName('ippools-netaddr');
+        // Default route to /ippools
+        $this-&gt;get('[/{catchall}]', Controllers\IPPoolController::class . ':home')-&gt;setName('ippools');
+    });
+
+    // Virtual machine inventory routes
+    $app-&gt;group('/vminventory', function () {
+        // Default route to /vminventory
+        $this-&gt;get('[/{catchall}]', Controllers\VMInventoryController::class . ':home')-&gt;setName('vminventory');
+    });
+
+    $app-&gt;group('/api', function () {
+        $this-&gt;group('/v1', function () {
+            $this-&gt;get('/custlist', Controllers\Api\CustomerController::class);
+
+            $this-&gt;group('/utils', function () {
+                $this-&gt;get('/devicetypes', Controllers\Api\UtilityController::class . ':getDeviceTypes');
+            });
+
+            $this-&gt;group('/ippools', function () {
+                $this-&gt;group('/customer', function () {
+                    $this-&gt;post('', Controllers\Api\IPPoolController::class . ':addRange');                            // C
+                    $this-&gt;get('/{customername}', Controllers\Api\IPPoolController::class . ':getPoolByCustomerName'); // R
+                    $this-&gt;put('', Controllers\Api\IPPoolController::class . ':updateRange');                          // U
+                    $this-&gt;delete('', Controllers\Api\IPPoolController::class . ':deleteRange');                       // D
+                });
+
+                $this-&gt;group('/netaddr', function () {
+                    $this-&gt;post('', Controllers\Api\IPPoolController::class . ':addIPAddress');                     // C
+                    $this-&gt;get('/{netaddr}', Controllers\Api\IPPoolController::class . ':getPoolByNetworkAddress'); // R
+                    $this-&gt;put('', Controllers\Api\IPPoolController::class . ':updateIPAddress');                   // U
+                    $this-&gt;delete('', Controllers\Api\IPPoolController::class . ':deleteIPAddress');                // D
+                });
+
+                // Default route to /api/v1/ippools
+                $this-&gt;get('[/{catchall}]', Controllers\Api\IPPoolController::class . ':getAll'); // R
+            });
+
+        });
+    });
+
+    // Default route to /home
+    $app-&gt;get('/[{catchall}]', Controllers\HomeController::class);
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

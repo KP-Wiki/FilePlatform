@@ -1,0 +1,136 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions\Views;
+
+    class Settings
+    {
+        private $utils = null;
+
+        public function __construct(&amp;$utilsClass) {
+            $this -&gt; utils = $utilsClass;
+        }
+
+        public function getContent(&amp;$dbHandler) {
+            global $request;
+
+            $content = '&lt;div class=&quot;row&quot;&gt;' . PHP_EOL .
+                       '    &lt;div class=&quot;col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad&quot;&gt;' . PHP_EOL .
+                       '        &lt;form method=&quot;post&quot; action=&quot;/updatesettings&quot; id=&quot;settingFrm&quot; name=&quot;settingFrm&quot; class=&quot;form&quot;&gt;' . PHP_EOL .
+                       '            &lt;div class=&quot;panel panel-default&quot;&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;panel-heading&quot;&gt;' . PHP_EOL .
+                       '                    &lt;span class=&quot;panel-title&quot;&gt;Profile Settings&lt;/span&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;panel-body&quot;&gt;' . PHP_EOL .
+                       '                    &lt;div class=&quot;row&quot;&gt;' . PHP_EOL .
+                       '                        &lt;div class=&quot;col-md-3 col-lg-3&quot; align=&quot;center&quot;&gt;' . PHP_EOL .
+                       '                            ' . $this -&gt; utils -&gt; getGravatar($_SESSION['user'] -&gt; emailAddress, 250, 'identicon', 'pg') . PHP_EOL .
+                       '                        &lt;/div&gt;' . PHP_EOL .
+                       '                        &lt;div class=&quot;col-md-9 col-lg-9&quot;&gt;' . PHP_EOL .
+                       '                            &lt;table class=&quot;table table-user-information&quot;&gt;' . PHP_EOL .
+                       '                                &lt;tbody&gt;' . PHP_EOL .
+                       '                                    &lt;tr&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;span class=&quot;glyphicon glyphicon-user&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Username' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            ' . $_SESSION['user'] -&gt; username . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                    &lt;/tr&gt;' . PHP_EOL .
+                       '                                    &lt;tr&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;span class=&quot;glyphicon glyphicon-envelope&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Email Address' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;input type=&quot;email&quot; class=&quot;form-control input-sm&quot; id=&quot;settingEmailAddress&quot; name=&quot;settingEmailAddress&quot; ' .
+                       'placeholder=&quot;' . $_SESSION['user'] -&gt; emailAddress . '&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                    &lt;/tr&gt;' . PHP_EOL .
+                       '                                    &lt;tr&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;span class=&quot;glyphicon glyphicon-lock&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Current Password' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;input type=&quot;password&quot; class=&quot;form-control input-sm&quot; id=&quot;settingCurPass&quot; name=&quot;settingCurPass&quot; ' .
+                       'placeholder=&quot;Required&quot; required&gt;' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                    &lt;/tr&gt;' . PHP_EOL .
+                       '                                    &lt;tr&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;span class=&quot;glyphicon glyphicon-lock&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;New Password' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;input type=&quot;password&quot; class=&quot;form-control input-sm&quot; id=&quot;settingNewPass&quot; name=&quot;settingNewPass&quot; ' .
+                       'placeholder=&quot;Leave empty to not change the password&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                    &lt;/tr&gt;' . PHP_EOL .
+                       '                                    &lt;tr&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;span class=&quot;glyphicon glyphicon-lock&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Repeat New Password' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                        &lt;td&gt;' . PHP_EOL .
+                       '                                            &lt;input type=&quot;password&quot; class=&quot;form-control input-sm&quot; id=&quot;settingRepeatPass&quot; name=&quot;settingRepeatPass&quot; ' .
+                       'placeholder=&quot;Leave empty to not change the password&quot;&gt;' . PHP_EOL .
+                       '                                        &lt;/td&gt;' . PHP_EOL .
+                       '                                    &lt;/tr&gt;' . PHP_EOL .
+                       '                                &lt;/tbody&gt;' . PHP_EOL .
+                       '                            &lt;/table&gt;' . PHP_EOL .
+                       '                        &lt;/div&gt;' . PHP_EOL .
+                       '                    &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;panel-footer&quot;&gt;' . PHP_EOL .
+                       '                    &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary space-right&quot;&gt;Submit&lt;/button&gt;' . PHP_EOL .
+                       '                    &lt;button type=&quot;reset&quot; class=&quot;btn btn-warning&quot;&gt;Reset Fields&lt;/button&gt;' . PHP_EOL .
+                       '                    &lt;button type=&quot;button&quot; class=&quot;btn btn-danger pull-right&quot; disabled&gt;Delete Account&lt;/button&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '            &lt;/div&gt;' . PHP_EOL .
+                       '        &lt;/form&gt;' . PHP_EOL .
+                       '    &lt;/div&gt;' . PHP_EOL .
+                       '&lt;/div&gt;' . PHP_EOL;
+
+            return $content;
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>
