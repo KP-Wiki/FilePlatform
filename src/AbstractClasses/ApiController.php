@@ -12,9 +12,9 @@
      */
     namespace MapPlatform\AbstractClasses;
 
-    use Slim\Http\Request;
-    use Slim\Http\Response;
-    use Slim\Container;
+    use \Slim\Http\Request;
+    use \Slim\Http\Response;
+    use \Slim\Container;
 
     /**
      * Abstract ApiController

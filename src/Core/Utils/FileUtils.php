@@ -12,10 +12,10 @@
      */
     namespace MapPlatform\Core\Utils;
 
-    use Slim\Container;
-    use MatthiasMullie\Minify;
-    use Imagick;
-    use InvalidArgumentException;
+    use \Slim\Container;
+    use \MatthiasMullie\Minify;
+    use \Imagick;
+    use \InvalidArgumentException;
 
     /**
      * File utilities
@@ -36,8 +36,8 @@
          *
          * @param \Slim\Container The application controller.
          */
-        public function __construct($container) {
-            $this->container = $container;
+        public function __construct(Container &$aContainer) {
+            $this->container = $aContainer;
         }
 
         /**

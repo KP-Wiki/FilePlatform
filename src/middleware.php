@@ -10,6 +10,6 @@
      * @since   First available since Release 1.0.0
      */
     // Application middleware
-    use Psr7Middlewares\Middleware\TrailingSlash;
+    use \Psr7Middlewares\Middleware\TrailingSlash;
 
     $app->add((new TrailingSlash(False))->redirect(301));

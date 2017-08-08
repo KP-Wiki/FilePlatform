@@ -12,8 +12,8 @@
      */
     namespace MapPlatform\Core\Utils;
 
-    use Slim\Container;
-    use InvalidArgumentException;
+    use \Slim\Container;
+    use \InvalidArgumentException;
 
     /**
      * Misc utilities
@@ -30,12 +30,12 @@
         private $container;
 
         /**
-         * FileUtils constructor.
+         * MiscUtils constructor.
          *
          * @param \Slim\Container The application controller.
          */
-        public function __construct($container) {
-            $this->container = $container;
+        public function __construct(Container &$aContainer) {
+            $this->container = $aContainer;
         }
 
         /**

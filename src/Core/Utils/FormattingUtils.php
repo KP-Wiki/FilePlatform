@@ -12,7 +12,8 @@
      */
     namespace MapPlatform\Core\Utils;
 
-    use InvalidArgumentException;
+    use \Slim\Container;
+    use \InvalidArgumentException;
 
     /**
      * Data formatting/manipulation utilities
@@ -25,10 +26,16 @@
      */
     class FormattingUtils
     {
+        /** @var \Slim\Container $container The framework container */
+        private $container;
+
         /**
          * FormattingUtils constructor.
+         *
+         * @param \Slim\Container The application controller.
          */
-        public function __construct() {
+        public function __construct(Container &$aContainer) {
+            $this->container = $aContainer;
         }
 
         /**
@@ -68,18 +75,20 @@
          *     '%h Hours                                               =>  11 Hours
          *     '%a Days                                                =>  468 Days
          *
-         * @param string First date
-         * @param string Second date
+         * @param datetime First date
+         * @param datetime Second date
          * @param string Output format
          *
          * @return string
          */
-        function dateDifference($aDate1 , $aDate2 , $outFormat = '%a') {
-            $dateTime1 = date_create($aDate1);
-            $dateTime2 = date_create($aDate2);
-            $diff      = date_diff($dateTime1, $dateTime2);
+        function dateDifference($aDate1, $aDate2, $outFormat = '%a') {
+            $diffObj = date_diff($aDate1, $aDate2);
+            $diff    = $diffObj->format($outFormat);
+            $this->container->logger->debug('dateDifference -> aDate1 = ' . $aDate1->format('Y/m/d H:i:s') . PHP_EOL .
+                                            'aDate2 = ' . $aDate2->format('Y/m/d H:i:s') . PHP_EOL .
+                                            'outFormat = ' . $outFormat . PHP_EOL .
+                                            'diff = ' . $diff);
         
-            return $diff->format($outFormat);
-        
+            return $diff;
         }
     }

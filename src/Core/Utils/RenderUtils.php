@@ -12,9 +12,9 @@
      */
     namespace MapPlatform\Core\Utils;
 
-    use InvalidArgumentException;
-    use Slim\Http\Response;
-    use Slim\Container;
+    use \Slim\Container;
+    use \Slim\Http\Response;
+    use \InvalidArgumentException;
 
     /**
      * HTML page rendering utilities
@@ -27,10 +27,16 @@
      */
     class RenderUtils
     {
+		/** @var \Slim\Container $container The framework container */
+        protected $container;
+
         /**
          * RenderUtils constructor.
+         *
+         * @param \Slim\Container The application controller.
          */
-        public function __construct() {
+        public function __construct(Container &$aConstainer) {
+            $this->container = $aConstainer;
         }
 
         /**
@@ -42,24 +48,21 @@
          * @param string $aNavFile
          * @param \Slim\Http\Response $aResponse
          * @param array $aValueArray
-         * @param \Slim\Container $aContainer
          *
          * @return \Slim\Http\Response
          *
          * @throws InvalidArgumentException
          * @throws RuntimeException
          */
-        public function render($aPageTitle, $aPageId, $aContentTemplate,
-                               Response &$aResponse, &$aValueArray, Container &$aContainer) {
-            $navFile = $this->getNavFile();
-
+        public function render($aPageTitle, $aPageId, $aContentTemplate, Response &$aResponse, &$aValueArray) {
+            $navFile                    = $this->getNavFile();
             $aValueArray['PageTitle']   = $aPageTitle;
             $aValueArray['PageID']      = $aPageId;
-            $aValueArray['PageNav']     = $aContainer->renderer->fetch($navFile, $aValueArray);
-            $aValueArray['PageContent'] = $aContainer->renderer->fetch($aContentTemplate, $aValueArray);
-            $aValueArray['PageFooter']  = $aContainer->renderer->fetch('footer.phtml', $aValueArray);
+            $aValueArray['PageNav']     = $this->container->renderer->fetch($navFile, $aValueArray);
+            $aValueArray['PageContent'] = $this->container->renderer->fetch($aContentTemplate, $aValueArray);
+            $aValueArray['PageFooter']  = $this->container->renderer->fetch('footer.phtml', $aValueArray);
 
-            return $aContainer->renderer->render($aResponse, 'frame.phtml', $aValueArray);
+            return $this->container->renderer->render($aResponse, 'frame.phtml', $aValueArray);
         }
 
         private function getNavFile() {

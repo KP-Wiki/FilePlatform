@@ -14,7 +14,8 @@
      */
     namespace MapPlatform\Core;
 
-    use InvalidArgumentException;
+    use \Slim\Container;
+    use \InvalidArgumentException;
 
     /**
      * Security
@@ -27,7 +28,7 @@
      */
     class Security
     {
-		/** @var \Slim\Container $container The framework container */
+        /** @var \Slim\Container $container The framework container */
         private $container;
 
         /**
@@ -35,7 +36,7 @@
          *
          * @param \Slim\Container The application controller.
          */
-        public function __construct($aContainer) {
+        public function __construct(Container &$aContainer) {
             $this->container = $aContainer;
         }
 
@@ -409,8 +410,9 @@
                     $rememberMe = $rememberMeArr[0];
                     $this->container->logger->debug('checkRememberMe -> rememberMe = ' . print_r($rememberMe, True));
 
-                    $now      = date('yyyy/mm/dd hh:ii:ss', time());
-                    $dateDiff = intval($this->container->formattingUtils->dateDifference($rememberMe['date'], $now, '%a'));
+                    $then     = date_create($rememberMe['date']);
+                    $now      = date_create();
+                    $dateDiff = intval($this->container->formattingUtils->dateDifference($then, $now, '%a'));
 
                     if ($dateDiff > 30) {
                         $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
@@ -441,7 +443,7 @@
                     $this->container->logger->debug('checkRememberMe -> _SESSION[user] = ' . print_r($_SESSION['user'], True));
 
                     setcookie('userId', $user['user_pk'], time() + $config['cookieLifetime'], '/');
-                    setcookie('token', $newToken, time() + $config['cookieLifetime'], '/');
+                    setcookie('token', $token, time() + $config['cookieLifetime'], '/');
                 } catch (Exception $ex) {
                     $this->container->logger->error('checkRememberMe -> ex = ' . $ex);
 

@@ -12,11 +12,11 @@
      */
     namespace MapPlatform\Controllers;
     
-    use InvalidArgumentException;
-    use Slim\Http\Request;
-    use Slim\Http\Response;
-    use MapPlatform\Core;
-    use MapPlatform\AbstractClasses\PageController;
+    use \InvalidArgumentException;
+    use \Slim\Http\Request;
+    use \Slim\Http\Response;
+    use \MapPlatform\Core;
+    use \MapPlatform\AbstractClasses\PageController;
 
     /**
      * A.A.A. controller
@@ -79,7 +79,7 @@
             $values['resultType']    = $result['status'];
             $values['resultMessage'] = $result['message'];
 
-            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values, $this->container)
+            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values)
                                                 ->withAddedHeader('Refresh', '5; url=/home');
         }
 
@@ -107,7 +107,7 @@
             $values['resultType']    = $result['status'];
             $values['resultMessage'] = $result['message'];
 
-            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values, $this->container)
+            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values)
                                                 ->withAddedHeader('Refresh', '5; url=/home');
         }
 
@@ -134,7 +134,7 @@
             $values['resultType']    = $result['status'];
             $values['resultMessage'] = $result['message'];
 
-            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values, $this->container)
+            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values)
                                                 ->withAddedHeader('Refresh', '5; url=/home');
         }
     }

@@ -12,11 +12,11 @@
      */
     namespace MapPlatform\Controllers;
     
-    use InvalidArgumentException;
-    use Slim\Http\Request;
-    use Slim\Http\Response;
-    use MapPlatform\Core;
-    use MapPlatform\AbstractClasses\PageController;
+    use \InvalidArgumentException;
+    use \Slim\Http\Request;
+    use \Slim\Http\Response;
+    use \MapPlatform\Core;
+    use \MapPlatform\AbstractClasses\PageController;
 
     /**
      * Home page controller
@@ -62,7 +62,7 @@
                                     "    <li class=\"active\">Home</li>" . PHP_EOL .
                                     "</ol>";
 
-            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values, $this->container);
+            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
         }
 
         /**
@@ -93,6 +93,6 @@
                 ]
             ];
 
-            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values, $this->container);
+            return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
         }
     }

@@ -9,7 +9,7 @@
      * @version 1.0.0
      * @since   First available since Release 1.0.0
      */
-    use MapPlatform\Controllers;
+    use \MapPlatform\Controllers;
 
     // About page routes
     $app->group('/about', function () {
@@ -45,7 +45,7 @@
             });
 
             $this->group('/download', function () {
-                $this->get('[/{catchall}]', Controllers\Api\DownloadController::class);
+                $this->get('/map/{revId}', Controllers\Api\DownloadController::class . ':downloadMap');
             });
 
             $this->group('/rating', function () {

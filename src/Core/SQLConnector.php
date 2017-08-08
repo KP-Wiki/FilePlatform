@@ -14,13 +14,13 @@
      */
     namespace MapPlatform\Core;
 
-    use InvalidArgumentException;
-    use MapPlatform\AbstractClasses\DatabaseConnector;
-    use Slim\Container;
-    use Slim\PDO\Database;
-    use Slim\PDO\Statement;
-    use PDO;
-    use PDOException;
+    use \InvalidArgumentException;
+    use \MapPlatform\AbstractClasses\DatabaseConnector;
+    use \Slim\Container;
+    use \Slim\PDO\Database;
+    use \Slim\PDO\Statement;
+    use \PDO;
+    use \PDOException;
 
     /**
      * SQL DatabaseConnector

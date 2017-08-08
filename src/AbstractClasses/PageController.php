@@ -12,10 +12,10 @@
      */
     namespace MapPlatform\AbstractClasses;
     
-    use Slim\Http\Request;
-    use Slim\Http\Response;
-    use Slim\Container;
-    use MapPlatform\Core;
+    use \Slim\Http\Request;
+    use \Slim\Http\Response;
+    use \Slim\Container;
+    use \MapPlatform\Core;
 
     /**
      * Abstract PageController

@@ -23,7 +23,7 @@
 
     session_start();
 
-    use Slim\App;
+    use \Slim\App;
 
     // Instantiate the app
     $settings = require __DIR__ . '/../src/settings.php';

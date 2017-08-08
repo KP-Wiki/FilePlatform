@@ -12,11 +12,11 @@
      */
     namespace MapPlatform\Controllers\Api;
     
-    use InvalidArgumentException;
-    use Slim\Http\Request;
-    use Slim\Http\Response;
-    use MapPlatform\Core;
-    use MapPlatform\AbstractClasses\ApiController;
+    use \InvalidArgumentException;
+    use \Slim\Http\Request;
+    use \Slim\Http\Response;
+    use \MapPlatform\Core;
+    use \MapPlatform\AbstractClasses\ApiController;
 
     /**
      * Misc feature controller

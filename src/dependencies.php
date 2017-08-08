@@ -9,12 +9,12 @@
      * @version 1.0.0
      * @since   First available since Release 1.0.0
      */
-    use Slim\Views\PhpRenderer;
-    use Monolog\Logger;
-    use Monolog\Processor\UidProcessor;
-    use Monolog\Handler\StreamHandler;
-    use MapPlatform\Core;
-    use MapPlatform\Core\Utils;
+    use \Slim\Views\PhpRenderer;
+    use \Monolog\Logger;
+    use \Monolog\Processor\UidProcessor;
+    use \Monolog\Handler\StreamHandler;
+    use \MapPlatform\Core;
+    use \MapPlatform\Core\Utils;
 
     // DIC configuration
     $container = $app->getContainer();
@@ -42,15 +42,15 @@
     };
 
     $container['renderUtils'] = function ($c) {
-        return new Utils\RenderUtils();
+        return new Utils\RenderUtils($c);
     };
 
     $container['formattingUtils'] = function ($c) {
-        return new Utils\FormattingUtils();
+        return new Utils\FormattingUtils($c);
     };
 
     $container['miscUtils'] = function ($c) {
-        return new Utils\MiscUtils();
+        return new Utils\MiscUtils($c);
     };
 
     $container['dataBase'] = function ($c) {
