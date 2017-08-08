@@ -21,20 +21,12 @@
     $app->post('/login', Controllers\AAAController::class . ':login')->setName('login');
     $app->get('/logout', Controllers\AAAController::class . ':logout')->setName('logout');
 
-    // IP Pool routes
-    $app->group('/ippools', function () {
-        $this->get('/customer/{customername}', Controllers\IPPoolController::class . ':getPoolByCustomerName')->setName('ippools-customer');
-        $this->get('/netaddr/{netaddr}', Controllers\IPPoolController::class . ':getPoolByNetworkAddress')->setName('ippools-netaddr');
-        // Default route to /ippools
-        $this->get('[/{catchall}]', Controllers\IPPoolController::class . ':home')->setName('ippools');
-    });
-
     // API routes
     $app->group('/api', function () {
         $this->group('/v1', function () {
             $this->group('/maps', function () {
                 $this->group('/user', function () {
-                    $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser'); // R
+                    $this->get('/{userId}', Controllers\Api\MapController::class . ':getMapsByUser'); // R
                 });
 
                 $this->post('', Controllers\Api\MapController::class . ':addMap');        // C
@@ -45,7 +37,9 @@
             });
 
             $this->group('/download', function () {
-                $this->get('/map/{revId}', Controllers\Api\DownloadController::class . ':downloadMap');
+                $this->group('/map', function () {
+                    $this->get('/{revId}', Controllers\Api\DownloadController::class . ':downloadMap'); // R
+                });
             });
 
             $this->group('/rating', function () {
