@@ -61,9 +61,9 @@
          * Restart the user session
          */
         private function restartSession() {
-            destroySession();
+            $this->destroySession();
             session_start();
-            initSession();
+            $this->initSession();
         }
 
         /**
@@ -156,7 +156,7 @@
             $secret = $config['secretKey'];
             $curl   = curl_init(); // Create curl resource
 
-            curl_setopt_array($curl, Array(CURLOPT_RETURNTRANSFER => 1, // Return the server's response data as a string rather then a boolean
+            curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, // Return the server's response data as a string rather then a boolean
                                            CURLOPT_URL            => 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret .
                                                                      '&response=' . $reCaptchaResponse .
                                                                      '&remoteip=' . $_SERVER['REMOTE_ADDR'],
@@ -175,7 +175,7 @@
          *
          * @return array The status repsresented as an array
          */
-        public function register(array $aDataArray) {
+        public function register($aDataArray) {
             $database       = $this->container->dataBase->PDO;
             $algorithm      = 'sha512';
             $iterationCount = 1024;
@@ -274,10 +274,10 @@
          *
          * @return array The status repsresented as an array
          */
-        public function login(array $aDataArray) {
+        public function login($aDataArray) {
             $database = $this->container->dataBase->PDO;
             $config   = $this->container->get('settings')['security'];
-            initSession();
+            $this->initSession();
 
             try {
                 $username  = filter_var($aDataArray, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
@@ -361,7 +361,7 @@
         public function checkRememberMe() {
             $database = $this->container->dataBase->PDO;
             $config   = $this->container->get('settings')['security'];
-            initSession();
+            $this->initSession();
 
             if (isset($_COOKIE['userId']) && isset($_COOKIE['token'])) {
                 $userId = filter_input(INPUT_COOKIE, 'userId', FILTER_SANITIZE_NUMBER_INT);
@@ -382,7 +382,7 @@
 
                     if (count($userArr) < 1) {
                         $this->container->logger->error('checkRememberMe -> Invalid cookie');
-                        restartSession();
+                        $this->restartSession();
 
                         return;
                     };
@@ -400,7 +400,7 @@
 
                     if (count($rememberMeArr) < 1) {
                         $this->container->logger->error('checkRememberMe -> Invalid cookie');
-                        restartSession();
+                        $this->restartSession();
 
                         return;
                     };
@@ -478,7 +478,7 @@
                 if ($affectedRows === 1) {
                     $database->commit();
                     $this->container->logger->error('logout -> Successfully logged out');
-                    destroySession();
+                    $this->destroySession();
 
 					return [
 						'status' => 'Success',
@@ -487,7 +487,7 @@
                 } else {
                     $database->rollBack();
                     $this->container->logger->error('logout -> Unable to logout');
-                    destroySession();
+                    $this->destroySession();
 
 					return [
 						'status' => 'Fail',
@@ -496,7 +496,7 @@
                 };
             } catch (Exception $ex) {
                 $this->container->logger->error('logout -> ex = ' . $ex);
-                destroySession();
+                $this->destroySession();
 
 				return [
 					'status' => 'Fail',

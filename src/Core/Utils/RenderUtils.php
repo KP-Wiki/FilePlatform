@@ -49,9 +49,9 @@
          * @throws InvalidArgumentException
          * @throws RuntimeException
          */
-        public function render(string $aPageTitle, int $aPageId, string $aContentTemplate,
-                               Response &$aResponse, array &$aValueArray, Container &$aContainer) {
-            $navFile = getNavFile();
+        public function render($aPageTitle, $aPageId, $aContentTemplate,
+                               Response &$aResponse, &$aValueArray, Container &$aContainer) {
+            $navFile = $this->getNavFile();
 
             $aValueArray['PageTitle']   = $aPageTitle;
             $aValueArray['PageID']      = $aPageId;

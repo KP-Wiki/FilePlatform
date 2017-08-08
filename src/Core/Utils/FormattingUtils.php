@@ -42,7 +42,7 @@
          * @throws InvalidArgumentException
          * @throws RuntimeException
          */
-        public function arrayToOptions(array &$aValues, bool $setValues = False) {
+        public function arrayToOptions(&$aValues, $setValues = False) {
             $result = '';
 
             foreach ($aValues as $k => $v) {

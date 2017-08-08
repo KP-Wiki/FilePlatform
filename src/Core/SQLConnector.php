@@ -54,7 +54,7 @@
          *
          * @param array The database settings.
          */
-        protected function buildDSN(array $aConfig) {
+        protected function buildDSN($aConfig) {
             if ($aConfig['engine'] == "sqlite")
                 $this->DSN = $aConfig['engine'] .
                              ":" . $aConfig['host'];

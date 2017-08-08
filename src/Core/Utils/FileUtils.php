@@ -47,7 +47,7 @@
          *
          * @return string
          */
-        public function getFileText(string $aFile) {
+        public function getFileText($aFile) {
             $fileHandle = fopen($aFile, 'r');
             $result     = '';
 
@@ -156,7 +156,7 @@
 		 * @return array Re-arranged array
 		 */
         public function reArrayFiles(&$aFileArr) {
-            $resultArr = Array();
+            $resultArr = array();
             $fileCount = count($aFileArr['name']);
             $fileKeys  = array_keys($aFileArr);
 
