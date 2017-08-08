@@ -212,16 +212,6 @@
                 $query = $database->insert(['user_name', 'user_password', 'user_salt', 'user_email_address', 'group_fk'])
                                   ->into('Users')
                                   ->values([$username, $hashVal, $salt, $emailAddress, $defaultGroup]);
-                $insertQuery = 'INSERT INTO `Users` ' . PHP_EOL .
-                            '    (`user_name`, `user_password`, `user_salt`, `user_email_address`, `group_fk`) ' . PHP_EOL .
-                            'VALUES ' . PHP_EOL .
-                            '    (:username, :password, :salt, :emailaddress, :groupid);';
-                $dbHandler -> PrepareAndBind($insertQuery, array('username'     => $username,
-                                                                'password'     => $hashVal,
-                                                                'salt'         => $salt,
-                                                                'emailaddress' => $emailAddress,
-                                                                'groupid'      => $defaultGroup));
-                $dbHandler -> Execute();
                 $insertId = $dbHandler->getLastInsertId();
 
                 $this->container->logger->debug('Register -> googleResponse = ' . $googleResponse);
