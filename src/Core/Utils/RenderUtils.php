@@ -39,8 +39,9 @@
          * @param string $aPageTitle
          * @param int $aPageID
          * @param string $aContentTemplate
+         * @param string $aNavFile
          * @param \Slim\Http\Response $aResponse
-         * @param array $aValues
+         * @param array $aValueArray
          * @param \Slim\Container $aContainer
          *
          * @return \Slim\Http\Response
@@ -48,14 +49,30 @@
          * @throws InvalidArgumentException
          * @throws RuntimeException
          */
-        public function render(string $aPageTitle, int $aPageID, string $aContentTemplate,
-                               Response &$aResponse, array &$aValues, Container &$aContainer) {
-            $aValues['PageTitle']   = $aPageTitle;
-            $aValues['PageID']      = $aPageID;
-            $aValues['PageNav']     = $aContainer->renderer->fetch('nav.phtml', $aValues);
-            $aValues['PageContent'] = $aContainer->renderer->fetch($aContentTemplate, $aValues);
-            $aValues['PageFooter']  = $aContainer->renderer->fetch('footer.phtml', $aValues);
+        public function render(string $aPageTitle, int $aPageId, string $aContentTemplate,
+                               Response &$aResponse, array &$aValueArray, Container &$aContainer) {
+            $navFile = getNavFile();
 
-            return $aContainer->renderer->render($aResponse, 'frame.phtml', $aValues);
+            $aValueArray['PageTitle']   = $aPageTitle;
+            $aValueArray['PageID']      = $aPageId;
+            $aValueArray['PageNav']     = $aContainer->renderer->fetch($navFile, $aValueArray);
+            $aValueArray['PageContent'] = $aContainer->renderer->fetch($aContentTemplate, $aValueArray);
+            $aValueArray['PageFooter']  = $aContainer->renderer->fetch('footer.phtml', $aValueArray);
+
+            return $aContainer->renderer->render($aResponse, 'frame.phtml', $aValueArray);
+        }
+
+        private function getNavFile() {
+            switch ($_SESSION['user']->group) {
+                case 1:
+                    return 'nav_user.phtml';
+                case 5:
+                    return 'nav_contributor.phtml';
+                case 9:
+                case 10:
+                    return 'nav_admin.phtml';
+                default:
+                    return 'nav_guest.phtml';
+            };
         }
     }

@@ -11,18 +11,18 @@
      */
     use MapPlatform\Controllers;
 
+    // About page routes
+    $app->group('/about', function () {
+        // Default route to /about
+        $this->get('[/{catchall}]', Controllers\HomeController::class . ':about')->setName('about');
+    });
+
     // IP Pool routes
     $app->group('/ippools', function () {
         $this->get('/customer/{customername}', Controllers\IPPoolController::class . ':getPoolByCustomerName')->setName('ippools-customer');
         $this->get('/netaddr/{netaddr}', Controllers\IPPoolController::class . ':getPoolByNetworkAddress')->setName('ippools-netaddr');
         // Default route to /ippools
         $this->get('[/{catchall}]', Controllers\IPPoolController::class . ':home')->setName('ippools');
-    });
-
-    // Virtual machine inventory routes
-    $app->group('/vminventory', function () {
-        // Default route to /vminventory
-        $this->get('[/{catchall}]', Controllers\VMInventoryController::class . ':home')->setName('vminventory');
     });
 
     // API routes
@@ -60,4 +60,4 @@
     });
 
     // Default route to /home
-    $app->get('/[{catchall}]', Controllers\HomeController::class);
+    $app->get('/[{catchall}]', Controllers\HomeController::class . ':home')->setName('home');
