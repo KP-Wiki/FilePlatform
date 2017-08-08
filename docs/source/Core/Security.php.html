@@ -76,6 +76,33 @@
         }
 
         /**
+         * Initialize the user session
+         */
+        private function initSession() {
+            $_SESSION['user'] = (object)[];
+            $_SESSION['user']-&gt;group = 0;
+        }
+
+        /**
+         * Destroy the user session
+         */
+        private function destroySession() {
+            setcookie('userId', '', time() - 3600, '/');
+            setcookie('token', '', time() - 3600, '/');
+            session_unset();
+            session_destroy();
+        }
+
+        /**
+         * Restart the user session
+         */
+        private function restartSession() {
+            destroySession();
+            session_start();
+            initSession();
+        }
+
+        /**
          * PBKDF2 key derivation function as defined by RSA's PKCS #5: https://www.ietf.org/rfc/rfc2898.txt
          * Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt
          *
@@ -124,11 +151,7 @@
                 $output .= $xorSum;
             };
 
-            if ($rawOutput) {
-                return SubStr($output, 0, $keyLength);
-            } else {
-                return bin2hex(SubStr($output, 0, $keyLength));
-            };
+            return ($rawOutput ? SubStr($output, 0, $keyLength) : bin2hex(SubStr($output, 0, $keyLength)));
         }
 		
 		/**
@@ -141,20 +164,15 @@
          * @return boolean
          */
         public function isValidPassword($password, $salt, $hash) {
-            global $logger;
-
-            $logger -&gt; log('isValidPassword -&gt; start( salt = ' . $salt . ' )', Logger::DEBUG);
+            $this-&gt;container-&gt;logger-&gt;debug('isValidPassword -&gt; start( salt = ' . $salt . ' )');
             $algorithm      = 'sha512';
             $iterationCount = 1024;
             $keyLength      = 1024;
             $outputRaw      = False;
-            $hashVal        = $this -&gt; pbkdf2($algorithm, $password, $salt, $iterationCount, $keyLength, $outputRaw);
+            $hashVal        = $this-&gt;pbkdf2($algorithm, $password, $salt, $iterationCount, $keyLength, $outputRaw);
 
             // We can't use Levenshtein because our hashes are too large. :-(
-            if ($hashVal === $hash)
-                return True;
-
-            return False;
+            return ($hashVal === $hash);
         }
 
         /**
@@ -165,14 +183,13 @@
          * @return boolean
          */
         private function isValidReCaptcha($reCaptchaResponse) {
-            global $config, $logger;
-
-            $logger -&gt; log('isValidReCaptcha -&gt; start( reCaptchaResponse = ' . $reCaptchaResponse . ' )', Logger::DEBUG);
+            $this-&gt;container-&gt;logger-&gt;debug('isValidReCaptcha -&gt; start( reCaptchaResponse = ' . $reCaptchaResponse . ' )');
+            $config = $this-&gt;container-&gt;get('settings')['reCaptcha'];
 
             if (Empty($reCaptchaResponse))
                 return False;
 
-            $secret = $config['reCaptcha']['secretKey'];
+            $secret = $config['secretKey'];
             $curl   = curl_init(); // Create curl resource
 
             curl_setopt_array($curl, Array(CURLOPT_RETURNTRANSFER =&gt; 1, // Return the server's response data as a string rather then a boolean
@@ -182,7 +199,7 @@
                                            CURLOPT_USERAGENT      =&gt; 'Maps_Platform/v' . APP_VERSION));
             $response = json_decode(curl_exec($curl), True);
             curl_close($curl); // Close curl resource to free up system resources
-            $logger -&gt; log('isValidReCaptcha -&gt; response = ' . print_r($response, True), Logger::DEBUG);
+            $this-&gt;container-&gt;logger-&gt;debug('isValidReCaptcha -&gt; response = ' . print_r($response, True));
 
             return $response['success'];
         }
@@ -195,92 +212,95 @@
          * @return array The status repsresented as an array
          */
         public function register(array $aDataArray) {
-            global $logger;
-
+            $database       = $this-&gt;container-&gt;dataBase-&gt;PDO;
             $algorithm      = 'sha512';
             $iterationCount = 1024;
             $keyLength      = 1024;
             $outputRaw      = False;
             $defaultGroup   = 1;
 
-            $username          = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
-                                                                                              FILTER_FLAG_STRIP_HIGH ||
-                                                                                              FILTER_FLAG_STRIP_BACKTICK);
-            $emailAddress      = filter_input(INPUT_POST, 'emailAddress', FILTER_SANITIZE_EMAIL);
-            $password          = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);             // Don't clean this, passwords should be left untouched as they are hashed
-            $confirmPassword   = filter_input(INPUT_POST, 'confirmPassword', FILTER_UNSAFE_RAW);      // Don't clean this, passwords should be left untouched as they are hashed
-            $reCaptchaResponse = filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_UNSAFE_RAW); // Don't clean this, it's provided by Google
-            $logger -&gt; log('Register -&gt; start( username = ' . $username .
-                           ', emailAddress = '. $emailAddress .
-                           ', reCaptchaResponse = '. $reCaptchaResponse . ' )', Logger::DEBUG);
+            try {
+                $username          = filter_var($aDataArray, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                                                                                                 FILTER_FLAG_STRIP_HIGH ||
+                                                                                                 FILTER_FLAG_STRIP_BACKTICK);
+                $emailAddress      = filter_var($aDataArray, 'emailAddress', FILTER_SANITIZE_EMAIL);
+                $password          = filter_var($aDataArray, 'password', FILTER_UNSAFE_RAW);             // Don't clean this, passwords should be left untouched as they are hashed
+                $confirmPassword   = filter_var($aDataArray, 'confirmPassword', FILTER_UNSAFE_RAW);      // Don't clean this, passwords should be left untouched as they are hashed
+                $reCaptchaResponse = filter_var($aDataArray, 'g-recaptcha-response', FILTER_UNSAFE_RAW); // Don't clean this, it's provided by Google
 
-            $query = 'SELECT ' . PHP_EOL .
-                     '    COUNT(*) AS user_count ' . PHP_EOL .
-                     'FROM ' . PHP_EOL .
-                     '    `Users` ' . PHP_EOL .
-                     'WHERE ' . PHP_EOL .
-                     '    `user_name` = :username OR' . PHP_EOL .
-                     '    `user_email_address` = :emailaddress;';
-            $dbHandler -&gt; PrepareAndBind($query, Array('username'     =&gt; $username,
-                                                       'emailaddress' =&gt; $emailAddress));
-            $userCount               = $dbHandler -&gt; ExecuteAndFetch();
-            $LevenshteinForpasswords = Levenshtein($password, $confirmPassword);
-            $googleResponse          = $this -&gt; isValidReCaptcha($reCaptchaResponse);
-            $dbHandler -&gt; Clean();
+                $this-&gt;container-&gt;logger-&gt;debug('Register -&gt; start( username = ' . $username .
+                                                ', emailAddress = '. $emailAddress .
+                                                ', reCaptchaResponse = '. $reCaptchaResponse . ' )');
 
-            $logger -&gt; log('Register -&gt; userCount = ' . print_r($userCount, True), Logger::DEBUG);
-            $logger -&gt; log('Register -&gt; LevenshteinForpasswords = ' . $LevenshteinForpasswords, Logger::DEBUG);
-            $logger -&gt; log('Register -&gt; googleResponse = ' . $googleResponse, Logger::DEBUG);
+                $query = $database-&gt;select()
+                                  -&gt;count('*', 'user_count')
+                                  -&gt;from('Users')
+                                  -&gt;where('user_name', '=', $username, 'OR')
+                                  -&gt;where('user_email_address', '=', $emailAddress);
+                $stmt = $query-&gt;execute();
 
-            if ($userCount['user_count'] != 0) {
-                $this -&gt; utils -&gt; http_response_code(403);
-                $logger -&gt; log('Register -&gt; User already exists', Logger::DEBUG);
-                $content['status']  = 'Error';
-                $content['message'] = 'User already exists';
-                return $content;
-            };
+                $userCount               = $stmt-&gt;fetch();
+                $LevenshteinForpasswords = Levenshtein($password, $confirmPassword);
+                $googleResponse          = $this-&gt;isValidReCaptcha($reCaptchaResponse);
 
-            if (($LevenshteinForpasswords !== 0) ||
-                !$googleResponse) {
-                $this -&gt; utils -&gt; http_response_code(400);
-                $logger -&gt; log('Register -&gt; Passwords don\'t match', Logger::DEBUG);
-                $content['status']  = 'Error';
-                $content['message'] = $this -&gt; utils -&gt; http_code_to_text(400);
-                return $content;
-            };
+                $this-&gt;container-&gt;logger-&gt;debug('Register -&gt; userCount = ' . print_r($userCount, True) .
+                                                ', LevenshteinForpasswords = ' . $LevenshteinForpasswords .
+                                                ', googleResponse = ' . $googleResponse);
 
-            $bytes   = openssl_random_pseudo_bytes(128, $crypto_strong);
-            $salt    = bin2hex($bytes);
-            $hashVal = $this -&gt; pbkdf2($algorithm, $password, $salt, $iterationCount, $keyLength, $outputRaw);
+                if ($userCount['user_count'] != 0) {
+                    $this-&gt;container-&gt;logger-&gt;debug('Register -&gt; User already exists');
 
-            $insertQuery = 'INSERT INTO `Users` ' . PHP_EOL .
-                           '    (`user_name`, `user_password`, `user_salt`, `user_email_address`, `group_fk`) ' . PHP_EOL .
-                           'VALUES ' . PHP_EOL .
-                           '    (:username, :password, :salt, :emailaddress, :groupid);';
-            $dbHandler -&gt; PrepareAndBind($insertQuery, Array('username'     =&gt; $username,
-                                                             'password'     =&gt; $hashVal,
-                                                             'salt'         =&gt; $salt,
-                                                             'emailaddress' =&gt; $emailAddress,
-                                                             'groupid'      =&gt; $defaultGroup));
-            $dbHandler -&gt; Execute();
-            $insertId = $dbHandler -&gt; GetLastInsertId();
-            $dbHandler -&gt; Clean();
-            $logger -&gt; log('Register -&gt; googleResponse = ' . $googleResponse, Logger::DEBUG);
+                    return [
+                        'status' =&gt; 'Error',
+                        'message' =&gt; 'User already exists'
+                    ];
+                };
 
-            if (Empty($insertId)) {
-                $this -&gt; utils -&gt; http_response_code(500);
-                $logger -&gt; log('Register -&gt; Unable to create user', Logger::DEBUG);
-                $content['status']  = 'Error';
-                $content['message'] = 'Unable to create user, please try again later';
-                return $content;
-            };
+                if (($LevenshteinForpasswords !== 0) || !$googleResponse) {
+                    $this-&gt;container-&gt;logger-&gt;debug('Register -&gt; Passwords don\'t match');
 
-            $logger -&gt; log('Register -&gt; Registration successful', Logger::DEBUG);
-            $this -&gt; login($dbHandler);
+                    return [
+                        'status' =&gt; 'Error',
+                        'message' =&gt; 'Bad Request'
+                    ];
+                };
 
-            $content['status']  = 'Success';
-            $content['message'] = 'Registration successful!';
-            return $content;
+                $bytes   = openssl_random_pseudo_bytes(128, $crypto_strong);
+                $salt    = bin2hex($bytes);
+                $hashVal = $this-&gt;pbkdf2($algorithm, $password, $salt, $iterationCount, $keyLength, $outputRaw);
+
+                $query = $database-&gt;insert(['user_name', 'user_password', 'user_salt', 'user_email_address', 'group_fk'])
+                                  -&gt;into('Users')
+                                  -&gt;values([$username, $hashVal, $salt, $emailAddress, $defaultGroup]);
+                $database-&gt;beginTransaction();
+                $insertID = $query-&gt;execute(True);
+
+                if ($insertID &gt; 0) {
+                    $database-&gt;commit();
+                    $this-&gt;container-&gt;logger-&gt;debug('Register -&gt; Registration successful');
+                    $this-&gt;login($aDataArray);
+                    
+                    return [
+                        'status' =&gt; 'Success',
+                        'message' =&gt; 'Registration successful!'
+                    ];
+                } else {
+                    $database-&gt;rollBack();
+                    $this-&gt;container-&gt;logger-&gt;debug('Register -&gt; Unable to create user');
+                    
+                    return [
+                        'status' =&gt; 'Error',
+                        'message' =&gt; 'Unable to create user, please try again later'
+                    ];
+                };
+            } catch (Exception $ex) {
+                $this-&gt;container-&gt;logger-&gt;error('Register -&gt; ex = ' . $ex);
+
+                return [
+                    'status' =&gt; 'Error',
+                    'message' =&gt; 'Unable to create user, please try again later'
+                ];
+            }
         }
 
         /**
@@ -291,176 +311,180 @@
          * @return array The status repsresented as an array
          */
         public function login(array $aDataArray) {
-            global $config, $logger;
+            $database = $this-&gt;container-&gt;dataBase-&gt;PDO;
+            $config   = $this-&gt;container-&gt;get('settings')['security'];
+            initSession();
 
-            $_SESSION['user'] = (object)[];
-            $username         = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
-                                                                                             FILTER_FLAG_STRIP_HIGH ||
-                                                                                             FILTER_FLAG_STRIP_BACKTICK);
-            $password         = filter_input(INPUT_POST, 'password', FILTER_DEFAULT);
-            $ipAddress        = $this -&gt; utils -&gt; getClientIp();
-            $logger -&gt; log('Login -&gt; start( username = ' . $username . ', ipAddress = ' . $ipAddress . ' )', Logger::DEBUG);
+            try {
+                $username  = filter_var($aDataArray, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                                                                                         FILTER_FLAG_STRIP_HIGH ||
+                                                                                         FILTER_FLAG_STRIP_BACKTICK);
+                $password  = filter_var($aDataArray, 'password', FILTER_DEFAULT);
+                $ipAddress = $this-&gt;container-&gt;miscUtils-&gt;getClientIp();
+                $this-&gt;container-&gt;logger-&gt;debug('Login -&gt; start( username = ' . $username . ', ipAddress = ' . $ipAddress . ' )');
 
-            $query1 = 'SET @username = :username;';
-            $dbHandler -&gt; PrepareAndBind($query1, Array('username' =&gt; $username));
-            $dbHandler -&gt; Execute();
+                $query   = $database-&gt;select(['user_pk', 'user_name', 'user_password', 'user_salt', 'user_email_address', 'group_fk'])
+                                    -&gt;from('Users')
+                                    -&gt;where('user_name', '=', $username, 'OR')
+                                    -&gt;where('user_email_address', '=', $username);
+                $stmt    = $query-&gt;execute();
+                $userArr = $stmt-&gt;fetchall();
 
-            $query2 = 'SELECT ' . PHP_EOL .
-                      '    `user_pk`, ' . PHP_EOL .
-                      '    `user_name`, ' . PHP_EOL .
-                      '    `user_password`, ' . PHP_EOL .
-                      '    `user_salt`, ' . PHP_EOL .
-                      '    `user_email_address`, ' . PHP_EOL .
-                      '    `group_fk` ' . PHP_EOL .
-                      'FROM ' . PHP_EOL .
-                      '    `Users` ' . PHP_EOL .
-                      'WHERE ' . PHP_EOL .
-                      '    `user_name` = @username OR ' . PHP_EOL .
-                      '    `user_email_address` = @username;';
-            $dbHandler -&gt; PrepareAndBind ($query2);
-            $user = $dbHandler -&gt; ExecuteAndFetch();
-            $logger -&gt; log('Login -&gt; user : ' . print_r($user, True), Logger::DEBUG);
+                if (count($userArr) &lt; 1) {
+                    $this-&gt;container-&gt;logger-&gt;error('Login -&gt; Invalid credentials');
 
-            if (!isset($user['user_pk'])) {
-                $this -&gt; utils -&gt; http_response_code(401);
-                $logger -&gt; log('Login -&gt; Invalid credentials', Logger::DEBUG);
-                $content['status']  = 'Error';
-                $content['message'] = 'Invalid credentials, try again.';
-                return $content;
-            };
+                    return [
+                        'status' =&gt; 'Error',
+                        'message' =&gt; 'Invalid credentials, try again.'
+                    ];
+                };
 
-            $passwordCheck = $this -&gt; isValidPassword($password, $user['user_salt'], $user['user_password']);
+                $user = $userArr[0];
+                $this-&gt;container-&gt;logger-&gt;debug('Login -&gt; user : ' . print_r($user, True));
+                $passwordCheck = $this-&gt;isValidPassword($password, $user['user_salt'], $user['user_password']);
 
-            if (!$passwordCheck) {
-                $this -&gt; utils -&gt; http_response_code(401);
-                $logger -&gt; log('Login -&gt; Invalid credentials', Logger::DEBUG);
-                $content['status']  = 'Error';
-                $content['message'] = 'Invalid credentials, try again.';
-                return $content;
-            };
+                if (!$passwordCheck) {
+                    $this-&gt;container-&gt;logger-&gt;debug('Login -&gt; Invalid credentials');
 
-            $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
-            $token = bin2hex($bytes);
+                    return [
+                        'status' =&gt; 'Error',
+                        'message' =&gt; 'Invalid credentials, try again.'
+                    ];
+                };
 
-            $insertQuery = 'INSERT INTO `RememberMe` ' . PHP_EOL .
-                           '    (`user_fk`, `token`, `ip_address`) ' . PHP_EOL .
-                           'VALUES ' . PHP_EOL .
-                           '    (:userid, :token, :ipaddr);';
-            $dbHandler -&gt; PrepareAndBind($insertQuery, Array('userid' =&gt; $user['user_pk'],
-                                                             'token'  =&gt; $token,
-                                                             'ipaddr' =&gt; $ipAddress));
-            $dbHandler -&gt; Execute();
-            $insertId = $dbHandler -&gt; GetLastInsertId();
-            $logger -&gt; log('Login -&gt; insertId : ' . $insertId, Logger::DEBUG);
-            $dbHandler -&gt; Clean();
+                $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
+                $token = bin2hex($bytes);
 
-            if (Empty($insertId)) {
-                $this -&gt; utils -&gt; http_response_code(500);
-                $logger -&gt; log('Login -&gt; Unable to create rememberme token', Logger::DEBUG);
-                $content['status']  = 'Error';
-                $content['message'] = 'Unable to create rememberme token, please try again later';
-                return $content;
-            };
+                $query = $database-&gt;insert(['user_fk', 'token', 'ip_address'])
+                                  -&gt;into('RememberMe')
+                                  -&gt;values([$user['user_pk'], $token, $ipAddress]);
+                $database-&gt;beginTransaction();
+                $insertID = $query-&gt;execute(True);
+                $this-&gt;container-&gt;logger-&gt;debug('Login -&gt; insertId : ' . $insertID);
 
-            setcookie('userId', $user['user_pk'], time() + $config['security']['cookieLifetime'], '/');
-            setcookie('token', $token, time() + $config['security']['cookieLifetime'], '/');
+                if ($insertID &lt;= 0) {
+                    $database-&gt;rollBack();
+                    $this-&gt;container-&gt;logger-&gt;debug('Login -&gt; Unable to create remember-me token');
 
-            $this -&gt; utils -&gt; http_response_code(200);
-            $logger -&gt; log('Login -&gt; Login successful', Logger::DEBUG);
-            $content['status']  = 'Success';
-            $content['message'] = 'Login successful, redirecting you to the homepage';
-            return $content;
+                    return [
+                        'status' =&gt; 'Error',
+                        'message' =&gt; 'Unable to authenticate user, please try again later.'
+                    ];
+                };
+
+                $database-&gt;commit();
+                setcookie('userId', $user['user_pk'], time() + $config['cookieLifetime'], '/');
+                setcookie('token', $token, time() + $config['cookieLifetime'], '/');
+                $this-&gt;container-&gt;logger-&gt;debug('Login -&gt; Login successful');
+
+                return [
+                    'status' =&gt; 'Success',
+                    'message' =&gt; 'Login successful, redirecting you to the homepage.'
+                ];
+            } catch (Exception $ex) {
+                $this-&gt;container-&gt;logger-&gt;error('Login -&gt; ex = ' . $ex);
+
+                return [
+                    'status' =&gt; 'Error',
+                    'message' =&gt; 'Unable to authenticate user, please try again later.'
+                ];
+            }
         }
 
         /**
          * Check existance and validity of a user's remember-me cookie
          */
         public function checkRememberMe() {
-            global $config, $logger;
-
-            $_SESSION['user'] = (object)[];
+            $database = $this-&gt;container-&gt;dataBase-&gt;PDO;
+            $config   = $this-&gt;container-&gt;get('settings')['security'];
+            initSession();
 
             if (isset($_COOKIE['userId']) &amp;&amp; isset($_COOKIE['token'])) {
                 $userId = filter_input(INPUT_COOKIE, 'userId', FILTER_SANITIZE_NUMBER_INT);
                 $token  = filter_input(INPUT_COOKIE, 'token', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
                                                                                       FILTER_FLAG_STRIP_HIGH ||
                                                                                       FILTER_FLAG_STRIP_BACKTICK);
-                $ipAddress = $this -&gt; utils -&gt; getClientIp();
-                $logger -&gt; log('checkRememberMe -&gt; start( userId = ' . $userId .
-                               ', token = ' . $token .
-                               ', ipAddress = ' . $ipAddress . ' )', Logger::DEBUG);
+                $ipAddress = $this-&gt;container-&gt;miscUtils-&gt;getClientIp();
+                $this-&gt;container-&gt;logger-&gt;debug('checkRememberMe -&gt; start( userId = ' . $userId .
+                                                ', token = ' . $token .
+                                                ', ipAddress = ' . $ipAddress . ' )');
 
-                $query1 = 'SELECT ' . PHP_EOL .
-                          '    `user_pk`, ' . PHP_EOL .
-                          '    `user_name`, ' . PHP_EOL .
-                          '    `user_email_address`, ' . PHP_EOL .
-                          '    `group_fk` ' . PHP_EOL .
-                          'FROM ' . PHP_EOL .
-                          '    `Users` ' . PHP_EOL .
-                          'WHERE ' . PHP_EOL .
-                          '    `user_pk` = :userid;';
-                $dbHandler -&gt; PrepareAndBind ($query1, Array('userid' =&gt; $userId));
-                $user = $dbHandler -&gt; ExecuteAndFetch();
-                $dbHandler -&gt; Clean();
-                $logger -&gt; log('checkRememberMe -&gt; user = ' . print_r($user, True), Logger::DEBUG);
+                try {
+                    $query   = $database-&gt;select(['user_pk', 'user_name', 'user_email_address', 'group_fk'])
+                                        -&gt;from('Users')
+                                        -&gt;where('user_pk', '=', $userId);
+                    $stmt    = $query-&gt;execute();
+                    $userArr = $stmt-&gt;fetchall();
 
-                $query2 = 'SELECT ' . PHP_EOL .
-                         '    `rememberme_pk` ' . PHP_EOL .
-                         'FROM ' . PHP_EOL .
-                         '    `RememberMe` ' . PHP_EOL .
-                         'WHERE ' . PHP_EOL .
-                         '    `user_fk` = :userid AND ' . PHP_EOL .
-                         '    `token` = :token AND ' . PHP_EOL .
-                         '    `ip_address` = :ipaddress;';
-                $dbHandler -&gt; PrepareAndBind ($query2, Array('userid'    =&gt; $userId,
-                                                             'token'     =&gt; $token,
-                                                             'ipaddress' =&gt; $ipAddress));
-                $rememberMe = $dbHandler -&gt; ExecuteAndFetch();
-                $dbHandler -&gt; Clean();
-                $logger -&gt; log('checkRememberMe -&gt; rememberMe = ' . print_r($rememberMe, True), Logger::DEBUG);
+                    if (count($userArr) &lt; 1) {
+                        $this-&gt;container-&gt;logger-&gt;error('checkRememberMe -&gt; Invalid cookie');
+                        restartSession();
 
-                if (!isset($user['user_pk']) || !isset($rememberMe['rememberme_pk'])) {
-                    setcookie('userId', '', time() - 3600, '/');
-                    setcookie('token', '', time() - 3600, '/');
-                    $_SESSION['user'] -&gt; group = 0;
-                    $logger -&gt; log('checkRememberMe -&gt; User not found', Logger::DEBUG);
+                        return;
+                    };
+
+                    $user = $userArr[0];
+                    $this-&gt;container-&gt;logger-&gt;debug('checkRememberMe -&gt; user = ' . print_r($user, True));
+
+                    $query         = $database-&gt;select(['rememberme_pk', 'date'])
+                                              -&gt;from('RememberMe')
+                                              -&gt;where('user_fk', '=', $userId, 'AND')
+                                              -&gt;where('token', '=', $token, 'AND')
+                                              -&gt;where('ip_address', '=', $ipAddress);
+                    $stmt          = $query-&gt;execute();
+                    $rememberMeArr = $stmt-&gt;fetchall();
+
+                    if (count($rememberMeArr) &lt; 1) {
+                        $this-&gt;container-&gt;logger-&gt;error('checkRememberMe -&gt; Invalid cookie');
+                        restartSession();
+
+                        return;
+                    };
+
+                    $rememberMe = $rememberMeArr[0];
+                    $this-&gt;container-&gt;logger-&gt;debug('checkRememberMe -&gt; rememberMe = ' . print_r($rememberMe, True));
+
+                    $now      = date('yyyy/mm/dd hh:ii:ss', time());
+                    $dateDiff = intval($this-&gt;container-&gt;formattingUtils-&gt;dateDifference($rememberMe['date'], $now, '%a'));
+
+                    if ($dateDiff &gt; 30) {
+                        $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
+                        $token = bin2hex($bytes);
+
+                        $query = $database-&gt;update()
+                                          -&gt;table('RememberMe')
+                                          -&gt;set(['token' =&gt; $token])
+                                          -&gt;where('rememberme_pk', '=', $rememberMe['rememberme_pk']);
+                        $database-&gt;beginTransaction();
+                        $affectedRows = $query-&gt;execute();
+
+                        if ($affectedRows === 1) {
+                            $database-&gt;commit();
+                        } else {
+                            $database-&gt;rollBack();
+                            $this-&gt;container-&gt;logger-&gt;debug('checkRememberMe -&gt; Unable to update rememberMe token');
+
+                            return;
+                        };
+                    };
+
+                    $_SESSION['user']-&gt;id           = $user['user_pk'];
+                    $_SESSION['user']-&gt;username     = $user['user_name'];
+                    $_SESSION['user']-&gt;emailAddress = $user['user_email_address'];
+                    $_SESSION['user']-&gt;group        = $user['group_fk'];
+                    $_SESSION['user']-&gt;token        = $token;
+                    $this-&gt;container-&gt;logger-&gt;debug('checkRememberMe -&gt; _SESSION[user] = ' . print_r($_SESSION['user'], True));
+
+                    setcookie('userId', $user['user_pk'], time() + $config['cookieLifetime'], '/');
+                    setcookie('token', $newToken, time() + $config['cookieLifetime'], '/');
+                } catch (Exception $ex) {
+                    $this-&gt;container-&gt;logger-&gt;error('checkRememberMe -&gt; ex = ' . $ex);
+
                     return;
-                };
-
-                $bytes    = openssl_random_pseudo_bytes(32, $crypto_strong);
-                $newToken = bin2hex($bytes);
-
-                $query3 = 'UPDATE ' . PHP_EOL .
-                          '    `RememberMe` ' . PHP_EOL .
-                          'SET ' . PHP_EOL .
-                          '    `token` = :token ' . PHP_EOL .
-                          'WHERE ' . PHP_EOL .
-                          '    `rememberme_pk` = :remembermeid;';
-                $dbHandler -&gt; PrepareAndBind ($query3, Array('token' =&gt; $newToken,
-                                                             'remembermeid' =&gt; $rememberMe['rememberme_pk']));
-                $dbHandler -&gt; Execute();
-                $dbHandler -&gt; Clean();
-
-                if (!property_exists($_SESSION['user'], 'id') || $_SESSION['user'] -&gt; id !== $user['user_pk'])
-                    $_SESSION['user'] -&gt; id = $user['user_pk'];
-
-                if (!property_exists($_SESSION['user'], 'username') || $_SESSION['user'] -&gt; username !== $user['user_name'])
-                    $_SESSION['user'] -&gt; username = $user['user_name'];
-
-                if (!property_exists($_SESSION['user'], 'emailAddress') || $_SESSION['user'] -&gt; emailAddress !== $user['user_email_address'])
-                    $_SESSION['user'] -&gt; emailAddress = $user['user_email_address'];
-
-                if (!property_exists($_SESSION['user'], 'group') || $_SESSION['user'] -&gt; group !== $user['group_fk'])
-                    $_SESSION['user'] -&gt; group = $user['group_fk'];
-
-                $_SESSION['user'] -&gt; token        = $newToken;
-                $logger -&gt; log('checkRememberMe -&gt; _SESSION[user] = ' . print_r($_SESSION['user'], True), Logger::DEBUG);
-
-                setcookie('userId', $user['user_pk'], time() + $config['security']['cookieLifetime'], '/');
-                setcookie('token', $newToken, time() + $config['security']['cookieLifetime'], '/');
+                }
             } else {
-                $_SESSION['user'] -&gt; group = -1;
-                $logger -&gt; log('checkRememberMe -&gt; No rememberme cookie set', Logger::DEBUG);
+                $this-&gt;container-&gt;logger-&gt;debug('checkRememberMe -&gt; No rememberme cookie set');
+
                 return;
             };
         }
@@ -471,14 +495,12 @@
          * @return array The status repsresented as an array
          */
         public function logout() {
-            $database     = $this-&gt;container-&gt;dataBase-&gt;PDO;
-            $utils        = $this-&gt;container-&gt;miscUtils;
-            $result       = array();
+            $database = $this-&gt;container-&gt;dataBase-&gt;PDO;
 			
 			try {
-				$userId    = $_SESSION['user'] -&gt; id;
-				$token     = $_SESSION['user'] -&gt; token;
-				$ipAddress = $utils-&gt;getClientIp();
+				$userId    = $_SESSION['user']-&gt;id;
+				$token     = $_SESSION['user']-&gt;token;
+				$ipAddress = $this-&gt;container-&gt;miscUtils-&gt;getClientIp();
 				
 				$this-&gt;container-&gt;logger-&gt;debug(&quot;MapPlatform 'MapPlatform\Core\Security\logout' data: &quot; . print_r($data, True));
 				$stmt = $database-&gt;delete()
@@ -491,12 +513,8 @@
 
                 if ($affectedRows === 1) {
                     $database-&gt;commit();
-
-                    // Unset the 'remember me' cookies
-                    setcookie('userId', '', time() - 3600, '/');
-                    setcookie('token', '', time() - 3600, '/');
-                    session_unset();   // Remove all session variables
-                    session_destroy(); // Destroy the session
+                    $this-&gt;container-&gt;logger-&gt;error('logout -&gt; Successfully logged out');
+                    destroySession();
 
 					return [
 						'status' =&gt; 'Success',
@@ -504,12 +522,8 @@
 					];
                 } else {
                     $database-&gt;rollBack();
-
-                    // Unset the 'remember me' cookies
-                    setcookie('userId', '', time() - 3600, '/');
-                    setcookie('token', '', time() - 3600, '/');
-                    session_unset();   // Remove all session variables
-                    session_destroy(); // Destroy the session
+                    $this-&gt;container-&gt;logger-&gt;error('logout -&gt; Unable to logout');
+                    destroySession();
 
 					return [
 						'status' =&gt; 'Fail',
@@ -517,6 +531,9 @@
 					];
                 };
             } catch (Exception $ex) {
+                $this-&gt;container-&gt;logger-&gt;error('logout -&gt; ex = ' . $ex);
+                destroySession();
+
 				return [
 					'status' =&gt; 'Fail',
 					'message' =&gt; 'Exception while trying to logout',

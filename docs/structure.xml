@@ -13,7 +13,7 @@
     <namespace-alias name="Controllers">\MapPlatform\Controllers</namespace-alias>
     <source>eJytVU1v4jAQvfdX+LASH1qgPa1EK7ZAtSoHqojd9lL24CYDsXBiy3aoKOK/75gkECAupFoOxLJn5r15frbvfspQXhH8dZrN7Zc0yZ8QCJWSM58aJmKiRGKABDBjMbMTOgvM471HjyxBaRv742jtXlJ/QedAxlR6nJqZUNFujSYmFIogIIsEGSi6AEXuTMjeIqHEBwN1P48o421fRL1dVg51075uX+9mNYt9wOEvprQhdIlp9I0DSecnwIFqOMjpbL+JPuA2HYrYKME5gtxepcp0yMgjnhA8VSJt/xsq1OrNcUbWax0mJa7r2ncyS2J/q1q9QdYpko3GpjSGg8FgP9FGRKA663wU0wg2mFwAn448C7mf6XZ9TrUmbVLrYh27OFgNswJPWKDWaPU0GDus1zJCrRyh1rgtJxODoUGAXLLBl2g8gXkXatHHfNC6lEhWvsgDhX2AGU24ySxmBMmVLCX7iopR44eU883fCjxDUa5OTmbT2G/1C1MmoZxE1A9ZDITFS4iNUCv35i+jXZDTAKW9FhIr9/syHuW5FzZdpFnSeN8buVukkp31dq7GjTOyJDqi0n1qHDl4ZNXZnBOj26zO2v6PgmOT9yWb4iXgdDmu6cHqWW/PkRVrcoK3k7KEgBQaGVTBxKOCaxZs75+hUxeoWB0T+pzbpnKE0pYO5FvjTn1JOKdiuThJRfaJDKiBojxY/tlVPsCb30A1hDRnh2DP7kH5k70+Mmgg3mMuaHCxsc8ddsv2ISt6Qrlwo15CTuGjHs8vpea07mRbxunedLmKgT9x2GdYmLvHOvHZOTHwtjPaV0yaaoKc26wx0345X4v4O0WsunGg2QcE6SvyX63lZptiZi9XGeHjcfFFOX3w7JtUfF22+/7qJveI8WV+/wc43y/E</source>
   </file>
-  <file path="Core\Utils\FormattingUtils.php" generated-path="Core.Utils.FormattingUtils.html" hash="80c6218e2018a590e35c63d84035076c" package="MapPlatform\Core\Utils">
+  <file path="Core\Utils\FormattingUtils.php" generated-path="Core.Utils.FormattingUtils.html" hash="484ecab9a83798a864499b5a02bf1ca5" package="MapPlatform\Core\Utils">
     <docblock line="0">
       <description>Generic data formatting and manipulation utilities</description>
       <long-description>PHP version 7</long-description>
@@ -78,8 +78,53 @@
           <type>boolean</type>
         </argument>
       </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="77" package="MapPlatform\Core\Utils">
+        <name>dateDifference</name>
+        <full_name>\MapPlatform\Core\Utils\FormattingUtils::dateDifference()</full_name>
+        <docblock line="77">
+          <description>Get the difference between two dates
+  RESULT FORMAT:
+    '%y Year %m Month %d Day %h Hours %i Minute %s Seconds' =&gt;  1 Year 3 Month 14 Day 11 Hours 49 Minute 36 Seconds
+    '%y Year %m Month %d Day'                               =&gt;  1 Year 3 Month 14 Days
+    '%m Month %d Day'                                       =&gt;  3 Month 14 Day
+    '%d Day %h Hours'                                       =&gt;  14 Day 11 Hours
+    '%d Day'                                                =&gt;  14 Days
+    '%h Hours %i Minute %s Seconds'                         =&gt;  11 Hours 49 Minute 36 Seconds
+    '%i Minute %s Seconds'                                  =&gt;  49 Minute 36 Seconds
+    '%h Hours                                               =&gt;  11 Hours
+    '%a Days                                                =&gt;  468 Days</description>
+          <long-description></long-description>
+          <tag name="param" line="77" description="&lt;p&gt;First date&lt;/p&gt;" type="string" variable="$aDate1">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="77" description="&lt;p&gt;Second date&lt;/p&gt;" type="string" variable="$aDate2">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="77" description="&lt;p&gt;Output format&lt;/p&gt;" type="string" variable="$outFormat">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="77" description="" type="string">
+            <type>string</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$aDate1</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$aDate2</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$outFormat</name>
+          <default>'%a'</default>
+          <type/>
+        </argument>
+      </method>
     </class>
-    <source>eJzdVU1vGjEQvUfKfxitUIGILumpUvlI0jZpKrUKimhPkaJhGVgLr73yB0la5b/XXi/sboC2l17qA3iYN+89z9hieJan+fERuNU/OQkbOIFPJEixBOZoEBZSZWgME0tAMYcMBcstR8OkAGsYZ4aR3pRuKSbXE1iT0h71did7nmOywiX56CvmE0fnZaq8trMN5INUdPfNCekqjdakUhXRNGWZhPcKV6RgaFI2y6SSPxip82WGjMeJzMZV5caTW2/i0/i0JslEUhgCuGJKG8C1K8cZJwipW+KEmpp1/bARmJF2jql+nLvK+uD4KACtI/gs1sjZ/EItbUbCXD4mlPt2bkH1WXxszqD/l/3/7zqccNQarraNqPn9WUIbnQuaL/CQSKGNsomRKq4D+1WQ2xl3d39hRVL0+P5+W9Tp1rWeN+PaJzxVKLTvuHs0gErhEzBhJCA4Kv+W5AJkMXXtp+t+b2t3+sQ4WG5Nu+GuwewmqzArOVv4HbklDRdF6EgDvQanVcgXqqVSD9gCVvT0eu2LIEc3BUdE/lbOe2BSEv7DQ+CBcQ4zKuIA96+/iup5Q48m3mdyJiWHliYTXB4+kyJjlSjNH4aZVMkHffAB7QXfWmFYRntBvxl70d+pvAmd64R2v9r0u/fyaDCCK+SaGjfEr5Yibblx+XZ7UL8xfrkJESYpdLZzRA2tFYzG0FrvUPnlBtjZUnrO7i6mLhuPomGYfgSxK60Mn0EURjm6i3zOycYQ+f07iKKuD8bF72u/HfYDyzga7AqSO/ifbPh/hPvLmy8F2T919LzT5vJ2lWYGjSdcfv0CQSvmzQ==</source>
+    <source>eJzdVttuEzEQfUfiH0ZRQtIqJE1B3NIGCrSARNWqBCSkSpWzmXSt7torX1IK6r8zXm/20mxKgsQLfkjs9ZlzxjO2x3uvkzB5+ACo9be3fQe24QMKVDyAKTMMZlLFzBguLoGJKcRM8MRGzHApwBoeccNRL0xzitOPpzBHpR3q+dLsm4QFV+wS3eiYJadE52SKeW0nC8g7qfD8KwnpYppZE0qVjsYhjyW8VewKFeyZkE9iqeRPjurNZcx41AtkPCosFz5RG/R2ejslSS6C1CGAI660ATYnczaJEPzUGUbINFbt+r4jWIyaPMbycs4L14cPH3igJYJPYs4iPj1QlzZGYQ5/BJi4cOagci7eV3PQXzP+/12Eg4hpDUd5IEr+/sqglch5zTt4CKTQRtnASNUrA/vFILGTiPb+zIogjfHFRW7U2Spr3S7SVSc8VkxoF3E6NMCUYjfAhZHAgKjcWZIzkGnWtcsufW9rWn1gCJZY0654V2GmzCoWZ5xN9o1FFjUcpEMi9fQaSCuVT1UzpS7wGVzhzeO5M4KEURaICN2unHbBhCjcj4PANY8imGA69nB3+otRed7gD9Orc3IiZQRNjcZ7uXpNCo1VInN+NcyESl7rlQeoFnxmheEx1oLuSXsa37E88ZHr+HA/WsS7e3dpsA9HLNJY2SGuNRVqGxmab7eH5R3jGmUIWRBCJ88j09C8gv0RNOdLVK5RAjs5pePcWsaUZXv7jT2f/Qb0yLRw+DU0fCr3zxtujmR70HD9V9BobLnBKP0+d929vmcZNYbLgkgL/5MbriJcHJ58Tsn+qUe3S2HOdlfmzHDNI/wBTbq7p3w2Q4XugpqguUZ3SK6lK47kc8UC4Ozwy9fPYzg6OTs+GL+6MwnQbt3Ad2QKWjEcS2FCaE3phr+BVggfpaXT2OJwzIU1CC0NX5Cunqluu/0AA2/5JDMcPE0NB4PM8OnLheGTZwvDtfXbdbkrtZX6dRKbUZclqtw11NVgbUJ9J1yruNelrOGu47w/q/dybpjXjQQqSmsKLJayWSsvpYaUpYHbkNN7/ezFUtDrKlBWbf17wx3Ze0B+8X9CnVhDBTp7kv1FRSvVnLzYOMn3+TVD1YBefTiALvjerutJa/xrxpWSFmsvVxrHMqZSNyCE618EVF1MTrc1XIHfrcXvLuPJwywDHu8+dArZbomybFx/GTvjxyMfxk6xunrDW9+lv9/wCil5</source>
   </file>
   <file path="middleware.php" generated-path="middleware.html" hash="398ca20d5687bb7bc4966082ce39a170" package="MapPlatform">
     <docblock line="0">
@@ -851,7 +896,7 @@ PHP version 7</long-description>
     </class>
     <source>eJzdU01v00AQvVfqf5gDStrIJOXEIW0pNLSJRFEUAheCqo0zjlfdD2s9DgXU/876e00ct2f24lnvezOz782ev4vC6PgI7BoNBnkAA7hFhYb7MF3efQKDamN3agsJccGJY1wCK8J8OocdmphrBW/3Tq8i5j+wLaa7OxbNBaNAG1mfx8m6hFxrg6uvtlBcH7OEQm2y3TLkUsMHwx7QwDmFfC210b85mqutZFwMfS0va2bZk11vhmfDM6ckV37WEMANNzEB21k6WwuE/GiBAlmMTd4oDxSTGNuO0b3Oqm59fHyUAxObYKZ2TPDNe7NNJCr6+OhjRLapcQ35IrhcTYmi1cLm1SrGfw+vtSLGrStVatevzKcole8lZv13dviCxbFFpFd3ev1TwBpi5fUcLPhWbzKJT9oMXdCo3kTJWtjnECTKT52D+/uKdHLq1nkq3WkreosEFCIQPhJwFfMNgg6AQcAFNko3aNYuwyTYcqmtr9jc+rLkJLANxRUVkNmkM0s6UHYalygj639rrtX+WFpiGbYxmDHsl8V8YyKpBq8lZzXNRSNZfFgAg5QY1dbPYQ6FRv+MDz6+VvAiUcQltoI6piF/cyf7BnkNO7yD4ntOofZV6d+rDfAKuXul3h7UuvYcYRsTmq6S8L1ftdr/Yf9fuM2PuzizSUZwOLNJJ+Ez2xWMC9fz15e5eGkUIPnhSV+x3TAKSYq+V+U47cxdqGnzP5N7X/gXVrjRmtCkF3iu+yBDtl6gWaCY6QPZipFyze4H9v1gpzRPeWg/fwFtnDPH</source>
   </file>
-  <file path="Controllers\Api\MapController.php" generated-path="Controllers.Api.MapController.html" hash="37c50629e853b77ede741bb52a347f79" package="MapPlatform\Controllers\Api">
+  <file path="Controllers\Api\MapController.php" generated-path="Controllers.Api.MapController.html" hash="fd8cdb78a9dc14dd29acb32506dc17ff" package="MapPlatform\Controllers\Api">
     <docblock line="0">
       <description>The central controller for all map features</description>
       <long-description>PHP version 7</long-description>
@@ -929,10 +974,10 @@ PHP version 7</long-description>
         </argument>
       </method>
       <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="54" package="MapPlatform\Controllers\Api">
-        <name>home</name>
-        <full_name>\MapPlatform\Controllers\Api\MapController::home()</full_name>
+        <name>getAllMaps</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::getAllMaps()</full_name>
         <docblock line="54">
-          <description>MapController default page.</description>
+          <description>MapController Get all maps.</description>
           <long-description></long-description>
           <tag name="param" line="54" description="" type="\Slim\Http\Request" variable="$request">
             <type>\Slim\Http\Request</type>
@@ -944,6 +989,181 @@ PHP version 7</long-description>
             <type>array</type>
           </tag>
           <tag name="return" line="54" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="70" package="MapPlatform\Controllers\Api">
+        <name>getMap</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::getMap()</full_name>
+        <docblock line="70">
+          <description>MapController Get a specific map.</description>
+          <long-description></long-description>
+          <tag name="param" line="70" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="70" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="70" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="70" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="86" package="MapPlatform\Controllers\Api">
+        <name>getMapsByUser</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::getMapsByUser()</full_name>
+        <docblock line="86">
+          <description>MapController Get a map by user ID.</description>
+          <long-description></long-description>
+          <tag name="param" line="86" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="86" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="86" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="86" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="109" package="MapPlatform\Controllers\Api">
+        <name>addMap</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::addMap()</full_name>
+        <docblock line="109">
+          <description>MapController Add map function.</description>
+          <long-description></long-description>
+          <tag name="param" line="109" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="109" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="109" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="109" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="126" package="MapPlatform\Controllers\Api">
+        <name>updateMap</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::updateMap()</full_name>
+        <docblock line="126">
+          <description>MapController Update map function.</description>
+          <long-description></long-description>
+          <tag name="param" line="126" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="126" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="126" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="126" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="143" package="MapPlatform\Controllers\Api">
+        <name>deleteMap</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::deleteMap()</full_name>
+        <docblock line="143">
+          <description>MapController Delete map function.</description>
+          <long-description></long-description>
+          <tag name="param" line="143" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="143" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="143" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="143" description="" type="\Slim\Http\Response">
             <type>\Slim\Http\Response</type>
           </tag>
         </docblock>
@@ -1017,7 +1237,7 @@ PHP version 7</long-description>
         <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
       </method>
     </class>
-    <source>eJzlVU1PGzEQvVfqfxitIuVDIRt6qdTQQIqoAAkaQS5VU6GJM8laeG3X9gZo1f/e2SzJbj4Qhx7xYe3VvBm/eX7ePTq2iX3/DnjErVaxgBaMEgJBOjhUIAzPRilyMDMOUClI0cKMMGSO/CpnnTs8H8KCnJdGw8ed6IlFcY9zyt+u0A4VBq6alnGfTVaQ0/XOfjywssRgFhKmko9RIlMDXxzeM7+jkMhJapz5LcmdzFOUqiNM2i8zV8R4HHa6nW5lX6nFkhXAV+l8AFxwOk4UQRG6IUXoaTMvLhYaU/JMm6o9jbf49wps8cy40oVeoJLTgZtnKYt99ijIBmbXKyG3Sqbj8xDs+IZ+ZeTDCzFvjfZUCW7ycC+FBhPPhyzCqULvaUmzZM05u9bg7Iol3sj5ilyevJ+SMtBjID31sCFZAf/znL4h3Vq+Sg2pF4Yb61QhG3CW02EK4x0fQM0Vi1fhhTVyfLHal4DO4RPU0M39y1Qc8YXX+4pXcXH5YrOJkgJmmRa5reHurui3sd1DG3Zptgs6zaqY+Xhmscb1yvDflV9fF35KM8xUAMs+fCPqJyb9P+VrfPv8QT+//Cg1uYO+MvN5Pks9M43oCjWrmX/JRsYoD/UYrYwXh3Hgjbxw0oYIOtA4S214aiz3+FEXGETC/5T6zyYcQxTBJ4jiHLYn3oGoDs5kgaJmb4sbk+fzHLj8q/G5ULTR7FUNsc88B/0HGZJLb3SjrNCGD91uGy5vv13fDW/ORqPvPF1cj5qbVnue/gH1jg9S</source>
+    <source>eJztV11v2jAUfZ+0/3CFKgEVELqXSaNlhZauqVqGKH3YxoRMcglWnY/ZDm237r/vBgMJUFR11bRK1A/Y5n743ONjJ9n/GI2jt2+AmrW7awawC70xgoOBlkyAE1IfCoESRqEEJgT4LIIRMh1LVPOYRWzntAMTlIqHAbxfsx5GzLlmHiazCxZ1BNOU1U/tKh7OXY4WK6t+I+KpD4v1mKAkrTfmfghNya4J374e86EfyvAnR3no+YyLihP69TRyDozaXqVaqWbW5YEzRQVwwqXSwCYUzoYCwZi6KJApXI6zzCBgPiqCjdma+iv4a8bX/MaUyQ4mTHC3Ib3YJ7Jbtw5GmtDVUpdLwf3+qdZRv4s/YlR6g01FYaAwY1zGITeZGkNFm+zoI8GUwinMFDXFrEuDojOS2JL9dRJ6knpSyIC3GgNXwRJlxv3XLHyJugV9mRw8mIRUWCXrsuROdErmQ39NB7AjzeBRdyONxN+MHgpgUrI72GHSU5uhSKQDHzyUPOtnpZMoHgruwCgOnETWMBiYegurNZRgHWbJwClmyUzaDMXCr5aaf8/1+jjxn1DPbzK1Jex7qBtCEA3qWfzv0BlU5XpyBTAeoCzXReh5Sc+DUVjIZQ495C0WcWuyZyU050GGscZcsbaSkFaMhW5ICQeGikKxlt3Jh3a9XL/henymwqCQxpfgXbVagrPLz+1Bp9vq9b5QZ7d7xWdoBFSEDh8RkVTD9iiFmHhVyRNUkrwRDe+Sx6sE+3irdKKad1dU9v+Ri5UwbuWgYhJ/yydz281/p39yG7VknEhIIy40ysGEycJKfAlO7PNeqzu4bLTtnv21NWhfXTRpvqKUaT5Ccs6VtjX6irIGsRB/I18+gsIC24HJA/f3C7z7B1AtLockTY9leAMB3sDiDbKQtwV69PI+EyR8gHzCkUm0vvJLOEgN1zUfFjN5bckhYq778i5bl2lGQp2DKdfpqHeYVOg2Q9dId8n/pV7OVxFVgtsoq3ha+auy/pWyjulrcTuV5U4rf1XWU5U16/4A64RwGQ==</source>
   </file>
   <file path="Core\Utils\FileUtils.php" generated-path="Core.Utils.FileUtils.html" hash="0647ef99d89f080c629129295ff17da4" package="MapPlatform\Core\Utils">
     <docblock line="0">
@@ -1219,7 +1439,7 @@ PHP version 7</long-description>
     </class>
     <source>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</source>
   </file>
-  <file path="Core\Security.php" generated-path="Core.Security.html" hash="8d9e2db79e501436eab615ba18925386" package="MapPlatform\Core">
+  <file path="Core\Security.php" generated-path="Core.Security.html" hash="6a542ee8724ea027b6aa4dcaa3da9714" package="MapPlatform\Core">
     <docblock line="0">
       <description>The internal security class</description>
       <long-description>This package should be used for all security features
@@ -1273,32 +1493,56 @@ PHP version 7</long-description>
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="55" package="MapPlatform\Core">
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="45" package="MapPlatform\Core">
+        <name>initSession</name>
+        <full_name>\MapPlatform\Core\Security::initSession()</full_name>
+        <docblock line="45">
+          <description>Initialize the user session</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="53" package="MapPlatform\Core">
+        <name>destroySession</name>
+        <full_name>\MapPlatform\Core\Security::destroySession()</full_name>
+        <docblock line="53">
+          <description>Destroy the user session</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="63" package="MapPlatform\Core">
+        <name>restartSession</name>
+        <full_name>\MapPlatform\Core\Security::restartSession()</full_name>
+        <docblock line="63">
+          <description>Restart the user session</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="82" package="MapPlatform\Core">
         <name>pbkdf2</name>
         <full_name>\MapPlatform\Core\Security::pbkdf2()</full_name>
-        <docblock line="55">
+        <docblock line="82">
           <description>PBKDF2 key derivation function as defined by RSA's PKCS #5: https://www.ietf.org/rfc/rfc2898.txt
 Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt</description>
           <long-description></long-description>
-          <tag name="param" line="55" description="&lt;p&gt;The hash algorithm to use. Recommended: SHA256&lt;/p&gt;" type="string" variable="$algorithm">
+          <tag name="param" line="82" description="&lt;p&gt;The hash algorithm to use. Recommended: SHA256&lt;/p&gt;" type="string" variable="$algorithm">
             <type>string</type>
           </tag>
-          <tag name="param" line="55" description="&lt;p&gt;The password.&lt;/p&gt;" type="string" variable="$password">
+          <tag name="param" line="82" description="&lt;p&gt;The password.&lt;/p&gt;" type="string" variable="$password">
             <type>string</type>
           </tag>
-          <tag name="param" line="55" description="&lt;p&gt;A salt that is unique to the password.&lt;/p&gt;" type="string" variable="$salt">
+          <tag name="param" line="82" description="&lt;p&gt;A salt that is unique to the password.&lt;/p&gt;" type="string" variable="$salt">
             <type>string</type>
           </tag>
-          <tag name="param" line="55" description="&lt;p&gt;Iteration count. Higher is better, but slower. Recommended: At least 1000.&lt;/p&gt;" type="integer" variable="$count">
+          <tag name="param" line="82" description="&lt;p&gt;Iteration count. Higher is better, but slower. Recommended: At least 1000.&lt;/p&gt;" type="integer" variable="$count">
             <type>integer</type>
           </tag>
-          <tag name="param" line="55" description="&lt;p&gt;The length of the derived key in bytes.&lt;/p&gt;" type="integer" variable="$keyLength">
+          <tag name="param" line="82" description="&lt;p&gt;The length of the derived key in bytes.&lt;/p&gt;" type="integer" variable="$keyLength">
             <type>integer</type>
           </tag>
-          <tag name="param" line="55" description="&lt;p&gt;If true, the key is returned in raw binary format. Hex encoded otherwise.&lt;/p&gt;" type="boolean" variable="$rawOutput">
+          <tag name="param" line="82" description="&lt;p&gt;If true, the key is returned in raw binary format. Hex encoded otherwise.&lt;/p&gt;" type="boolean" variable="$rawOutput">
             <type>boolean</type>
           </tag>
-          <tag name="return" line="55" description="A $keyLength-byte key derived from the password and salt." type="mixed">
+          <tag name="return" line="82" description="A $keyLength-byte key derived from the password and salt." type="mixed">
             <type>mixed</type>
           </tag>
         </docblock>
@@ -1333,22 +1577,22 @@ Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt</descriptio
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="107" package="MapPlatform\Core">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="130" package="MapPlatform\Core">
         <name>isValidPassword</name>
         <full_name>\MapPlatform\Core\Security::isValidPassword()</full_name>
-        <docblock line="107">
+        <docblock line="130">
           <description>Compare the given password and salt with the given hash</description>
           <long-description></long-description>
-          <tag name="param" line="107" description="&lt;p&gt;The raw password to compare with&lt;/p&gt;" type="string" variable="$password">
+          <tag name="param" line="130" description="&lt;p&gt;The raw password to compare with&lt;/p&gt;" type="string" variable="$password">
             <type>string</type>
           </tag>
-          <tag name="param" line="107" description="&lt;p&gt;The salt to use for the comparison&lt;/p&gt;" type="string" variable="$salt">
+          <tag name="param" line="130" description="&lt;p&gt;The salt to use for the comparison&lt;/p&gt;" type="string" variable="$salt">
             <type>string</type>
           </tag>
-          <tag name="param" line="107" description="&lt;p&gt;The hash to compare against&lt;/p&gt;" type="string" variable="$hash">
+          <tag name="param" line="130" description="&lt;p&gt;The hash to compare against&lt;/p&gt;" type="string" variable="$hash">
             <type>string</type>
           </tag>
-          <tag name="return" line="107" description="" type="boolean">
+          <tag name="return" line="130" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -1368,16 +1612,16 @@ Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt</descriptio
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="131" package="MapPlatform\Core">
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="149" package="MapPlatform\Core">
         <name>isValidReCaptcha</name>
         <full_name>\MapPlatform\Core\Security::isValidReCaptcha()</full_name>
-        <docblock line="131">
+        <docblock line="149">
           <description>Check validity of ReCaptcha response value</description>
           <long-description></long-description>
-          <tag name="param" line="131" description="&lt;p&gt;The response provided by Google&lt;/p&gt;" type="string" variable="$reCaptchaResponse">
+          <tag name="param" line="149" description="&lt;p&gt;The response provided by Google&lt;/p&gt;" type="string" variable="$reCaptchaResponse">
             <type>string</type>
           </tag>
-          <tag name="return" line="131" description="" type="boolean">
+          <tag name="return" line="149" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -1387,16 +1631,16 @@ Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt</descriptio
           <type/>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="161" package="MapPlatform\Core">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="178" package="MapPlatform\Core">
         <name>register</name>
         <full_name>\MapPlatform\Core\Security::register()</full_name>
-        <docblock line="161">
+        <docblock line="178">
           <description>Check validity of ReCaptcha response value</description>
           <long-description></long-description>
-          <tag name="param" line="161" description="&lt;p&gt;POST values as an array&lt;/p&gt;" type="array" variable="$aDataArray">
+          <tag name="param" line="178" description="&lt;p&gt;POST values as an array&lt;/p&gt;" type="array" variable="$aDataArray">
             <type>array</type>
           </tag>
-          <tag name="return" line="161" description="The status repsresented as an array" type="array">
+          <tag name="return" line="178" description="The status repsresented as an array" type="array">
             <type>array</type>
           </tag>
         </docblock>
@@ -1406,16 +1650,16 @@ Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt</descriptio
           <type>array</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="257" package="MapPlatform\Core">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="277" package="MapPlatform\Core">
         <name>login</name>
         <full_name>\MapPlatform\Core\Security::login()</full_name>
-        <docblock line="257">
+        <docblock line="277">
           <description>Check validity of ReCaptcha response value</description>
           <long-description></long-description>
-          <tag name="param" line="257" description="&lt;p&gt;POST values as an array&lt;/p&gt;" type="array" variable="$aDataArray">
+          <tag name="param" line="277" description="&lt;p&gt;POST values as an array&lt;/p&gt;" type="array" variable="$aDataArray">
             <type>array</type>
           </tag>
-          <tag name="return" line="257" description="The status repsresented as an array" type="array">
+          <tag name="return" line="277" description="The status repsresented as an array" type="array">
             <type>array</type>
           </tag>
         </docblock>
@@ -1425,27 +1669,27 @@ Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt</descriptio
           <type>array</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="342" package="MapPlatform\Core">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="361" package="MapPlatform\Core">
         <name>checkRememberMe</name>
         <full_name>\MapPlatform\Core\Security::checkRememberMe()</full_name>
-        <docblock line="342">
+        <docblock line="361">
           <description>Check existance and validity of a user's remember-me cookie</description>
           <long-description></long-description>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="437" package="MapPlatform\Core">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="461" package="MapPlatform\Core">
         <name>logout</name>
         <full_name>\MapPlatform\Core\Security::logout()</full_name>
-        <docblock line="437">
+        <docblock line="461">
           <description>Deauthorize a user</description>
           <long-description></long-description>
-          <tag name="return" line="437" description="The status repsresented as an array" type="array">
+          <tag name="return" line="461" description="The status repsresented as an array" type="array">
             <type>array</type>
           </tag>
         </docblock>
       </method>
     </class>
-    <source>eJztXHtz20aS/1upyncY+1gB5VBPO9mcHGpDSZTNsizxSCqpOlsHg+CQRAQC3MFAEvfx3a97HniDJERZydUtqmyBwEx3T7/mNz0Afv7rfDr/9hsCx96rV/KEvCKDKSWOxynzLJcE1A6ZwxfEdq0g0G0SbZ2AzC371ppQEkz90B2RISVhQEdk7DNiuQkSY2rxkNE8le77LrmjLHB8j/wld/cXTf+jNe+6Fge6s/hmEA71/VOf0fiGFfIpSIAiznxywqxbysjPfOoMZz7z/+5Q9stkZjnuru3PjuNuWo6D3f3d/QQbx7MpnJ47LODEuoOO1tCFMYvrPepSK6DpTnvyxLNmNAARU/J/RlnffvuNbALqIh3vznKdUYtNwhn1ePvBpnMOgkSNkibqK5WW6wqOx6mLPFpjcJQo7VF6Ew6XGek/vv1mawsUAUwtRj73XQc16XHL8UDUmh2dog+PGWj+3me3JL6uieMxZ86dxWmiW6TrtL7TOkdqAWehzX22m2yRag2GAPY5EVEuaz53HdtC4wrJmO+6NE0qKWU4hNZkHHq26GGaEf96zYoob6NuSOKogd2CneN46E2SaP42bvyvZYPunnw4Oz8kt3RBRlToC2WIhLECuDwGghD1C9Lrt4yAdD+c9sl//HBEppzPg6O9vfv7+12H8vGuzyZ7bGzjv8Of/vOnXf7AU8wGFFzkjqJiA2JbHmaSsR96IzKljC4n+OP+X/azBIsMAppzvImww9QKppCgJj5YdToj3Mc43AWfBPeGEBzR0RHpv28d/vDjCkJzcFTws9HuknYtElguJ3xqcQIpM/Scv4UUefJVBCAVkw5kY+0wocd3yXtnAjpBSkPK4WaDDENOAte/B09KD6HFCQYZJwf7+/ulHHAcLvUmfEr8sRBK2BsMi7Z3wBYLToPC7kPfBwYe6UA/FtKG6C16BYRRyPjoHkCBWfdk6HgWW+DUMLNwGPSBUM/2QVDiQzd274AJym0oyZGZ8wAdWqQGXC6E0DsoXuymOPswf5ZSLrHAkdAIpZGm8kHk3fPh7Wh8CFGmfaRBapoanCKtBmYPsEgjIQucw1CvQj4HkzTJueUGNB+eseM10Ue4L2yXYLadykZ4OGNSf+F4psWYtUiJha5s4u+gvt0gA7DC9na6Lx7giZMJZSZlzGd1Q8V2u9e76h3p+ScTFbtGg7TN6367Z4p2xUJJHZCfm2Sf/POfCVWIS4+VRHgXBecO1pNC282kD07Ag7ohtCKNaGznLIDH3p5wfF/aSvk/uC1462Xn5OSi3Sf1NztDhwfbyCJhV2g0RsO+yBMVZoqbFgxfOECspGbyxytymBsdHsr1E2PayDG336ZZ/CvHtIasIgn7nMF5Ha+l+L58qf0tQ7A2dH379lQ4RpPY1HHriVHuJcnnzVnzdfS8fJm7ibiyXnPg5sFbAn/BxxLM8NL335dZG5rrfANz1xuZ1SB5OhO4PnIsbzffreZi9mxKvZJdAXfrxiX4ZM3JjlqxGQu04+isvYTmg8/6IeYAYdjpzLLTZsV2KesKZRd6CPCdU4apVeQ9kU+VF5AdchCLE+T7Sp3+rnT6O/lZdcQfJdoUw1Di/08TeqshVRpIkf7yrihYKZfYjZS20oNFaoo9vmgQKqr64RAcvK54NMh+MmxyoUIoBP4SajDJHU7pQ3051aIIjM4R5yqsm5oBT/0ZpEUqDDyBec7LT2/kHjSeaID2qICKcJaOaAI+sRVHpLqiq0Q4AkYJh0IZZHcnSAVBKRpL8LMmAFSDJXhOK1uijzXRsxP8inNLVw2wXpA2UZCcr0xcfwir4Zrr47yVz1fyOtk5JnBWNzJs8HrALcbrUkdNYkAe0fnEINuQSy4EhaOjs/bJ9btcMo3RgjiAQDC1fjg4NLINoyDXmfdg//BNtlGchxW1okbSa3vgDqqRADLZVqgtGKv+3ZTrDhzwepNUWt7MbBWJkE94kOx+o7hIMLjwtwsKvh5MOUWoSm0Lr/khE25FAyJixveJa7EJYPyjnXpBqtBjaTabyg1KQxyTV04mdS+rp6ULrNMptW+JADy4tgTs3aOn1pzbUwvoBXPI1hRvh7RKDOuOc+bfOSO5Onvn+xN3CZX14imLkZWnR0JDwtWnPSVFaTDB2nTsTBpVoypWUBxWOaY6xvI3SgMu7xHt2ZwvikZU7hja+JmRBNSGBhgectCfjIiocfPJkLc/0IVxkw0wO2QYXQCh4MR0PIfXt9+i+58yipYQ98Hg4Ow2zfIVfQLK/TnXqwa81CAt8eP0undx1R2Yvfbgunc56LUu++ftHmkek4MGsujJMWEeDyi7o8wIYt8aWdxCEGVpz4M4RsQB/3lwMe9Hqw8tD/xJXgZ5jOTafyI8GatQewxCXWhxz5o7ewFkE5DSGS/+KjXalHlWKr8A2j3qML7TOmiWudgTcpr5kNPmkpMJK6Bf271PRq/98WrQNltnZz3jpvE4HQOt1rv25UBeRh1/tOaBqUuGe3fIstXtmsCx37m6zCN8Fsfa7zDBmyOKyLounI4+UFs623aMWZO9RSvb9QOqmkmnxgtpn0ZQMGaUknBOgkXA6Sy6FVTPFyydHyCfedxk9WgsStiV6UGFe9QPYji0QaIgFcHPlPpFaJPuVX8g2wciLj15fWXGl70FgOMWDzHE5wEIQD0ul0lFlJZgLEYnsP6mrC4J16wzyBQi4VSGVX9a2DOiYyt0+Tvmg1cKUnnhAYIwLP7Hl5qwMHRBUkjjwKPeuexeD0w0W4MYujXMTOedi0G7Z/Zbl51B57/bZn/Q61y+i66fX7TeiWtd8+LqNyy4PFG6KT3yjN933r0Hzs/P+KR1+mHQOf2QS0YUdyZaoxE4biAvLdN2snWBxtsfW52LHItoWRQdy1jo1jH568t+67xt9lq/QbJLHpD4znxEsrYopCKCbkSLsCCxr+bSMcBdj/uhPZWxCbPtQqBbAXRHWfCAYIPNurHgyyTOtF4m+FeTuAjIlUs82YkAwI5OmSViF0rscEA0S0EyyU8rPZXfEvAzCnWFOqPfy5EAiJpyW+i9m/HklQQKke8mwLf2t5CyBVLpty/apwMxou77rtm+uigVx8D/Tq+uLwf1V9uk1RcaMWXtaa3+572rj+tz+nIN5IMv63X47X27165AW4iO1vsCSjiKTHnVq0hC2NG0pCEFLXFFXXibm8NGw/eWN3KlY3VhEoYgaXmjE8cb1aVRNG6PJwvRE7Bb5HHVwGBK8qR0hiCa9MQ8/EOWcrpNH83MUNoABUOOQzmn4JD1HKHE2v3cZ3EWaSZX9alSTSZT5SjKFULk+UnRdHlinYXrUgudYh6pF8TPknQRqywDP6Mb5fhzXR7l2hSpqeT2BgwzylZ80lfXWm7HWvhkxPnDuCEvcBepqOAaWTPkjitOcJ1o6qnAFOuRN/uvi8rMy4aE6YVYLqywRwsit5NWlegESdxtpyi+RNIgOqqjjbtc2XBPt59BhFkTCh2gfRH3gt56CaKIrFUOr5cG24umUHIRpnuRMeYmptivaopuJOHI9z7D/D2zIEafzxol48LhmNw3OX3gZcOqaqCa2I0iKKU/ByMFrskg3/gzcx7QcOSb4n794PAnTIFsMQf+AWe+N8mFqygtC0p6M0ISzzWMap7PVbitOeANjP+XBhmdy367NyCdy8FVpWldHmICrCem7IaafLXA0QUUO/qRnprh6gQXcub49st2Fea/ti6u2/3K4kaYokGOYsUeScWmQAL8FJI5MMVVwwsJLX9V1KDGFS12ItLKsTamjFoxop9IWehpU7LLwc7G5JXVjFjqZMUgj6WKAFMeKEmjdkY5iPWO8gsr4B11P9+zBLmk2jzHFK8q6nogxU9lrDWV/FB9Krn2xKOHuMkoa+fo/s85rxfxh2WzfAaSQz4Um57EhXuFdCtPKEuUIc/VU2WqdjkO3ZU7kdo2QBBBeeRYBZm+WGt9VSfNbXQU6qxEzBfZ7uWq+X9Zg5XWWb8Au3Irzuy3+7gLIJG5sE3dH/5Obb79Kbdnlat8/h8tfP5Rdc8KZc9cTbJaSfKsfd66vhjkZ5p5qpRKCoHwhPJT1wEX7cxXziYX6JBrVcywqBWzV7fjC5WqWAeyjDUgvyT4RfDrMSWYgwI0lURSFab2IoEPK9bdkvWm+S0g2aqdFGiuzCuG11W7KiBetVsWslfoH4H7NTutXYusXoysUo0sKkfGfnzV21CFSWqVIoGoUDgsrAhWL/+VZQpB7ShfJ1t3i1Y+Lh0ElMt+qqg0vzVuNsCdb/YP1sGd0Sj008wA+UaQKh3Lfc5SUgH3Row0d58EZOpcILFUvsRa+LBdwiBihXeTvhbNVDcldk1z/bc5n86csgi1vAT1+nBlBYr7t9QrrD9VqAf16IzOhpR9pI8tCo1xUvwihMETZx7lv2er9DhY3BESwF9njvyfqpqDFQaNPhLpbePyhZDWkIULKfmmFOW4pbQRmHv+OkhZWEcUjxTeVL9XrYbX2hH6Qwof0dByVQemgmqGF9HOf2AFJCvL16yGABCwff/WoTJ2OrgMykUO4c4MPI58Hz+pqd9fxgc1JYELZ0yxHbY39oyswhKMtIJVFD2WekkNZpmbHObdpNRF5EmFItBTVHayTPFRhpHDqM3xYdKFH+q3I6f+DLIhdHvKko/YVrPwHWR8byJZALJkWTCIfHNnhq8xoGXWLL7YyCGeuupfr+qSzzMK75qnV1cfOu1P2tNvtsl335HsTemdZWhYdi0uKEgKqnrTGRXUbi6vP57Ab5jHC/OJhAcriOvo+dPUhZ69ILR+JQiPWrJuUq1eI7pn8kPGjzPVG+EaUe0Gfq1+6hlMqWGh6Ch/rNVv84qQGGGyKrR+kUXIgP9VLbRkOlYptmS6Pqr8EdOoWAIRHdcvg8R8qm7gVimHZDQCVtDFPGeUw9N4rFPEOCjF0wjSiog+qsiRF6d4E060Wx2GSoZHl0YEm8cVHCMjxNBNmGLtzpXcSrJ6zDKwomclHGucdCzSujyrSEQuNpGEzG/VKSRWqUhGrp2KnhnEY61SXc7LCUk4+pOtF8nTLxmj/fnyVSMeNRYHyB8cnClJMi+Z6DtVAnVZHRPBjr4XU8e3yxLBWYbw8ChaFBlGtFDZIa9/3N8vXOUUUNB4rRqBPMpFrCLerGiS/bJOq+0gHqPzfC6/IbPOKhcPuaoouFnyWrp+Zmvjipmg5tH7wZqFM9FeRPdrsbTunrUGlWfSRxXYxI5aRUbZpPiVEUJmcgK28ZUN0MLrKI+qjIeJSdts44SXFFGSXhrSK8dQVj/LtyyrXOEh0s+cgXMzvtDfVsnFLEQ4CC3yUWE8w0yKT5jmEliFlOCIel+GwGYiR3u45YJHG25Z8UW/SgNI7EHnCW02kNT7TOWDSb1akh1QaolRbWSZt1iWUN1smGJWWDI+OWskBqbXPdWGoyefHJHiJFxEQtU35NGMk8TjIEXEARncZGFFXlHrg4tnK4pmmEWF0Sh7PgWT8k+zLLXzzsHjzHLpJwvYUkIc5DpYoxBnZL4BU17EPKPye43O36kqWCZvp5p+xUfM/JDni5s1/DDA0FKv3TRzHyLcOcYGJ9Bg57h7dpV7hkBUq9RR1HvmBPY1Nsr2hLGELo96yu8doOq35Ld0tnBP4R/ibEvXrCSP4tnmrWoah3JJU64CW7ROleDEYHaOs4W3LS3RVn540utASXQYTuovEx/xFC/opz4g+ll/k/KzNIYhPspwRF4mswNeSnxtSXAN+Ex8jEKbCtm5FKHCGhhm5xi/rYdPk+pYMNbrdo+fcZR5BrMpRHBTZxvcaTNgoVyNUrTeaCa2WKqTiZfbEa14sVmInSK1DenE8QYA+ANLREUx1rLGY2pDlPX8e+EWqP7DnWNa+jAYHuKNqHRPmNcOyr/FFUuFX38U3wkpoovH3h659iBRif2VCFkSfJhNZrGCT4Th8SdYLQZgFPzIX4jy18X7yOJLJTP/jqrPDYsG5M5iDu42lg5F0hlRXI4t1EdVzuQv9ckT0QJ1iEGzpfLoJ/VzS29+iW9n6L2vRnRXb3Ylb49D110QEeIj/Org6j0vRS77iC0e5ZNdxh3wA7Mn+NG6fzvE8znEOcDeMm+It8FV3l5m5RzEsfEFOFKPvhBNavRhW09sGZnKRUpLFBO7nzqu2H5Hj4wlLFncGpxZtqQRTTj0QU03klN2UBmMo/78L5vbvS4=</source>
+    <source>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</source>
   </file>
   <file path="Controllers\Api\MiscController.php" generated-path="Controllers.Api.MiscController.html" hash="09a40bff4963d1f722358d09b67caa74" package="MapPlatform\Controllers\Api">
     <docblock line="0">

@@ -40,6 +40,33 @@
         }
 
         /**
+         * Initialize the user session
+         */
+        private function initSession() {
+            $_SESSION['user'] = (object)[];
+            $_SESSION['user']->group = 0;
+        }
+
+        /**
+         * Destroy the user session
+         */
+        private function destroySession() {
+            setcookie('userId', '', time() - 3600, '/');
+            setcookie('token', '', time() - 3600, '/');
+            session_unset();
+            session_destroy();
+        }
+
+        /**
+         * Restart the user session
+         */
+        private function restartSession() {
+            destroySession();
+            session_start();
+            initSession();
+        }
+
+        /**
          * PBKDF2 key derivation function as defined by RSA's PKCS #5: https://www.ietf.org/rfc/rfc2898.txt
          * Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt
          *
@@ -120,15 +147,13 @@
          * @return boolean
          */
         private function isValidReCaptcha($reCaptchaResponse) {
-            global $config, $logger;
-
-            $logger -> log('isValidReCaptcha -> start( reCaptchaResponse = ' . $reCaptchaResponse . ' )', Logger::DEBUG);
-            $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+            $this->container->logger->debug('isValidReCaptcha -> start( reCaptchaResponse = ' . $reCaptchaResponse . ' )');
+            $config = $this->container->get('settings')['reCaptcha'];
 
             if (Empty($reCaptchaResponse))
                 return False;
 
-            $secret = $config['reCaptcha']['secretKey'];
+            $secret = $config['secretKey'];
             $curl   = curl_init(); // Create curl resource
 
             curl_setopt_array($curl, Array(CURLOPT_RETURNTRANSFER => 1, // Return the server's response data as a string rather then a boolean
@@ -138,8 +163,7 @@
                                            CURLOPT_USERAGENT      => 'Maps_Platform/v' . APP_VERSION));
             $response = json_decode(curl_exec($curl), True);
             curl_close($curl); // Close curl resource to free up system resources
-            $logger -> log('isValidReCaptcha -> response = ' . print_r($response, True), Logger::DEBUG);
-            $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+            $this->container->logger->debug('isValidReCaptcha -> response = ' . print_r($response, True));
 
             return $response['success'];
         }
@@ -212,11 +236,20 @@
                 $query = $database->insert(['user_name', 'user_password', 'user_salt', 'user_email_address', 'group_fk'])
                                   ->into('Users')
                                   ->values([$username, $hashVal, $salt, $emailAddress, $defaultGroup]);
-                $insertId = $dbHandler->getLastInsertId();
+                $database->beginTransaction();
+                $insertID = $query->execute(True);
 
-                $this->container->logger->debug('Register -> googleResponse = ' . $googleResponse);
-
-                if (Empty($insertId)) {
+                if ($insertID > 0) {
+                    $database->commit();
+                    $this->container->logger->debug('Register -> Registration successful');
+                    $this->login($aDataArray);
+                    
+                    return [
+                        'status' => 'Success',
+                        'message' => 'Registration successful!'
+                    ];
+                } else {
+                    $database->rollBack();
                     $this->container->logger->debug('Register -> Unable to create user');
                     
                     return [
@@ -224,15 +257,9 @@
                         'message' => 'Unable to create user, please try again later'
                     ];
                 };
-
-                $this->container->logger->debug('Register -> Registration successful');
-                $this->login($aDataArray);
-                
-                return [
-                    'status' => 'Success',
-                    'message' => 'Registration successful!'
-                ];
             } catch (Exception $ex) {
+                $this->container->logger->error('Register -> ex = ' . $ex);
+
                 return [
                     'status' => 'Error',
                     'message' => 'Unable to create user, please try again later'
@@ -248,103 +275,93 @@
          * @return array The status repsresented as an array
          */
         public function login(array $aDataArray) {
-            $database         = $this->container->dataBase->PDO;
-            $_SESSION['user'] = (object)[];
-            $username         = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
-                                                                                             FILTER_FLAG_STRIP_HIGH ||
-                                                                                             FILTER_FLAG_STRIP_BACKTICK);
-            $password         = filter_input(INPUT_POST, 'password', FILTER_DEFAULT);
-            $ipAddress        = $this->container->miscUtils->getClientIp();
-            $logger -> log('Login -> start( username = ' . $username . ', ipAddress = ' . $ipAddress . ' )', Logger::DEBUG);
-            $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+            $database = $this->container->dataBase->PDO;
+            $config   = $this->container->get('settings')['security'];
+            initSession();
 
-            $query1 = 'SET @username = :username;';
-            $dbHandler -> PrepareAndBind($query1, Array('username' => $username));
-            $dbHandler -> Execute();
+            try {
+                $username  = filter_var($aDataArray, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                                                                                         FILTER_FLAG_STRIP_HIGH ||
+                                                                                         FILTER_FLAG_STRIP_BACKTICK);
+                $password  = filter_var($aDataArray, 'password', FILTER_DEFAULT);
+                $ipAddress = $this->container->miscUtils->getClientIp();
+                $this->container->logger->debug('Login -> start( username = ' . $username . ', ipAddress = ' . $ipAddress . ' )');
 
-            $query2 = 'SELECT ' . PHP_EOL .
-                      '    `user_pk`, ' . PHP_EOL .
-                      '    `user_name`, ' . PHP_EOL .
-                      '    `user_password`, ' . PHP_EOL .
-                      '    `user_salt`, ' . PHP_EOL .
-                      '    `user_email_address`, ' . PHP_EOL .
-                      '    `group_fk` ' . PHP_EOL .
-                      'FROM ' . PHP_EOL .
-                      '    `Users` ' . PHP_EOL .
-                      'WHERE ' . PHP_EOL .
-                      '    `user_name` = @username OR ' . PHP_EOL .
-                      '    `user_email_address` = @username;';
-            $dbHandler -> PrepareAndBind ($query2);
-            $user = $dbHandler -> ExecuteAndFetch();
-            $logger -> log('Login -> user : ' . print_r($user, True), Logger::DEBUG);
-            $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+                $query   = $database->select(['user_pk', 'user_name', 'user_password', 'user_salt', 'user_email_address', 'group_fk'])
+                                    ->from('Users')
+                                    ->where('user_name', '=', $username, 'OR')
+                                    ->where('user_email_address', '=', $username);
+                $stmt    = $query->execute();
+                $userArr = $stmt->fetchall();
 
-            if (!isset($user['user_pk'])) {
-                $this -> utils -> http_response_code(401);
-                $logger -> log('Login -> Invalid credentials', Logger::DEBUG);
-                $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+                if (count($userArr) < 1) {
+                    $this->container->logger->error('Login -> Invalid credentials');
 
-                $content['status']  = 'Error';
-                $content['message'] = 'Invalid credentials, try again.';
-                return $content;
-            };
+                    return [
+                        'status' => 'Error',
+                        'message' => 'Invalid credentials, try again.'
+                    ];
+                };
 
-            $passwordCheck = $this -> isValidPassword($password, $user['user_salt'], $user['user_password']);
+                $user = $userArr[0];
+                $this->container->logger->debug('Login -> user : ' . print_r($user, True));
+                $passwordCheck = $this->isValidPassword($password, $user['user_salt'], $user['user_password']);
 
-            if (!$passwordCheck) {
-                $this -> utils -> http_response_code(401);
-                $logger -> log('Login -> Invalid credentials', Logger::DEBUG);
-                $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+                if (!$passwordCheck) {
+                    $this->container->logger->debug('Login -> Invalid credentials');
 
-                $content['status']  = 'Error';
-                $content['message'] = 'Invalid credentials, try again.';
-                return $content;
-            };
+                    return [
+                        'status' => 'Error',
+                        'message' => 'Invalid credentials, try again.'
+                    ];
+                };
 
-            $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
-            $token = bin2hex($bytes);
+                $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
+                $token = bin2hex($bytes);
 
-            $insertQuery = 'INSERT INTO `RememberMe` ' . PHP_EOL .
-                           '    (`user_fk`, `token`, `ip_address`) ' . PHP_EOL .
-                           'VALUES ' . PHP_EOL .
-                           '    (:userid, :token, :ipaddr);';
-            $dbHandler -> PrepareAndBind($insertQuery, Array('userid' => $user['user_pk'],
-                                                             'token'  => $token,
-                                                             'ipaddr' => $ipAddress));
-            $dbHandler -> Execute();
-            $insertId = $dbHandler -> GetLastInsertId();
-            $logger -> log('Login -> insertId : ' . $insertId, Logger::DEBUG);
-            $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
-            $dbHandler -> Clean();
+                $query = $database->insert(['user_fk', 'token', 'ip_address'])
+                                  ->into('RememberMe')
+                                  ->values([$user['user_pk'], $token, $ipAddress]);
+                $database->beginTransaction();
+                $insertID = $query->execute(True);
+                $this->container->logger->debug('Login -> insertId : ' . $insertID);
 
-            if (Empty($insertId)) {
-                $this -> utils -> http_response_code(500);
-                $logger -> log('Login -> Unable to create rememberme token', Logger::DEBUG);
-                $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+                if ($insertID <= 0) {
+                    $database->rollBack();
+                    $this->container->logger->debug('Login -> Unable to create remember-me token');
 
-                $content['status']  = 'Error';
-                $content['message'] = 'Unable to create rememberme token, please try again later';
-                return $content;
-            };
+                    return [
+                        'status' => 'Error',
+                        'message' => 'Unable to authenticate user, please try again later.'
+                    ];
+                };
 
-            setcookie('userId', $user['user_pk'], time() + $config['security']['cookieLifetime'], '/');
-            setcookie('token', $token, time() + $config['security']['cookieLifetime'], '/');
+                $database->commit();
+                setcookie('userId', $user['user_pk'], time() + $config['cookieLifetime'], '/');
+                setcookie('token', $token, time() + $config['cookieLifetime'], '/');
+                $this->container->logger->debug('Login -> Login successful');
 
-            $this -> utils -> http_response_code(200);
-            $logger -> log('Login -> Login successful', Logger::DEBUG);
-            $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
-            
-            $content['status']  = 'Success';
-            $content['message'] = 'Login successful, redirecting you to the homepage';
-            return $content;
+                return [
+                    'status' => 'Success',
+                    'message' => 'Login successful, redirecting you to the homepage.'
+                ];
+            } catch (Exception $ex) {
+                $this->container->logger->error('Login -> ex = ' . $ex);
+
+                return [
+                    'status' => 'Error',
+                    'message' => 'Unable to authenticate user, please try again later.'
+                ];
+            }
         }
 
         /**
          * Check existance and validity of a user's remember-me cookie
          */
         public function checkRememberMe() {
-            $database         = $this->container->dataBase->PDO;
-            $_SESSION['user'] = (object)[];
+            $database = $this->container->dataBase->PDO;
+            $config   = $this->container->get('settings')['security'];
+            initSession();
 
             if (isset($_COOKIE['userId']) && isset($_COOKIE['token'])) {
                 $userId = filter_input(INPUT_COOKIE, 'userId', FILTER_SANITIZE_NUMBER_INT);
@@ -352,86 +369,86 @@
                                                                                       FILTER_FLAG_STRIP_HIGH ||
                                                                                       FILTER_FLAG_STRIP_BACKTICK);
                 $ipAddress = $this->container->miscUtils->getClientIp();
-                $logger -> log('checkRememberMe -> start( userId = ' . $userId .
-                               ', token = ' . $token .
-                               ', ipAddress = ' . $ipAddress . ' )', Logger::DEBUG);
-                $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+                $this->container->logger->debug('checkRememberMe -> start( userId = ' . $userId .
+                                                ', token = ' . $token .
+                                                ', ipAddress = ' . $ipAddress . ' )');
 
-                $query1 = 'SELECT ' . PHP_EOL .
-                          '    `user_pk`, ' . PHP_EOL .
-                          '    `user_name`, ' . PHP_EOL .
-                          '    `user_email_address`, ' . PHP_EOL .
-                          '    `group_fk` ' . PHP_EOL .
-                          'FROM ' . PHP_EOL .
-                          '    `Users` ' . PHP_EOL .
-                          'WHERE ' . PHP_EOL .
-                          '    `user_pk` = :userid;';
-                $dbHandler -> PrepareAndBind ($query1, array('userid' => $userId));
-                $user = $dbHandler -> ExecuteAndFetch();
-                $dbHandler -> Clean();
-                $logger -> log('checkRememberMe -> user = ' . print_r($user, True), Logger::DEBUG);
-                $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+                try {
+                    $query   = $database->select(['user_pk', 'user_name', 'user_email_address', 'group_fk'])
+                                        ->from('Users')
+                                        ->where('user_pk', '=', $userId);
+                    $stmt    = $query->execute();
+                    $userArr = $stmt->fetchall();
 
-                $query2 = 'SELECT ' . PHP_EOL .
-                         '    `rememberme_pk` ' . PHP_EOL .
-                         'FROM ' . PHP_EOL .
-                         '    `RememberMe` ' . PHP_EOL .
-                         'WHERE ' . PHP_EOL .
-                         '    `user_fk` = :userid AND ' . PHP_EOL .
-                         '    `token` = :token AND ' . PHP_EOL .
-                         '    `ip_address` = :ipaddress;';
-                $dbHandler -> PrepareAndBind ($query2, Array('userid'    => $userId,
-                                                             'token'     => $token,
-                                                             'ipaddress' => $ipAddress));
-                $rememberMe = $dbHandler -> ExecuteAndFetch();
-                $dbHandler -> Clean();
-                $logger -> log('checkRememberMe -> rememberMe = ' . print_r($rememberMe, True), Logger::DEBUG);
-                $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+                    if (count($userArr) < 1) {
+                        $this->container->logger->error('checkRememberMe -> Invalid cookie');
+                        restartSession();
 
-                if (!isset($user['user_pk']) || !isset($rememberMe['rememberme_pk'])) {
-                    setcookie('userId', '', time() - 3600, '/');
-                    setcookie('token', '', time() - 3600, '/');
-                    $_SESSION['user'] -> group = 0;
-                    $logger -> log('checkRememberMe -> User not found', Logger::DEBUG);
+                        return;
+                    };
+
+                    $user = $userArr[0];
+                    $this->container->logger->debug('checkRememberMe -> user = ' . print_r($user, True));
+
+                    $query         = $database->select(['rememberme_pk', 'date'])
+                                              ->from('RememberMe')
+                                              ->where('user_fk', '=', $userId, 'AND')
+                                              ->where('token', '=', $token, 'AND')
+                                              ->where('ip_address', '=', $ipAddress);
+                    $stmt          = $query->execute();
+                    $rememberMeArr = $stmt->fetchall();
+
+                    if (count($rememberMeArr) < 1) {
+                        $this->container->logger->error('checkRememberMe -> Invalid cookie');
+                        restartSession();
+
+                        return;
+                    };
+
+                    $rememberMe = $rememberMeArr[0];
+                    $this->container->logger->debug('checkRememberMe -> rememberMe = ' . print_r($rememberMe, True));
+
+                    $now      = date('yyyy/mm/dd hh:ii:ss', time());
+                    $dateDiff = intval($this->container->formattingUtils->dateDifference($rememberMe['date'], $now, '%a'));
+
+                    if ($dateDiff > 30) {
+                        $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
+                        $token = bin2hex($bytes);
+
+                        $query = $database->update()
+                                          ->table('RememberMe')
+                                          ->set(['token' => $token])
+                                          ->where('rememberme_pk', '=', $rememberMe['rememberme_pk']);
+                        $database->beginTransaction();
+                        $affectedRows = $query->execute();
+
+                        if ($affectedRows === 1) {
+                            $database->commit();
+                        } else {
+                            $database->rollBack();
+                            $this->container->logger->debug('checkRememberMe -> Unable to update rememberMe token');
+
+                            return;
+                        };
+                    };
+
+                    $_SESSION['user']->id           = $user['user_pk'];
+                    $_SESSION['user']->username     = $user['user_name'];
+                    $_SESSION['user']->emailAddress = $user['user_email_address'];
+                    $_SESSION['user']->group        = $user['group_fk'];
+                    $_SESSION['user']->token        = $token;
+                    $this->container->logger->debug('checkRememberMe -> _SESSION[user] = ' . print_r($_SESSION['user'], True));
+
+                    setcookie('userId', $user['user_pk'], time() + $config['cookieLifetime'], '/');
+                    setcookie('token', $newToken, time() + $config['cookieLifetime'], '/');
+                } catch (Exception $ex) {
+                    $this->container->logger->error('checkRememberMe -> ex = ' . $ex);
+
                     return;
-                };
-
-                $bytes    = openssl_random_pseudo_bytes(32, $crypto_strong);
-                $newToken = bin2hex($bytes);
-
-                $query3 = 'UPDATE ' . PHP_EOL .
-                          '    `RememberMe` ' . PHP_EOL .
-                          'SET ' . PHP_EOL .
-                          '    `token` = :token ' . PHP_EOL .
-                          'WHERE ' . PHP_EOL .
-                          '    `rememberme_pk` = :remembermeid;';
-                $dbHandler -> PrepareAndBind ($query3, Array('token' => $newToken,
-                                                             'remembermeid' => $rememberMe['rememberme_pk']));
-                $dbHandler -> Execute();
-                $dbHandler -> Clean();
-
-                if (!property_exists($_SESSION['user'], 'id') || $_SESSION['user'] -> id !== $user['user_pk'])
-                    $_SESSION['user'] -> id = $user['user_pk'];
-
-                if (!property_exists($_SESSION['user'], 'username') || $_SESSION['user'] -> username !== $user['user_name'])
-                    $_SESSION['user'] -> username = $user['user_name'];
-
-                if (!property_exists($_SESSION['user'], 'emailAddress') || $_SESSION['user'] -> emailAddress !== $user['user_email_address'])
-                    $_SESSION['user'] -> emailAddress = $user['user_email_address'];
-
-                if (!property_exists($_SESSION['user'], 'group') || $_SESSION['user'] -> group !== $user['group_fk'])
-                    $_SESSION['user'] -> group = $user['group_fk'];
-
-                $_SESSION['user'] -> token        = $newToken;
-                $logger -> log('checkRememberMe -> _SESSION[user] = ' . print_r($_SESSION['user'], True), Logger::DEBUG);
-                $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
-
-                setcookie('userId', $user['user_pk'], time() + $config['security']['cookieLifetime'], '/');
-                setcookie('token', $newToken, time() + $config['security']['cookieLifetime'], '/');
+                }
             } else {
-                $_SESSION['user'] -> group = -1;
-                $logger -> log('checkRememberMe -> No rememberme cookie set', Logger::DEBUG);
-                $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
+                $this->container->logger->debug('checkRememberMe -> No rememberme cookie set');
+
                 return;
             };
         }
@@ -445,8 +462,8 @@
             $database = $this->container->dataBase->PDO;
 			
 			try {
-				$userId    = $_SESSION['user'] -> id;
-				$token     = $_SESSION['user'] -> token;
+				$userId    = $_SESSION['user']->id;
+				$token     = $_SESSION['user']->token;
 				$ipAddress = $this->container->miscUtils->getClientIp();
 				
 				$this->container->logger->debug("MapPlatform 'MapPlatform\Core\Security\logout' data: " . print_r($data, True));
@@ -460,12 +477,8 @@
 
                 if ($affectedRows === 1) {
                     $database->commit();
-
-                    // Unset the 'remember me' cookies
-                    setcookie('userId', '', time() - 3600, '/');
-                    setcookie('token', '', time() - 3600, '/');
-                    session_unset();   // Remove all session variables
-                    session_destroy(); // Destroy the session
+                    $this->container->logger->error('logout -> Successfully logged out');
+                    destroySession();
 
 					return [
 						'status' => 'Success',
@@ -473,12 +486,8 @@
 					];
                 } else {
                     $database->rollBack();
-
-                    // Unset the 'remember me' cookies
-                    setcookie('userId', '', time() - 3600, '/');
-                    setcookie('token', '', time() - 3600, '/');
-                    session_unset();   // Remove all session variables
-                    session_destroy(); // Destroy the session
+                    $this->container->logger->error('logout -> Unable to logout');
+                    destroySession();
 
 					return [
 						'status' => 'Fail',
@@ -486,6 +495,9 @@
 					];
                 };
             } catch (Exception $ex) {
+                $this->container->logger->error('logout -> ex = ' . $ex);
+                destroySession();
+
 				return [
 					'status' => 'Fail',
 					'message' => 'Exception while trying to logout',

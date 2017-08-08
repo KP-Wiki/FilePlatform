@@ -18,6 +18,8 @@
         'settings' => [
             'displayErrorDetails' => True, // set to False in production
             'addContentLengthHeader' => False, // Allow the web server to send the content-length header
+            'appRootDir' => __DIR__ . '/../',
+            'appTempDir' => __DIR__ . '/../tmp/',
 
             // Renderer settings
             'renderer' => [
@@ -60,12 +62,13 @@
             ],
 			
 			'files' => [
-				'uploadDir' => __DIR__ . '../uploads/',
-				'queueDir' => __DIR__ . '../uploads/Queue/',
-				'defaultDir' => __DIR__ . '../uploads/Default/'
+				'uploadDir' => __DIR__ . '/../uploads/',
+				'queueDir' => __DIR__ . '/../uploads/Queue/',
+				'defaultDir' => __DIR__ . '/../uploads/Default/'
 			],
 			
 			'images' => [
+				'defaultImageDir' => __DIR__ . '/../uploads/images/',
 				'maxWidth' => 1280,
 				'maxHeight' => 720,
 				'allowedTypes' => [
@@ -82,22 +85,31 @@
 			],
 			
 			'security' => [
-				'cookieLifetime' = 15778463 // ~6 months in seconds
+				'cookieLifetime' => 15778463 // ~6 months in seconds
 			],
 
             // Minifier settings
             'minifier' => [
                 'css' => [
+                    $cssDir . '/bootstrap.css'          => $cssDir . '/bootstrap.min.css',
+                    $cssDir . '/bootstrap-theme.css'    => $cssDir . '/bootstrap-theme.min.css',
+                    $cssDir . '/bootstrap-table.css'    => $cssDir . '/bootstrap-table.min.css',
+                    $cssDir . '/bootstrap-editable.css' => $cssDir . '/bootstrap-editable.min.css',
                     $cssDir . '/main.css'               => $cssDir . '/main.min.css'
                 ],
                 'js' => [
-                    $jsDir . '/bootstrap-table-export.js' => $jsDir . '/bootstrap-table-export.min.js',
-                    $jsDir . '/jquery.fileDownload.js'    => $jsDir . '/jquery.fileDownload.min.js',
-                    $jsDir . '/starrr.js'                 => $jsDir . '/starrr.min.js',
-                    $jsDir . '/tableExport.js'            => $jsDir . '/tableExport.min.js',
-                    $jsDir . '/main.js'                   => $jsDir . '/main.min.js'
+                    $jsDir . '/jquery.js'                   => $jsDir . '/jquery.min.js',
+                    $jsDir . '/modernizr.js'                => $jsDir . '/modernizr.min.js',
+                    $jsDir . '/bootstrap.js'                => $jsDir . '/bootstrap.min.js',
+                    $jsDir . '/bootstrap-table.js'          => $jsDir . '/bootstrap-table.min.js',
+                    $jsDir . '/bootstrap-editable.js'       => $jsDir . '/bootstrap-editable.min.js',
+                    $jsDir . '/bootstrap-table-editable.js' => $jsDir . '/bootstrap-table-editable.min.js',
+                    $jsDir . '/combobox.js'                 => $jsDir . '/combobox.min.js',
+                    $jsDir . '/customerRangeSelect.js'      => $jsDir . '/customerRangeSelect.min.js',
+                    $jsDir . '/ipv4_input.js'               => $jsDir . '/ipv4_input.min.js',
+                    $jsDir . '/main.js'                     => $jsDir . '/main.min.js'
                 ],
-                'hashFile' => __DIR__ . '/minifyHashes.json'
+                'hashFile' => __DIR__ . '/../tmp/minifyHashes.json'
             ]
         ]
     ];

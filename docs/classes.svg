@@ -25,10 +25,6 @@
 <path fill="none" stroke="gray" d="M229,-410C229,-410 339,-410 339,-410 345,-410 351,-416 351,-422 351,-422 351,-632 351,-632 351,-638 345,-644 339,-644 339,-644 229,-644 229,-644 223,-644 217,-638 217,-632 217,-632 217,-422 217,-422 217,-416 223,-410 229,-410"/>
 <text text-anchor="middle" x="284" y="-631.2" font-family="Times New Roman,serif" font-size="11.00" fill="gray">Utils</text>
 </g>
-<g id="clust5" class="cluster"><title>cluster_\MapPlatform\AbstractClasses</title>
-<path fill="none" stroke="gray" d="M36,-113C36,-113 139,-113 139,-113 145,-113 151,-119 151,-125 151,-125 151,-227 151,-227 151,-233 145,-239 139,-239 139,-239 36,-239 36,-239 30,-239 24,-233 24,-227 24,-227 24,-125 24,-125 24,-119 30,-113 36,-113"/>
-<text text-anchor="middle" x="87.5" y="-226.2" font-family="Times New Roman,serif" font-size="11.00" fill="gray">AbstractClasses</text>
-</g>
 <g id="clust6" class="cluster"><title>cluster_\MapPlatform\Controllers</title>
 <path fill="none" stroke="gray" d="M211,-24C211,-24 357,-24 357,-24 363,-24 369,-30 369,-36 369,-36 369,-282 369,-282 369,-288 363,-294 357,-294 357,-294 211,-294 211,-294 205,-294 199,-288 199,-282 199,-282 199,-36 199,-36 199,-30 205,-24 211,-24"/>
 <text text-anchor="middle" x="284" y="-281.2" font-family="Times New Roman,serif" font-size="11.00" fill="gray">Controllers</text>
@@ -36,6 +32,10 @@
 <g id="clust7" class="cluster"><title>cluster_\MapPlatform\Controllers\Api</title>
 <path fill="none" stroke="gray" d="M219,-32C219,-32 349,-32 349,-32 355,-32 361,-38 361,-44 361,-44 361,-254 361,-254 361,-260 355,-266 349,-266 349,-266 219,-266 219,-266 213,-266 207,-260 207,-254 207,-254 207,-44 207,-44 207,-38 213,-32 219,-32"/>
 <text text-anchor="middle" x="284" y="-253.2" font-family="Times New Roman,serif" font-size="11.00" fill="gray">Api</text>
+</g>
+<g id="clust5" class="cluster"><title>cluster_\MapPlatform\AbstractClasses</title>
+<path fill="none" stroke="gray" d="M36,-113C36,-113 139,-113 139,-113 145,-113 151,-119 151,-125 151,-125 151,-227 151,-227 151,-233 145,-239 139,-239 139,-239 36,-239 36,-239 30,-239 24,-233 24,-227 24,-227 24,-125 24,-125 24,-119 30,-113 36,-113"/>
+<text text-anchor="middle" x="87.5" y="-226.2" font-family="Times New Roman,serif" font-size="11.00" fill="gray">AbstractClasses</text>
 </g>
 <!-- \\MapPlatform\\Core\\Utils\\FormattingUtils -->
 <g id="node1" class="node"><title>\\MapPlatform\\Core\\Utils\\FormattingUtils</title>

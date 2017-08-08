@@ -79,7 +79,7 @@
         }
 
         /**
-         * MapController default page.
+         * MapController Get all maps.
          *
          * @param \Slim\Http\Request $request
          * @param \Slim\Http\Response $response
@@ -87,9 +87,99 @@
          *
          * @return \Slim\Http\Response
          */
-        public function home(Request $request, Response $response, $args) {
-            $this-&gt;container-&gt;logger-&gt;info(&quot;ManagementTools '/api/v1/testscript&quot; . (Empty($args['catchall']) ? &quot;&quot; : &quot;/&quot; . $args['catchall']) . &quot;' route&quot;);
-            $resultArr   = array();
+        public function getAllMaps(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Get a specific map.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getMap(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Get a map by user ID.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getMapsByUser(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps/user/&quot; . $args['userId'] . &quot;' route&quot;);
+            $userId = filter_var($args['userId'], FILTER_SANITIZE_NUMBER_INT);
+            $mapListItems = null;
+            $resultArr = array();
+
+            if ($userId === null || $userId &lt;= 0)
+                throw new Exception('Ilegal user ID : ' . $userId);
+
+            
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Add map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function addMap(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $data = $request-&gt;getParsedBody();
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Update map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function updateMap(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $data = $request-&gt;getParsedBody();
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Delete map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function deleteMap(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $data = $request-&gt;getParsedBody();
+            $resultArr = array();
 
             return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
         }

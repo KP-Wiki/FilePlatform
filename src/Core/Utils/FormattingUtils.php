@@ -54,4 +54,32 @@
 
             return $result;
         }
+
+        /**
+         * Get the difference between two dates 
+         *   RESULT FORMAT:
+         *     '%y Year %m Month %d Day %h Hours %i Minute %s Seconds' =>  1 Year 3 Month 14 Day 11 Hours 49 Minute 36 Seconds
+         *     '%y Year %m Month %d Day'                               =>  1 Year 3 Month 14 Days
+         *     '%m Month %d Day'                                       =>  3 Month 14 Day
+         *     '%d Day %h Hours'                                       =>  14 Day 11 Hours
+         *     '%d Day'                                                =>  14 Days
+         *     '%h Hours %i Minute %s Seconds'                         =>  11 Hours 49 Minute 36 Seconds
+         *     '%i Minute %s Seconds'                                  =>  49 Minute 36 Seconds
+         *     '%h Hours                                               =>  11 Hours
+         *     '%a Days                                                =>  468 Days
+         *
+         * @param string First date
+         * @param string Second date
+         * @param string Output format
+         *
+         * @return string
+         */
+        function dateDifference($aDate1 , $aDate2 , $outFormat = '%a') {
+            $dateTime1 = date_create($aDate1);
+            $dateTime2 = date_create($aDate2);
+            $diff      = date_diff($dateTime1, $dateTime2);
+        
+            return $diff->format($outFormat);
+        
+        }
     }
