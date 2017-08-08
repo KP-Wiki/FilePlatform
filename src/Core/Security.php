@@ -184,13 +184,13 @@
             $defaultGroup   = 1;
 
             try {
-                $username          = filter_var($aDataArray, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                $username          = filter_var($aDataArray['username'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
                                                                                                  FILTER_FLAG_STRIP_HIGH ||
                                                                                                  FILTER_FLAG_STRIP_BACKTICK);
-                $emailAddress      = filter_var($aDataArray, 'emailAddress', FILTER_SANITIZE_EMAIL);
-                $password          = filter_var($aDataArray, 'password', FILTER_UNSAFE_RAW);             // Don't clean this, passwords should be left untouched as they are hashed
-                $confirmPassword   = filter_var($aDataArray, 'confirmPassword', FILTER_UNSAFE_RAW);      // Don't clean this, passwords should be left untouched as they are hashed
-                $reCaptchaResponse = filter_var($aDataArray, 'g-recaptcha-response', FILTER_UNSAFE_RAW); // Don't clean this, it's provided by Google
+                $emailAddress      = filter_var($aDataArray['emailAddress'], FILTER_SANITIZE_EMAIL);
+                $password          = filter_var($aDataArray['password'], FILTER_UNSAFE_RAW);             // Don't clean this, passwords should be left untouched as they are hashed
+                $confirmPassword   = filter_var($aDataArray['confirmPassword'], FILTER_UNSAFE_RAW);      // Don't clean this, passwords should be left untouched as they are hashed
+                $reCaptchaResponse = filter_var($aDataArray['g-recaptcha-response'], FILTER_UNSAFE_RAW); // Don't clean this, it's provided by Google
 
                 $this->container->logger->debug('Register -> start( username = ' . $username .
                                                 ', emailAddress = '. $emailAddress .
@@ -280,17 +280,18 @@
             $this->initSession();
 
             try {
-                $username  = filter_var($aDataArray, 'username', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                $this->container->logger->debug(print_r($aDataArray, True));
+                $username  = filter_var($aDataArray['username'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
                                                                                          FILTER_FLAG_STRIP_HIGH ||
                                                                                          FILTER_FLAG_STRIP_BACKTICK);
-                $password  = filter_var($aDataArray, 'password', FILTER_DEFAULT);
+                $password  = filter_var($aDataArray['password'], FILTER_DEFAULT);
                 $ipAddress = $this->container->miscUtils->getClientIp();
                 $this->container->logger->debug('Login -> start( username = ' . $username . ', ipAddress = ' . $ipAddress . ' )');
 
                 $query   = $database->select(['user_pk', 'user_name', 'user_password', 'user_salt', 'user_email_address', 'group_fk'])
                                     ->from('Users')
-                                    ->where('user_name', '=', $username, 'OR')
-                                    ->where('user_email_address', '=', $username);
+                                    ->where('user_name', '=', $username)
+                                    ->where('user_email_address', '=', $username, 'OR');
                 $stmt    = $query->execute();
                 $userArr = $stmt->fetchall();
 
@@ -490,7 +491,7 @@
                     $this->destroySession();
 
 					return [
-						'status' => 'Fail',
+						'status' => 'Error',
 						'message' => 'Unable to logout'
 					];
                 };
@@ -499,9 +500,8 @@
                 $this->destroySession();
 
 				return [
-					'status' => 'Fail',
-					'message' => 'Exception while trying to logout',
-                    'trace' => print_r($ex, True)
+					'status' => 'Error',
+					'message' => 'Exception while trying to logout' . PHP_EOL . print_r($ex, True)
 				];
             };
         }

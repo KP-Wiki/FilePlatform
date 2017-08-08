@@ -76,6 +76,7 @@
          */
         public function about(Request $request, Response $response, $args) {
             $this->container->logger->info("MapPlatform '/about" . (Empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
+            $this->container->security->checkRememberMe();
 
             $route                = $request->getAttribute('route');
             $pageTitle            = 'About Map Platform';

@@ -17,6 +17,10 @@
         $this->get('[/{catchall}]', Controllers\HomeController::class . ':about')->setName('about');
     });
 
+    $app->post('/register', Controllers\AAAController::class . ':register')->setName('register');
+    $app->post('/login', Controllers\AAAController::class . ':login')->setName('login');
+    $app->get('/logout', Controllers\AAAController::class . ':logout')->setName('logout');
+
     // IP Pool routes
     $app->group('/ippools', function () {
         $this->get('/customer/{customername}', Controllers\IPPoolController::class . ':getPoolByCustomerName')->setName('ippools-customer');
