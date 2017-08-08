@@ -102,39 +102,23 @@
             <!-- End Modal HTML -->
             <div class="row">
                 <div class="col-sm-9 col-sm-offset-2 col-md-10 col-md-offset-1 main">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Knights Province Map database</div>
-                        <div class="panel-body">
-                            <table id="homeTable" class="table table-striped table-bordered table-hover"
-                                   data-toggle="table"
-                                   data-search="true"
-                                   data-sort-name="avg_rating"
-                                   data-sort-order="desc"
-                                   data-show-toggle="true"
-                                   data-show-columns="true"
-                                   data-show-export="true"
-                                   data-minimum-count-columns="2"
-                                   data-url="/api/v1/maps"
-                                   data-show-refresh="true"
-                                   data-show-pagination-switch="true"
-                                   data-pagination="true"
-                                   data-page-list="[25, 50, 100, ALL]"
-                                   data-page-size="25"
-                                   data-show-footer="false"
-                                   data-side-pagination="client">
-                                <thead>
-                                    <tr>
-                                        <th class="col-xs-2" data-field="map_type_name" data-sortable="true">Type</th>
-                                        <th class="col-xs-2" data-field="map_name" data-formatter="mapNameFormatter" data-sortable="true">Name</th>
-                                        <th class="col-xs-2" data-field="user_name" data-formatter="mapAuthorFormatter" data-sortable="true">Author</th>
-                                        <th class="col-xs-4" data-field="rev_map_description_short" data-sortable="false">Description</th>
-                                        <th class="col-xs-1" data-field="avg_rating" data-sortable="true">Rating</th>
-                                        <th class="col-xs-1" data-field="map_downloads" data-sortable="true">Downloads</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
+                    <p>
+                        Please note that this website is still under heavy development!<br />
+                        <br />
+                        The following is still planned:.<br />
+                        <pre>
+                            1> Submission moderation queues for the end-user\ s security.
+                            2> Map image updating for submissions.
+                            3> Map revision rollback for submitters.
+                            4> Improved API features for integration with Knights Province (And perhaps KaM Remake).
+                            5> Functional map and user flagging for moderation features.
+                            6> More in the future. :)
+                        </pre>
+                    </p><br />
+                    <p>
+                        Your request :
+                        <pre><?=print_r($request, True);?></pre>
+                    </p>
                 </div>
             </div>
         </div>

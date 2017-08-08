@@ -77,12 +77,20 @@
         public function about(Request $request, Response $response, $args) {
             $this->container->logger->info("MapPlatform '/about" . (Empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
 
-            $pageTitle            = 'Home Page';
-            $pageID               = 0;
-            $contentTemplate      = 'index.phtml';
+            $route                = $request->getAttribute('route');
+            $pageTitle            = 'About Map Platform';
+            $pageID               = 1;
+            $contentTemplate      = 'about.phtml';
             $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                    "    <li class=\"active\">Home</li>" . PHP_EOL .
+                                    "    <li class=\"active\">About</li>" . PHP_EOL .
                                     "</ol>";
+            $values['request']    = [
+                'route' => [
+                    'name' => $route->getName(),
+                    'uri' => $request->getUri(),
+                    'arguments' => $route->getArguments()
+                ]
+            ];
 
             return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values, $this->container);
         }
