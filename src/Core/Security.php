@@ -393,9 +393,9 @@
 
                     $query         = $database->select(['rememberme_pk', 'date'])
                                               ->from('RememberMe')
-                                              ->where('user_fk', '=', $userId, 'AND')
+                                              ->where('user_fk', '=', $userId)
                                               ->where('token', '=', $token, 'AND')
-                                              ->where('ip_address', '=', $ipAddress);
+                                              ->where('ip_address', '=', $ipAddress, 'AND');
                     $stmt          = $query->execute();
                     $rememberMeArr = $stmt->fetchall();
 
@@ -470,9 +470,9 @@
 				$this->container->logger->debug("MapPlatform 'MapPlatform\Core\Security\logout' data: " . print_r($data, True));
 				$stmt = $database->delete()
                                  ->from('RememberMe')
-                                 ->where('user_fk', '=', $userId, 'AND')
+                                 ->where('user_fk', '=', $userId)
                                  ->where('token', '=', $token, 'AND')
-                                 ->where('ip_address', '=', $ipAddress);
+                                 ->where('ip_address', '=', $ipAddress, 'AND');
                 $database->beginTransaction();
                 $affectedRows = $stmt2->execute();
 

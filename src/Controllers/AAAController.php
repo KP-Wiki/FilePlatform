@@ -67,7 +67,6 @@
         public function register(Request $request, Response $response, $args) {
             $this->container->logger->info("MapPlatform '/register' route");
             $data = $request->getParsedBody();
-            $this->container->logger->debug(print_r($data, True));
             $result = $this->container->security->register($data);
 
             $pageTitle               = 'Register';
@@ -96,7 +95,6 @@
         public function login(Request $request, Response $response, $args) {
             $this->container->logger->info("MapPlatform '/login' route");
             $data = $request->getParsedBody();
-            $this->container->logger->debug(print_r($data, True));
             $result = $this->container->security->login($data);
 
             $pageTitle               = 'Login';
