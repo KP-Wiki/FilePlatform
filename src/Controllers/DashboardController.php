@@ -56,7 +56,8 @@
             $this->container->security->checkRememberMe();
 
             if ($_SESSION['user']->id == -1) {
-                return $response->getBody()->write('Taking you back to the homepage')->withAddedHeader('Refresh', '1; url=/home');
+                return $response->getBody()->write('Taking you back to the homepage')
+                                           ->withAddedHeader('Refresh', '1; url=/home');
             } else {
                 $pageTitle            = 'Dashboard';
                 $pageID               = 2;
