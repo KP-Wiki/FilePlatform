@@ -46,6 +46,7 @@
         private function initSession() {
             $_SESSION['user'] = (object)[];
             $_SESSION['user']->group = 0;
+            $_SESSION['user']->id = -1;
         }
 
         /**

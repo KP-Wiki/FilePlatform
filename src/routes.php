@@ -17,9 +17,13 @@
         $this->get('[/{catchall}]', Controllers\HomeController::class . ':about')->setName('about');
     });
 
+    // AAA routes
     $app->post('/register', Controllers\AAAController::class . ':register')->setName('register');
     $app->post('/login', Controllers\AAAController::class . ':login')->setName('login');
     $app->get('/logout', Controllers\AAAController::class . ':logout')->setName('logout');
+
+    // Dashboard routes
+    $app->get('/dashboard', Controllers\DashboardController::class . ':home')->setName('dashboard');
 
     // API routes
     $app->group('/api', function () {
