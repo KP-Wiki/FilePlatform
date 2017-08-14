@@ -25,25 +25,33 @@
     // Dashboard routes
     $app->get('/dashboard', Controllers\DashboardController::class . ':home')->setName('dashboard');
 
+    // Map routes
+    $app->group('/map', function () {
+        $this->get('/new', Controllers\MapController::class . ':newMap')->setName('newMap');
+        $this->group('/{revId}', function () {
+            $this->get('', Controllers\MapController::class . ':details')->setName('mapDetails');
+            $this->get('/edit', Controllers\MapController::class . ':editMapInfo')->setName('editMapInfo');
+            $this->get('/update', Controllers\MapController::class . ':updateMap')->setName('updateMap');
+        });
+    });
+    
+    // Map routes
+    $app->group('/images', function () {
+        $this->get('/default/{imageName}', Controllers\ImageController::class . ':getDefaultImage')->setName('getDefaultImage');
+        $this->get('/{revId}/{screenId}', Controllers\ImageController::class . ':getMapImage')->setName('getMapImage');
+    });
+
     // API routes
     $app->group('/api', function () {
         $this->group('/v1', function () {
             $this->group('/maps', function () {
-                $this->group('/user', function () {
-                    $this->get('/{userId}', Controllers\Api\MapController::class . ':getMapsByUser'); // R
-                });
-
-                $this->post('', Controllers\Api\MapController::class . ':addMap');        // C
-                $this->get('', Controllers\Api\MapController::class . ':getAllMaps');     // R
-                $this->get('/{mapId}', Controllers\Api\MapController::class . ':getMap'); // R
-                $this->put('', Controllers\Api\MapController::class . ':updateMap');      // U
-                $this->delete('', Controllers\Api\MapController::class . ':deleteMap');   // D
-            });
-
-            $this->group('/download', function () {
-                $this->group('/map', function () {
-                    $this->get('/{revId}', Controllers\Api\DownloadController::class . ':downloadMap'); // R
-                });
+                $this->post('', Controllers\Api\MapController::class . ':addMap');                      // C
+                $this->get('', Controllers\Api\MapController::class . ':getAllMaps');                   // R
+                $this->get('/download/{revId}', Controllers\Api\MapController::class . ':downloadMap'); // R
+                $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser');  // R
+                $this->get('/{mapId}', Controllers\Api\MapController::class . ':getMap');               // R
+                $this->put('', Controllers\Api\MapController::class . ':updateMap');                    // U
+                $this->delete('', Controllers\Api\MapController::class . ':deleteMap');                 // D
             });
 
             $this->group('/rating', function () {

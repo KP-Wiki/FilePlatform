@@ -17,6 +17,7 @@
     use \Slim\Http\Response;
     use \MapPlatform\Core;
     use \MapPlatform\AbstractClasses\ApiController;
+    use \Imagick;
 
     /**
      * Misc feature controller

@@ -477,7 +477,7 @@
                                  ->where('token', '=', $token, 'AND')
                                  ->where('ip_address', '=', $ipAddress, 'AND');
                 $database->beginTransaction();
-                $affectedRows = $stmt2->execute();
+                $affectedRows = $stmt->execute();
 
                 if ($affectedRows === 1) {
                     $database->commit();
