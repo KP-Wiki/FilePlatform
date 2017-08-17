@@ -55,7 +55,7 @@
             });
 
             $this->group('/rating', function () {
-                $this->post('', Controllers\Api\RatingController::class . ':addRating');        // C
+                $this->post('/{mapId}', Controllers\Api\RatingController::class . ':addRating'); // C
                 $this->get('/{mapId}', Controllers\Api\RatingController::class . ':getRating'); // R
             });
 
