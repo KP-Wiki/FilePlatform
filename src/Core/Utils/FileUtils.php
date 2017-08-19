@@ -126,35 +126,35 @@
             $this->minify($arr, 'CSS');
         }
 
-		/**
-		 * Resize images to specified size
-		 *
-		 * @param &\Imagick\Imagick The image as an Imagick object
-		 * @param int New image width
-		 * @param int New image height
-		 */
+        /**
+         * Resize images to specified size
+         *
+         * @param &\Imagick\Imagick The image as an Imagick object
+         * @param int New image width
+         * @param int New image height
+         */
         public function resizeImage(&$imageObject, $maxWidth, $maxHeight) {
-            $format = $imageObject -> getImageFormat();
+            $format = $imageObject->getImageFormat();
 
             if ($format == 'GIF') { // If it's a GIF file we need to resize each frame one by one
-                $imageObject = $imageObject -> coalesceImages();
+                $imageObject = $imageObject->coalesceImages();
 
                 foreach ($imageObject as $frame) { // Gaussian seems better for animations
-                    $frame -> resizeImage($maxWidth , $maxHeight , Imagick::FILTER_GAUSSIAN, 1, True);
+                    $frame->resizeImage($maxWidth , $maxHeight , Imagick::FILTER_GAUSSIAN, 1, True);
                 };
 
-                $imageObject = $imageObject -> deconstructImages();
+                $imageObject = $imageObject->deconstructImages();
             } else { // Lanczos seems better for static images
-                $imageObject -> resizeImage($maxWidth , $maxHeight , Imagick::FILTER_LANCZOS, 1, True);
+                $imageObject->resizeImage($maxWidth , $maxHeight , Imagick::FILTER_LANCZOS, 1, True);
             };
         }
 
-		/**
-		 * Re-arrange file array to usable format
-		 *
-		 * @param &array File array to re-arrange
-		 * @return array Re-arranged array
-		 */
+        /**
+         * Re-arrange file array to usable format
+         *
+         * @param &array File array to re-arrange
+         * @return array Re-arranged array
+         */
         public function reArrayFiles(&$aFileArr) {
             $resultArr = array();
             $fileCount = count($aFileArr['name']);
@@ -169,39 +169,21 @@
             return $resultArr;
         }
 
-		/**
-		 * Recursively create directories
-		 *
-		 * @param string The full path
-		 */
-        function mkdirRecursive($path) {
-            $path = str_replace("\\", '/', $path);
-            $path = Explode('/', $path);
-
-            $rebuild = '';
+        /**
+         * Recursively create directories
+         *
+         * @param string $path The dir path
+         * @param string $base The base
+         */
+        function mkdirRecursive($path, $base) {
+            $path    = str_replace("\\", '/', $path);
+            $path    = Explode('/', $path);
+            $base    = str_replace("\\", '/', $base);
+            $rebuild = $base;
 
             foreach ($path as $p) {
-                if (strstr($p, ':') != False) {
-                    $rebuild = $p;
-
-                    continue;
-                };
-
                 $rebuild .= '/' . $p;
-
-                if ($rebuild == '/') {
-                    $rebuild = '';
-                    continue;
-                };
-
-                if ($rebuild == ':/') {
-                    $rebuild = ':';
-                    continue;
-                };
-
-                if (($rebuild == '/var')     || ($rebuild == ':/var') ||
-                    ($rebuild == '/var/www') || ($rebuild == ':/var/www'))
-                    continue;
+                $rebuild = str_replace("//", '/', $rebuild);
 
                 if (!is_dir($rebuild))
                     mkdir($rebuild);

@@ -11,7 +11,7 @@
      * @since      First available since Release 1.0.0
      */
     namespace MapPlatform\Controllers\Api;
-    
+
     use \InvalidArgumentException;
     use \Slim\Http\Request;
     use \Slim\Http\Response;
@@ -64,7 +64,7 @@
                 $imageObject = new Imagick($image);
                 $this->container->fileUtils->resizeImage($imageObject, $config['maxWidth'], $config['maxHeight']);
                 $imageObject->writeImage($image);
-                $imageObject->destroy(); 
+                $imageObject->destroy();
             };
 
             return $response->withJson(['result' => 'Success'], 200, JSON_PRETTY_PRINT);

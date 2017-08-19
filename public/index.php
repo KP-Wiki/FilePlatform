@@ -37,7 +37,7 @@
     require __DIR__ . '/../src/routes.php';
 
     $fileUtils  = $app->getContainer()->fileUtils;
-	$fuSettings = $app->getContainer()->get('settings')['minifier'];
+    $fuSettings = $app->getContainer()->get('settings')['minifier'];
     $fileUtils->minifyCSS($fuSettings['css']);
     $fileUtils->minifyJS($fuSettings['js']);
 

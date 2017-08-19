@@ -119,8 +119,8 @@
 
             return ($rawOutput ? SubStr($output, 0, $keyLength) : bin2hex(SubStr($output, 0, $keyLength)));
         }
-		
-		/**
+
+        /**
          * Compare the given password and salt with the given hash
          *
          * @param string The raw password to compare with
@@ -186,7 +186,7 @@
             $defaultGroup   = 1;
 
             try {
-                $username          = filter_var($aDataArray['username'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                $username          = filter_var($aDataArray['username'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW ||
                                                                                                  FILTER_FLAG_STRIP_HIGH ||
                                                                                                  FILTER_FLAG_STRIP_BACKTICK);
                 $emailAddress      = filter_var($aDataArray['emailAddress'], FILTER_SANITIZE_EMAIL);
@@ -245,7 +245,7 @@
                     $database->commit();
                     $this->container->logger->debug('Register -> Registration successful');
                     $this->login($aDataArray);
-                    
+
                     return [
                         'status' => 'Success',
                         'message' => 'Registration successful!'
@@ -253,7 +253,7 @@
                 } else {
                     $database->rollBack();
                     $this->container->logger->debug('Register -> Unable to create user');
-                    
+
                     return [
                         'status' => 'Error',
                         'message' => 'Unable to create user, please try again later'
@@ -283,7 +283,7 @@
 
             try {
                 $this->container->logger->debug(print_r($aDataArray, True));
-                $username  = filter_var($aDataArray['username'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                $username  = filter_var($aDataArray['username'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW ||
                                                                                          FILTER_FLAG_STRIP_HIGH ||
                                                                                          FILTER_FLAG_STRIP_BACKTICK);
                 $password  = filter_var($aDataArray['password'], FILTER_DEFAULT);
@@ -368,7 +368,7 @@
 
             if (isset($_COOKIE['userId']) && isset($_COOKIE['token'])) {
                 $userId = filter_input(INPUT_COOKIE, 'userId', FILTER_SANITIZE_NUMBER_INT);
-                $token  = filter_input(INPUT_COOKIE, 'token', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW || 
+                $token  = filter_input(INPUT_COOKIE, 'token', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW ||
                                                                                       FILTER_FLAG_STRIP_HIGH ||
                                                                                       FILTER_FLAG_STRIP_BACKTICK);
                 $ipAddress = $this->container->miscUtils->getClientIp();
@@ -464,14 +464,14 @@
          */
         public function logout() {
             $database = $this->container->dataBase->PDO;
-			
-			try {
-				$userId    = $_SESSION['user']->id;
-				$token     = $_SESSION['user']->token;
-				$ipAddress = $this->container->miscUtils->getClientIp();
-				
-				$this->container->logger->debug("MapPlatform 'MapPlatform\Core\Security\logout' data: " . print_r($data, True));
-				$stmt = $database->delete()
+
+            try {
+                $userId    = $_SESSION['user']->id;
+                $token     = $_SESSION['user']->token;
+                $ipAddress = $this->container->miscUtils->getClientIp();
+
+                $this->container->logger->debug("MapPlatform 'MapPlatform\Core\Security\logout' data: " . print_r($data, True));
+                $stmt = $database->delete()
                                  ->from('RememberMe')
                                  ->where('user_fk', '=', $userId)
                                  ->where('token', '=', $token, 'AND')
@@ -484,28 +484,28 @@
                     $this->container->logger->error('logout -> Successfully logged out');
                     $this->destroySession();
 
-					return [
-						'status' => 'Success',
-						'message' => 'Successfully logged out, redirecting you to the homepage'
-					];
+                    return [
+                        'status' => 'Success',
+                        'message' => 'Successfully logged out, redirecting you to the homepage'
+                    ];
                 } else {
                     $database->rollBack();
                     $this->container->logger->error('logout -> Unable to logout');
                     $this->destroySession();
 
-					return [
-						'status' => 'Error',
-						'message' => 'Unable to logout'
-					];
+                    return [
+                        'status' => 'Error',
+                        'message' => 'Unable to logout'
+                    ];
                 };
             } catch (Exception $ex) {
                 $this->container->logger->error('logout -> ex = ' . $ex);
                 $this->destroySession();
 
-				return [
-					'status' => 'Error',
-					'message' => 'Exception while trying to logout' . PHP_EOL . print_r($ex, True)
-				];
+                return [
+                    'status' => 'Error',
+                    'message' => 'Exception while trying to logout' . PHP_EOL . print_r($ex, True)
+                ];
             };
         }
     }

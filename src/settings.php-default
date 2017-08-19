@@ -54,44 +54,47 @@
              * If you choose the sqlite engine, you should use 'host' as the file path
              */
             'database' => [
-				'engine' => 'mysql',
-				'host' => 'localhost',
-				'user' => 'aUser',
-				'password' => 'aPassword',
-				'database' => 'MapPlatform'
+                'engine' => 'mysql',
+                'host' => 'localhost',
+                'user' => 'aUser',
+                'password' => 'aPassword',
+                'database' => 'MapPlatform'
             ],
-			
-			'files' => [
-				'uploadDir' => __DIR__ . '/../uploads/',
-				'queueDir' => __DIR__ . '/../uploads/Queue/',
-				'defaultDir' => __DIR__ . '/../uploads/Default/'
-			],
-			
-			'images' => [
-				'defaultImageDir' => __DIR__ . '/../uploads/images/',
-				'maxWidth' => 1280,
-				'maxHeight' => 720,
-				'allowedTypes' => [
-					IMAGETYPE_GIF,
-					IMAGETYPE_JPEG,
-					IMAGETYPE_PNG,
-					IMAGETYPE_BMP
-				]
-			],
-			
-			'reCaptcha' => [
-				'siteKey' => 'google site key',
-				'secretKey' => 'google secret key'
-			],
-			
-			'security' => [
-				'cookieLifetime' => 15778463 // ~6 months in seconds
-			],
+
+            'files' => [
+                'uploadDir' => 'uploads/',
+                'uploadDirFull' => __DIR__ . '/../uploads/',
+                'queueDir' => 'uploads/Queue/',
+                'queueDirFull' => __DIR__ . '/../uploads/Queue/',
+                'defaultDir' => 'uploads/Default/',
+                'defaultDirFull' => __DIR__ . '/../uploads/Default/'
+            ],
+
+            'images' => [
+                'defaultImageDir' => __DIR__ . '/../uploads/images/',
+                'maxWidth' => 1280,
+                'maxHeight' => 720,
+                'allowedTypes' => [
+                    IMAGETYPE_GIF,
+                    IMAGETYPE_JPEG,
+                    IMAGETYPE_PNG,
+                    IMAGETYPE_BMP
+                ]
+            ],
+
+            'reCaptcha' => [
+                'siteKey' => 'google site key',
+                'secretKey' => 'google secret key'
+            ],
+
+            'security' => [
+                'cookieLifetime' => 15778463 // ~6 months in seconds
+            ],
 
             // Minifier settings
             'minifier' => [
                 'css' => [
-                    $cssDir . '/main.css'               => $cssDir . '/main.min.css'
+                    $cssDir . '/main.css' => $cssDir . '/main.min.css'
                 ],
                 'js' => [
                     $jsDir . '/bootstrap-table-export.js' => $jsDir . '/bootstrap-table-export.min.js',

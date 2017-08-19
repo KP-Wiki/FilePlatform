@@ -27,7 +27,7 @@
      */
     class RenderUtils
     {
-		/** @var \Slim\Container $container The framework container */
+        /** @var \Slim\Container $container The framework container */
         protected $container;
 
         /**

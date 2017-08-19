@@ -11,7 +11,7 @@
      * @since      First available since Release 1.0.0
      */
     namespace MapPlatform\Controllers;
-    
+
     use \InvalidArgumentException;
     use \Slim\Http\Request;
     use \Slim\Http\Response;
@@ -57,7 +57,7 @@
 
             if ($_SESSION['user']->id == -1) {
                 $response->getBody()->write('Taking you back to the homepage');
-                
+
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
                 $pageTitle            = 'Dashboard';

@@ -61,7 +61,7 @@
 
         return $dbClient;
     };
-	
-	$container['security'] = function ($c) {
-		return new Core\Security($c);
-	};
+
+    $container['security'] = function ($c) {
+        return new Core\Security($c);
+    };

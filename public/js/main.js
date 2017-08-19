@@ -17,6 +17,53 @@ window.toggleForgot = function() {
     $(".logreg-forgot").slideToggle('slow');
 }
 
+window.submitForm = function(dataArray, path, reqType, hasFiles, redirectTo) {
+    reqType    = typeof reqType !== 'undefined' ? reqType : 'POST';
+    hasFiles   = typeof hasFiles !== 'undefined' ? hasFiles : false;
+    redirectTo = typeof redirectTo !== 'undefined' ? redirectTo : null;
+
+    if (hasFiles) {
+        $.ajax({
+            url: urlBase + path,
+            type: reqType,
+            data: dataArray,
+            cache: false,
+            contentType: false,
+            processData: false,
+            error: function(xhr, status, error) {
+                var jsonResponse = JSON.parse(xhr.responseText);
+                alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + jsonResponse.message);
+            },
+            success: function(result, status, xhr) {
+                if (result.result != 'Success')
+                    alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + result.message);
+
+                if (redirectTo != null)
+                    window.location.href = urlBase + redirectTo;
+            }
+        });
+    } else {
+        $.ajax({
+            url: urlBase + path,
+            type: reqType,
+            data: dataArray,
+            dataType: 'json',
+            cache: false,
+            error: function(xhr, status, error) {
+                var jsonResponse = JSON.parse(xhr.responseText);
+                alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + jsonResponse.message);
+            },
+            success: function(result, status, xhr) {
+                if (result.result != 'Success')
+                    alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + result.message);
+
+                if (redirectTo != null)
+                    window.location.href = urlBase + redirectTo;
+            }
+        });
+    }
+}
+
 $(document).ready(function() {
     $("#btnDownloadMap").click(function(){
         // Retrieve current hostname, allow both http and https protocols
@@ -30,6 +77,11 @@ $(document).ready(function() {
                 alert('Unable to handle the request due to an AJAX fault! \r\nHtml : ' + html);
             }
         });
+    });
+
+    $('#uploadMapFrm').submit(function(event) {
+        event.preventDefault();
+        submitForm(new FormData(this), '/api/v1/maps', 'POST', true, '/dashboard');
     });
 
     $('#userRegisterFrm').formValidation({
@@ -117,7 +169,8 @@ $(document).ready(function() {
                 $.ajax({
                     url: urlBase + '/api/v1/rating/' + mapID,
                     error: function(xhr, status, error) {
-                        $('#ratingResultError > .message').text(xhr.responseJSON.message);
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        $('#ratingResultError > .message').text(jsonResponse.message);
                         $('#ratingResultError').show();
                     },
                     data: {'score': value},
@@ -158,8 +211,8 @@ $(document).ready(function() {
 
     navListItems.click(function (e) {
         e.preventDefault();
-        var $target = $($(this).attr('href')),
-            $item   = $(this);
+        var $item   = $(this),
+            $target = $($item.attr('href'));
 
         if (!$item.hasClass('disabled')) {
             navListItems.removeClass('btn-primary').addClass('btn-default');
@@ -178,7 +231,7 @@ $(document).ready(function() {
             isValid        = true;
         $(".form-group").removeClass("has-error");
 
-        for(var i=0; i<curInputs.length; i++){
+        for(var i = 0; i < curInputs.length; i++){
             if (!curInputs[i].validity.valid){
                 isValid = false;
                 $(curInputs[i]).closest(".form-group").addClass("has-error");

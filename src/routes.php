@@ -25,16 +25,21 @@
     // Dashboard routes
     $app->get('/dashboard', Controllers\DashboardController::class . ':home')->setName('dashboard');
 
+    $app->group('/profile', function() {
+        $this->get('/{userId}/edit', Controllers\ProfileController::class . ':editProfile')->setName('editProfile');
+        $this->get('/{userId}', Controllers\ProfileController::class . ':getProfile')->setName('getProfile');
+    });
+
     // Map routes
     $app->group('/map', function () {
         $this->get('/new', Controllers\MapController::class . ':newMap')->setName('newMap');
         $this->group('/{revId}', function () {
-            $this->get('', Controllers\MapController::class . ':details')->setName('mapDetails');
+            $this->get('', Controllers\MapController::class . ':getMap')->setName('getMap');
             $this->get('/edit', Controllers\MapController::class . ':editMapInfo')->setName('editMapInfo');
             $this->get('/update', Controllers\MapController::class . ':updateMap')->setName('updateMap');
         });
     });
-    
+
     // Map routes
     $app->group('/images', function () {
         $this->get('/default/{imageName}', Controllers\ImageController::class . ':getDefaultImage')->setName('getDefaultImage');

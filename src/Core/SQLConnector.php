@@ -32,7 +32,7 @@
      */
     class SQLConnector
     {
-		/** @var \Slim\Container $container The framework container */
+        /** @var \Slim\Container $container The framework container */
         protected $container;
         /** @var string $DSN The Data Source Name */
         protected $DSN;
@@ -84,7 +84,7 @@
 
                 return False;
             };
-			
+
             $this->PDO->setAttribute(PDO::ATTR_ERRMODE,            PDO::ERRMODE_EXCEPTION);
             $this->PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->PDO->setAttribute(PDO::ATTR_EMULATE_PREPARES,   False);

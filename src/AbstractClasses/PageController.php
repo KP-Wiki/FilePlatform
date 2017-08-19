@@ -11,7 +11,7 @@
      * @since      First available since Release 1.0.0
      */
     namespace MapPlatform\AbstractClasses;
-    
+
     use \Slim\Http\Request;
     use \Slim\Http\Response;
     use \Slim\Container;

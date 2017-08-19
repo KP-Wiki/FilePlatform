@@ -51,8 +51,8 @@
 
             return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($guidKey), 4));
         }
-		
-		/**
+
+        /**
          * Get the client's IP address
          *
          * @param boolean Determine wether or not to check past the proxy
@@ -71,21 +71,20 @@
 
             return $ipAddr;
         }
-		
-		/**
+
+        /**
          * Get a Gravatar image tag for the specified email address
          *
-         * @param string The email address
-         * @param string Size in pixels, defaults to 80px [ 1 - 2048 ]
-         * @param string Default image set to use [ 404 | mm | identicon | monsterid | wavatar ]
-         * @param string Maximum rating (inclusive) [ g | pg | r | x ]
-         * @return string Image tag
+         * @param string $emailAddress The email address
+         * @param string $size Size in pixels, defaults to 80px [ 1 - 2048 ]
+         * @param string $defaultImg Default image set to use [ 404 | mm | identicon | monsterid | wavatar ]
+         * @param string $rate Maximum rating (inclusive) [ g | pg | r | x ]
+         * @return string Image URL
          */
         function getGravatar($emailAddress, $size = 80, $defaultImg = 'mm', $rate = 'g') {
-            $url    = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($emailAddress))) .
-                      '?s=' . $size . '&d=' . $defaultImg . '&r=' . $rate;
-            $result = '<img class="img-rounded img-responsive" alt="" src="' . $url . '" />';
-
-            return $result;
+            return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($emailAddress))) .
+                   '?s=' . $size .
+                   '&d=' . $defaultImg .
+                   '&r=' . $rate;
         }
     }

@@ -63,7 +63,7 @@
         }
 
         /**
-         * Get the difference between two dates 
+         * Get the difference between two dates
          *   RESULT FORMAT:
          *     '%y Year %m Month %d Day %h Hours %i Minute %s Seconds' =>  1 Year 3 Month 14 Day 11 Hours 49 Minute 36 Seconds
          *     '%y Year %m Month %d Day'                               =>  1 Year 3 Month 14 Days
@@ -88,7 +88,7 @@
                                             'aDate2 = ' . $aDate2->format('Y/m/d H:i:s') . PHP_EOL .
                                             'outFormat = ' . $outFormat . PHP_EOL .
                                             'diff = ' . $diff);
-        
+
             return $diff;
         }
     }

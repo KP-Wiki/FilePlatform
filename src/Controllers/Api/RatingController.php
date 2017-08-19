@@ -11,7 +11,7 @@
      * @since      First available since Release 1.0.0
      */
     namespace MapPlatform\Controllers\Api;
-    
+
     use \InvalidArgumentException;
     use \Slim\Http\Request;
     use \Slim\Http\Response;
@@ -80,7 +80,7 @@
                                 ->where('map_fk', '=', $mapId);
             $stmt    = $query->execute();
             $ratings = $stmt->fetch();
-            
+
             if (($ratings != null) && ($ratings['avg_rating'] != null)) {
                 $resultArr = [
                     'status' => 'Ok',
@@ -134,7 +134,7 @@
 
                 if ($insertId > 0) {
                     $database->commit();
-                    
+
                     return $response->withJson([
                         'status' => 'Ok',
                         'data'   => 'Rating processed succesfully'

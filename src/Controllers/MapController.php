@@ -55,7 +55,7 @@
         public function home(Request $request, Response $response, $args) {
             return $response;
         }
-        
+
         /**
          * Show the map details page.
          *
@@ -65,16 +65,16 @@
          *
          * @return \Slim\Http\Response
          */
-        public function details(Request $request, Response $response, $args) {
+        public function getMap(Request $request, Response $response, $args) {
             $this->container->logger->info("MapPlatform '/map/" . $args['revId'] . "' route");
             $this->container->security->checkRememberMe();
             $mapId = filter_var($args['revId'], FILTER_SANITIZE_NUMBER_INT);
 
             if ($mapId == null) {
                 $response->getBody()->write('Taking you back to the homepage');
-                
+
                 return $response->withAddedHeader('Refresh', '1; url=/home');
-            } else {             
+            } else {
                 $pageTitle            = 'Map Details';
                 $pageID               = 2;
                 $contentTemplate      = 'map.phtml';
@@ -87,7 +87,7 @@
 
                 if ($mapItem == null) {
                     $response->getBody()->write('Taking you back to the homepage');
-                    
+
                     return $response->withAddedHeader('Refresh', '1; url=/home');
                 };
 
@@ -97,7 +97,7 @@
                 return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
             };
         }
-        
+
         /**
          * Show the new map page.
          *
@@ -113,7 +113,7 @@
 
             if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 0)) {
                 $response->getBody()->write('Taking you back to the homepage');
-                
+
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
                 $database = $this->container->dataBase->PDO;
@@ -145,7 +145,7 @@
                 return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
             };
         }
-        
+
         /**
          * Show the map update page.
          *
@@ -178,7 +178,7 @@
                 return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
             };
         }
-        
+
         /**
          * Show the map update page.
          *
@@ -247,7 +247,7 @@
                                 ->where('Maps.map_pk', '=', $aMapId, 'AND');
             $stmt    = $query->execute();
             $mapItem = $stmt->fetch();
-            
+
             if ($mapItem != null && $mapItem['map_name'] != null) {
                 $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
 

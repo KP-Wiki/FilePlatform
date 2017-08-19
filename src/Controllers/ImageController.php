@@ -11,7 +11,7 @@
      * @since      First available since Release 1.0.0
      */
     namespace MapPlatform\Controllers;
-    
+
     use \InvalidArgumentException;
     use \Slim\Http\Request;
     use \Slim\Http\Response;
@@ -42,7 +42,7 @@
         public function __invoke(Request $request, Response $response, $args) {
             return $response;
         }
-        
+
         /**
          * Show the default page.
          *
@@ -55,7 +55,7 @@
         public function home(Request $request, Response $response, $args) {
             return $response;
         }
-        
+
         /**
          * ImageController map image retrieval funtion.
          *
@@ -102,7 +102,7 @@
                             ->withHeader('Pragma', 'public')
                             ->withBody($stream); // All stream contents will be sent to the response
         }
-                
+
         /**
          * ImageController default image retrieval funtion.
          *
@@ -118,7 +118,7 @@
 
             if (($imageName === null) || ($imageName == '')) {
                     $this->container->logger->error('getDefaultImage -> Default image not found');
-    
+
                     return $response->withStatus(404, 'Image not found.');
             };
 
