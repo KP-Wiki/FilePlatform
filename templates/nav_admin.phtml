@@ -34,40 +34,40 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown<?=($PageID == 3 ? " active" : "");?>">
+                        <li class="dropdown<?=(in_array($PageID, [4, 5, 6]) ? " active" : "");?>">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;<span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li role="presentation">
+                                <li role="presentation"<?=($PageID == 4 ? " class=\"active\"" : "");?>>
                                     <a href="/admin_queue">
                                         <span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Queue
                                     </a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="/admin_flags">
+                                    <a href="/admin_flags"<?=($PageID == 5 ? " class=\"active\"" : "");?>>
                                         <span class="glyphicon glyphicon-flag"></span>&nbsp;&nbsp;Flags
                                     </a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="/admin_users">
+                                    <a href="/admin_users"<?=($PageID == 6 ? " class=\"active\"" : "");?>>
                                         <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;User Management
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        <li class="dropdown<?=($PageID == 2 ? " active" : "");?>">
+                        <li class="dropdown<?=(in_array($PageID, [2, 3]) ? " active" : "");?>">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li role="presentation">
+                                <li role="presentation"<?=($PageID == 3 ? " class=\"active\"" : "");?>>
                                     <a href="/dashboard">
                                         <span class="glyphicon glyphicon-dashboard"></span>&nbsp;&nbsp;Dashboard
                                     </a>
                                 </li>
-                                <li role="presentation">
-                                    <a href="/settings">
+                                <li role="presentation"<?=($PageID == 2 ? " class=\"active\"" : "");?>>
+                                    <a href="/profile/edit">
                                         <span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings
                                     </a>
                                 </li>

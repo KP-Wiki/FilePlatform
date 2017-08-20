@@ -81,7 +81,7 @@
          *
          * @return mixed A $keyLength-byte key derived from the password and salt.
          */
-        private function pbkdf2($algorithm, $password, $salt, $count, $keyLength, $rawOutput = False) {
+        public function pbkdf2($algorithm, $password, $salt, $count, $keyLength, $rawOutput = False) {
             $algorithm = strtolower($algorithm);
 
             if (!in_array($algorithm, hash_algos(), True))

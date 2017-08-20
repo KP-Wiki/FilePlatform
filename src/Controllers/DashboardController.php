@@ -61,7 +61,7 @@
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
                 $pageTitle            = 'Dashboard';
-                $pageID               = 2;
+                $pageID               = 3;
                 $contentTemplate      = 'dashboard.phtml';
                 $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
                                         "    <li class=\"active\">Dashboard</li>" . PHP_EOL .

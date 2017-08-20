@@ -26,7 +26,8 @@
     $app->get('/dashboard', Controllers\DashboardController::class . ':home')->setName('dashboard');
 
     $app->group('/profile', function() {
-        $this->get('/{userId}/edit', Controllers\ProfileController::class . ':editProfile')->setName('editProfile');
+        $this->get('/edit', Controllers\ProfileController::class . ':editProfile')->setName('editProfile');
+        $this->post('/edit', Controllers\ProfileController::class . ':saveProfile')->setName('saveProfile');
         $this->get('/{userId}', Controllers\ProfileController::class . ':getProfile')->setName('getProfile');
     });
 
