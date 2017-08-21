@@ -34,7 +34,7 @@
     // Map routes
     $app->group('/map', function () {
         $this->get('/new', Controllers\MapController::class . ':newMap')->setName('newMap');
-        $this->group('/{revId}', function () {
+        $this->group('/{mapId}', function () {
             $this->get('', Controllers\MapController::class . ':getMap')->setName('getMap');
             $this->get('/edit', Controllers\MapController::class . ':editMapInfo')->setName('editMapInfo');
             $this->get('/update', Controllers\MapController::class . ':updateMap')->setName('updateMap');

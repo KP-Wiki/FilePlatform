@@ -66,9 +66,9 @@
          * @return \Slim\Http\Response
          */
         public function getMap(Request $request, Response $response, $args) {
-            $this->container->logger->info("MapPlatform '/map/" . $args['revId'] . "' route");
+            $this->container->logger->info("MapPlatform '/map/" . $args['mapId'] . "' route");
             $this->container->security->checkRememberMe();
-            $mapId = filter_var($args['revId'], FILTER_SANITIZE_NUMBER_INT);
+            $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
 
             if ($mapId == null) {
                 $response->getBody()->write('Taking you back to the homepage');
@@ -156,9 +156,9 @@
          * @return \Slim\Http\Response
          */
         public function updateMap(Request $request, Response $response, $args) { //TODO: Add check for map ownership
-            $this->container->logger->info("MapPlatform '/map/" . $args['revId'] . "/update' route");
+            $this->container->logger->info("MapPlatform '/map/" . $args['mapId'] . "/update' route");
             $this->container->security->checkRememberMe();
-            $mapId = filter_var($args['revId'], FILTER_SANITIZE_NUMBER_INT);
+            $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
 
             if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 0) || ($mapId == null)) {
                 $response->getBody()->write('Taking you back to the homepage');
@@ -170,7 +170,7 @@
                 $contentTemplate      = 'map_update.phtml';
                 $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
                                         "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                        "    <li><a href=\"/map/" . $args['mapId'] . "\">Map Details</a></li>" . PHP_EOL .
+                                        "    <li><a href=\"/map/" . $mapId . "\">Map Details</a></li>" . PHP_EOL .
                                         "    <li class=\"active\">Update Map</li>" . PHP_EOL .
                                         "</ol>";
                 $values['mapId']      = $args['mapId'];
@@ -189,9 +189,9 @@
          * @return \Slim\Http\Response
          */
         public function editMapInfo(Request $request, Response $response, $args) { //TODO: Add check for map ownership
-            $this->container->logger->info("MapPlatform '/map/" . $args['revId'] . "/edit' route");
+            $this->container->logger->info("MapPlatform '/map/" . $args['mapId'] . "/edit' route");
             $this->container->security->checkRememberMe();
-            $mapId = filter_var($args['revId'], FILTER_SANITIZE_NUMBER_INT);
+            $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
 
             if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 0) || ($mapId == null)) {
                 $response->getBody()->write('Taking you back to the homepage');
