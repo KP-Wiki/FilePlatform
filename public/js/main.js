@@ -1,12 +1,12 @@
 window.urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
 
-// Format the name to an a link
+// Format the name to a link
 window.mapNameFormatter = function(value, row, index) {
     return '<a href="/map/' + row.map_pk + '"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;' + value + '</a>';
 }
 
 window.newMapRevFormatter = function(value, row, index) {
-    return '<center><a href="/map/' + row.map_pk + '/update"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;Update</a></center>';
+    return '<center><a href="/map/' + row.map_pk + '/updatefiles"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;Update</a></center>';
 }
 
 window.mapAuthorFormatter = function(value, row, index) {

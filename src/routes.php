@@ -36,8 +36,8 @@
         $this->get('/new', Controllers\MapController::class . ':newMap')->setName('newMap');
         $this->group('/{mapId}', function () {
             $this->get('', Controllers\MapController::class . ':getMap')->setName('getMap');
-            $this->get('/edit', Controllers\MapController::class . ':editMapInfo')->setName('editMapInfo');
-            $this->get('/update', Controllers\MapController::class . ':updateMap')->setName('updateMap');
+            $this->get('/updateinfo', Controllers\MapController::class . ':updateMapInfo')->setName('updateMapInfo');
+            $this->get('/updatefiles', Controllers\MapController::class . ':updateMapFiles')->setName('updateMapFiles');
         });
     });
 
@@ -55,9 +55,13 @@
                 $this->get('', Controllers\Api\MapController::class . ':getAllMaps');                   // R
                 $this->get('/download/{revId}', Controllers\Api\MapController::class . ':downloadMap'); // R
                 $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser');  // R
-                $this->get('/{mapId}', Controllers\Api\MapController::class . ':getMap');               // R
-                $this->put('', Controllers\Api\MapController::class . ':updateMap');                    // U
-                $this->delete('', Controllers\Api\MapController::class . ':deleteMap');                 // D
+
+                $this->group('/{mapId}', function () {
+                    $this->get('', Controllers\Api\MapController::class . ':getMap');                     // R
+                    $this->put('/updateinfo', Controllers\Api\MapController::class . ':updateMapInfo');   // U
+                    $this->put('/updatefiles', Controllers\Api\MapController::class . ':updateMapFiles'); // U
+                    $this->delete('', Controllers\Api\MapController::class . ':deleteMap');               // D
+                });
             });
 
             $this->group('/rating', function () {

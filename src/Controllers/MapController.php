@@ -147,7 +147,7 @@
         }
 
         /**
-         * Show the map update page.
+         * Show the map files update page.
          *
          * @param \Slim\Http\Request $request
          * @param \Slim\Http\Response $response
@@ -155,8 +155,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function updateMap(Request $request, Response $response, $args) { //TODO: Add check for map ownership
-            $this->container->logger->info("MapPlatform '/map/" . $args['mapId'] . "/update' route");
+        public function updateMapFiles(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/map/" . $args['mapId'] . "/updatefiles' route");
             $this->container->security->checkRememberMe();
             $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
 
@@ -165,22 +165,31 @@
 
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
-                $pageTitle            = 'Update Map';
-                $pageID               = 2;
-                $contentTemplate      = 'map_update.phtml';
-                $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                        "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                        "    <li><a href=\"/map/" . $mapId . "\">Map Details</a></li>" . PHP_EOL .
-                                        "    <li class=\"active\">Update Map</li>" . PHP_EOL .
-                                        "</ol>";
-                $values['mapId']      = $args['mapId'];
+                $mapItem = $this->getMapItemMinimal($mapId);
 
-                return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
+                if ($_SESSION['user']->id != $mapItem['userId']) {
+                    $response->getBody()->write('Taking you back to the homepage');
+
+                    return $response->withAddedHeader('Refresh', '1; url=/home');
+                } else {
+                    $pageTitle            = 'Update Map Files';
+                    $pageID               = 2;
+                    $contentTemplate      = 'map_update_files.phtml';
+                    $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
+                                            "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
+                                            "    <li><a href=\"/map/" . $mapId . "\">Map Details</a></li>" . PHP_EOL .
+                                            "    <li class=\"active\">Update Map Files</li>" . PHP_EOL .
+                                            "</ol>";
+                    $values['mapId']      = $args['mapId'];
+                    $values               = array_merge($values, $mapItem);
+
+                    return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
+                };
             };
         }
 
         /**
-         * Show the map update page.
+         * Show the map info update page.
          *
          * @param \Slim\Http\Request $request
          * @param \Slim\Http\Response $response
@@ -188,8 +197,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function editMapInfo(Request $request, Response $response, $args) { //TODO: Add check for map ownership
-            $this->container->logger->info("MapPlatform '/map/" . $args['mapId'] . "/edit' route");
+        public function updateMapInfo(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/map/" . $args['mapId'] . "/updateinfo' route");
             $this->container->security->checkRememberMe();
             $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
 
@@ -198,17 +207,26 @@
 
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
-                $pageTitle            = 'Update Map';
-                $pageID               = 2;
-                $contentTemplate      = 'map_edit.phtml';
-                $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                        "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                        "    <li><a href=\"/map/" . $mapId . "\">Map Details</a></li>" . PHP_EOL .
-                                        "    <li class=\"active\">Edit Map Info</li>" . PHP_EOL .
-                                        "</ol>";
-                $values['mapId']      = $mapId;
+                $mapItem = $this->getMapItemMinimal($mapId);
 
-                return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
+                if ($_SESSION['user']->id != $mapItem['userId']) {
+                    $response->getBody()->write('Taking you back to the homepage');
+
+                    return $response->withAddedHeader('Refresh', '1; url=/home');
+                } else {
+                    $pageTitle            = 'Update Map Info';
+                    $pageID               = 2;
+                    $contentTemplate      = 'map_update_info.phtml';
+                    $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
+                                            "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
+                                            "    <li><a href=\"/map/" . $mapId . "\">Map Details</a></li>" . PHP_EOL .
+                                            "    <li class=\"active\">Update Map Info</li>" . PHP_EOL .
+                                            "</ol>";
+                    $values['mapId']      = $mapId;
+                    $values               = array_merge($values, $mapItem);
+
+                    return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
+                };
             };
         }
 
@@ -257,7 +275,7 @@
                     'revId'                  => $mapItem['rev_pk'],
                     'revMapDescriptionShort' => $mapItem['rev_map_description_short'],
                     'revMapDescription'      => $mapItem['rev_map_description'],
-                    'revUploadDate'          => $lastChangeDate -> format('Y-m-d H:i'),
+                    'revUploadDate'          => $lastChangeDate->format('Y-m-d H:i'),
                     'revMapVersion'          => $mapItem['rev_map_version'],
                     'userId'                 => $mapItem['user_pk'],
                     'userName'               => $mapItem['user_name'],
@@ -268,6 +286,51 @@
                     'ratingThree'            => IntVal($mapItem['rating_three']),
                     'ratingFour'             => IntVal($mapItem['rating_four']),
                     'ratingFive'             => IntVal($mapItem['rating_five'])
+                ];
+            } else {
+                return null;
+            };
+        }
+
+        private function getMapItemMinimal($aMapId) {
+            $database = $this->container->dataBase->PDO;
+
+            $query = 'SET @mapid = :mapid;';
+            $stmt  = $database->prepare($query);
+            $stmt->bindParam(':mapid', $aMapId);
+            $stmt->execute();
+
+            $query   = $database->select(['Maps.map_name',
+                                          'Revisions.rev_pk',
+                                          'Revisions.rev_map_description_short',
+                                          'Revisions.rev_map_description',
+                                          'Revisions.rev_upload_date',
+                                          'Revisions.rev_map_version',
+                                          'Users.user_pk',
+                                          'MapTypes.map_type_name'
+                                        ])
+                                ->from('Maps')
+                                ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                                ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
+                                ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                                ->where('Revisions.rev_status_fk', '=', 1)
+                                /* ->where('Maps.map_visible', '=', 1, 'AND') // Disabled for possible use later on */
+                                ->where('Maps.map_pk', '=', $aMapId, 'AND');
+            $stmt    = $query->execute();
+            $mapItem = $stmt->fetch();
+
+            if ($mapItem != null && $mapItem['map_name'] != null) {
+                $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
+
+                return [
+                    'mapName'                => $mapItem['map_name'],
+                    'revId'                  => $mapItem['rev_pk'],
+                    'revMapDescriptionShort' => $mapItem['rev_map_description_short'],
+                    'revMapDescription'      => $mapItem['rev_map_description'],
+                    'revUploadDate'          => $lastChangeDate->format('Y-m-d H:i'),
+                    'revMapVersion'          => $mapItem['rev_map_version'],
+                    'userId'                 => $mapItem['user_pk'],
+                    'mapTypeName'            => $mapItem['map_type_name']
                 ];
             } else {
                 return null;
