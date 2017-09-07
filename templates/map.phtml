@@ -103,18 +103,19 @@
             <div class="row spacer">
                 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3" style="margin-bottom: 25px;">
                     <center>
+                    <!--
                         <div id="screenshot_carousel" class="carousel slide" data-ride="carousel">
-                            <!-- Indicators -->
+                            <!-- Indicators --\\>
                             <ol class="carousel-indicators">
-                                <?=$carouselIndicators;?>
+                                <\\?=$carouselIndicators;?>
                             </ol>
-                            <!-- Wrapper for slides -->
+                            <!-- Wrapper for slides --\\>
                             <center>
                                 <div class="carousel-inner" role="listbox">
-                                    <?=$carouselItems;?>
+                                    <\\?=$carouselItems;?>
                                 </div>
                             </center>
-                            <!-- Controls -->
+                            <!-- Controls --\\>
                             <a class="left carousel-control" href="#screenshot_carousel" role="button" data-slide="prev">
                                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                                 <span class="sr-only">Previous</span>
@@ -124,6 +125,29 @@
                                 <span class="sr-only">Next</span>
                             </a>
                         </div>
+                    -->
+                        <!-- The Gallery as inline carousel, can be positioned anywhere on the page -->
+                        <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-carousel">
+                            <div class="slides"></div>
+                            <h3 class="title"></h3>
+                            <a class="prev">‹</a>
+                            <a class="next">›</a>
+                            <a class="play-pause"></a>
+                            <ol class="indicator"></ol>
+                        </div>
+                        <script>
+                            $(document).ready(function() {
+                                blueimp.Gallery(
+                                    <?=$carouselItemsNew;?>,
+                                    {
+                                        container: '#blueimp-gallery',
+                                        slideshowInterval: 10000,
+                                        enableKeyboardNavigation: true,
+                                        carousel: true
+                                    }
+                                );
+                            });
+                        </script>
                     </center>
                 </div>
             </div>

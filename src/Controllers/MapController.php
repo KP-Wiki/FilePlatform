@@ -350,6 +350,7 @@
                                         ->orderBy('screen_order', 'ASC');
             $stmt            = $query->execute();
             $screenshotItems = $stmt->fetchall();
+            $carouselItemsNew = array();
 
             if (is_array($screenshotItems) && count($screenshotItems) > 0) {
                 $firstItem = True;
@@ -377,6 +378,12 @@
                                                '    </div>' . PHP_EOL .
                                                '</div>' . PHP_EOL;
                     };
+
+                    $carouselItemsNew[] = (object)[
+                        'title' => $screenshotItem['screen_title'],
+                        'href' => '/images/' . $aRevId . '/' . $screenshotItem['screen_pk'],
+                        'type' => 'image/png'
+                    ];
                 };
             } else {
                 $carouselIndicators = '<li data-target="#screenshot_carousel" data-slide-to="0" class="active"></li>' . PHP_EOL .
@@ -393,11 +400,22 @@
                                       '        A basic village' . PHP_EOL .
                                       '    </div>' . PHP_EOL .
                                       '</div>' . PHP_EOL;
+                $carouselItemsNew[] = (object)[
+                    'title' => 'A first look at combat',
+                    'href' => '/images/default/kp_2016-08-30_21-29-44.png',
+                    'type' => 'image/png'
+                ];
+                $carouselItemsNew[] = (object)[
+                    'title' => 'A basic village',
+                    'href' => '/images/default/kp_2016-09-03_18-34-31.png',
+                    'type' => 'image/png'
+                ];
             };
 
             return [
                 'carouselIndicators' => $carouselIndicators,
-                'carouselItems'      => $carouselItems
+                'carouselItems'      => $carouselItems,
+                'carouselItemsNew'   => json_encode($carouselItemsNew, JSON_PRETTY_PRINT)
             ];
         }
     }
