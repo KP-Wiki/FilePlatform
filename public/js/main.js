@@ -188,11 +188,11 @@ $(document).ready(function() {
                             success: function(result, status, xhr) {
                                 $('#ratingStarrr').attr('kp-map-rating', result.data.avg_rating);
                                 $('#ratingAvg').html(result.data.avg_rating + '<small> / 5</small>');
-                                $('#ratingFive').text(result.data.rating_five);
-                                $('#ratingFour').text(result.data.rating_four);
-                                $('#ratingThree').text(result.data.rating_three);
-                                $('#ratingTwo').text(result.data.rating_two);
-                                $('#ratingOne').text(result.data.rating_one);
+                                $('#ratingFive').text(result.data.rating_five + ' Vote(s)');
+                                $('#ratingFour').text(result.data.rating_four + ' Vote(s)');
+                                $('#ratingThree').text(result.data.rating_three + ' Vote(s)');
+                                $('#ratingTwo').text(result.data.rating_two + ' Vote(s)');
+                                $('#ratingOne').text(result.data.rating_one + ' Vote(s)');
                             },
                             type: 'GET'
                         });
