@@ -55,7 +55,7 @@ code {
     margin-bottom: 5px !important;
 }
 
-.form-group.required .control-label:after { 
+.form-group.required .control-label:after {
    content: "  *";
    color: red;
 }

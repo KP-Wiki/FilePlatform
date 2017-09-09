@@ -46,6 +46,7 @@
             return $response;
         }
 
+#region Retrieve
         /**
          * MapController Get all maps.
          *
@@ -370,7 +371,9 @@
                             ->withHeader('Pragma', 'public')
                             ->withBody($stream); // All stream contents will be sent to the response
         }
+#endregion
 
+#region Create
         /**
          * MapController Add map function.
          *
@@ -388,9 +391,11 @@
                 return $response->withJson(['result' => 'Nope'], 400, JSON_PRETTY_PRINT);
             } else {
                 try {
-                    $database     = $this->container->dataBase->PDO;
-                    $config       = $this->container->get('settings')['files'];
-                    $data         = $request->getParsedBody();
+                    $database = $this->container->dataBase->PDO;
+                    $config   = $this->container->get('settings')['files'];
+                    $data     = $request->getParsedBody();
+                    $this->container->logger->debug("data: " . print_r($data, True));
+
                     $mapName      = filter_var($data['mapName'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
                                                                                          FILTER_FLAG_ENCODE_LOW ||
                                                                                          FILTER_FLAG_ENCODE_HIGH ||
@@ -522,6 +527,143 @@
 
                     return $response->withJson([
                         'result'  => 'Error',
+                        'message' => $ex->getMessage()
+                    ], 500, JSON_PRETTY_PRINT);
+                };
+            };
+        }
+#endregion
+
+#region Update
+        /**
+         * MapController map info update function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function updateMapInfo(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps/" . $args['mapId'] . "/updateinfo' route");
+            $this->container->security->checkRememberMe();
+
+            if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 0)) {
+                return $response->withJson(['result' => 'Nope'], 400, JSON_PRETTY_PRINT);
+            } else {
+                try {
+                    $database = $this->container->dataBase->PDO;
+                    $config   = $this->container->get('settings')['files'];
+                    $data     = $request->getParsedBody();
+                    $mapId    = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
+                    $this->container->logger->debug("data: " . print_r($data, True));
+
+                    if (Empty($data['editMapDescShort']) ||
+                        Empty($data['editMapDescFull']) ||
+                        Empty($mapId)) {
+                        return $response->withJson([
+                            'result' => 'Error',
+                            'message' => 'Invalid request, inputs missing'
+                        ], 400, JSON_PRETTY_PRINT);
+                    };
+
+                    $editMapDescShort = filter_var($data['editMapDescShort'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                      FILTER_FLAG_ENCODE_LOW ||
+                                                                                                      FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                      FILTER_FLAG_ENCODE_AMP);
+                    $editMapDescFull  = filter_var($data['editMapDescFull'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                     FILTER_FLAG_ENCODE_LOW ||
+                                                                                                     FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                     FILTER_FLAG_ENCODE_AMP);
+                    $mapItem          = $this->getMapFromDB($database, $mapId);
+
+                    if (($mapItem != null) && ($mapItem['map_name'] != null)) {
+                        if ($mapItem['user_pk'] == $_SESSION['user']->id) {
+                            $this->container->logger->error('updateMapInfo -> User ' . $_SESSION['user']->id .
+                                                            ' tried to edit someone else\'s map.');
+
+                            return $response->withJson([
+                                'result' => 'Error',
+                                'message' => 'You can only edit your own maps.'
+                            ], 400, JSON_PRETTY_PRINT);
+                        };
+                    } else {
+                        $this->container->logger->error('updateMapInfo -> Map with ID ' . $mapId . ' does not exist.');
+
+                        return $response->withJson([
+                            'status' => 'Error',
+                            'message' => 'Map with ID ' . $mapId . ' does not exist.'
+                        ], 404, JSON_PRETTY_PRINT);
+                    };
+                } catch (Exception $ex) {
+                    return $response->withJson([
+                        'result' => 'Error',
+                        'message' => $ex->getMessage()
+                    ], 500, JSON_PRETTY_PRINT);
+                };
+            };
+        }
+
+        /**
+         * MapController map file update function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function updateMapFiles(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps/" . $args['mapId'] . "/updatefiles' route");
+            $this->container->security->checkRememberMe();
+
+            if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 0)) {
+                return $response->withJson(['result' => 'Nope'], 400, JSON_PRETTY_PRINT);
+            } else {
+                try {
+                    $database   = $this->container->dataBase->PDO;
+                    $config     = $this->container->get('settings')['files'];
+                    $data       = $request->getParsedBody();
+                    $mapId      = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
+                    $this->container->logger->debug("data: " . print_r($data, True));
+
+                    if (Empty($data['editMapRevVersion']) ||
+                        Empty($_FILES['editMapMapFile']['name']) ||
+                        Empty($_FILES['editMapDatFile']['name']) ||
+                        Empty($mapId)) {
+                        return $response->withJson([
+                            'result' => 'Error',
+                            'message' => 'Invalid request, inputs missing'
+                        ], 400, JSON_PRETTY_PRINT);
+                    };
+
+                    $mapItem    = $this->getMapFromDB($database, $mapId);
+                    $mapVersion = filter_var($data['editMapRevVersion'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
+                                                                                                 FILTER_FLAG_ENCODE_LOW ||
+                                                                                                 FILTER_FLAG_ENCODE_HIGH ||
+                                                                                                 FILTER_FLAG_ENCODE_AMP);
+
+                    if (($mapItem != null) && ($mapItem['map_name'] != null)) {
+                        if ($mapItem['user_pk'] == $_SESSION['user']->id) {
+                            $this->container->logger->error('updateMapFiles -> User ' . $_SESSION['user']->id .
+                                                            ' tried to edit someone else\'s map.');
+
+                            return $response->withJson([
+                                'result' => 'Error',
+                                'message' => 'You can only edit your own maps.'
+                            ], 400, JSON_PRETTY_PRINT);
+                        };
+                    } else {
+                        $this->container->logger->error('updateMapFiles -> Map with ID ' . $mapId . ' does not exist.');
+
+                        return $response->withJson([
+                            'status' => 'Error',
+                            'message' => 'Map with ID ' . $mapId . ' does not exist.'
+                        ], 404, JSON_PRETTY_PRINT);
+                    };
+                } catch (Exception $ex) {
+                    return $response->withJson([
+                        'result' => 'Error',
                         'message' => $ex->getMessage()
                     ], 500, JSON_PRETTY_PRINT);
                 };
@@ -683,7 +825,9 @@
                 };
             };
         }
+#endregion
 
+#region Delete
         /**
          * MapController Delete map function.
          *
@@ -705,7 +849,21 @@
                 return $response->withJson([], 200, JSON_PRETTY_PRINT);
             };
         }
+#endregion
 
+#region Misc functions
+        /**
+         * Map image upload function.
+         *
+         * @param \Slim\PDO\Database $database
+         * @param string $mapName
+         * @param string $mapDir
+         * @param int $revId
+         * @param array $formData
+         * @param int|null $oldRevId
+         *
+         * @return boolean
+         */
         private function uploadImages(&$database, $mapName, $mapDir, $revId, $formData, $oldRevId = null) {
             $config = $this->container->get('settings')['images'];
 
@@ -915,6 +1073,14 @@
             };
         }
 
+        /**
+         * Map info retrieval function.
+         *
+         * @param \Slim\PDO\Database $aDatabase
+         * @param int $aMapId
+         *
+         * @return array|null
+         */
         private function getMapFromDB(&$aDatabase, $aMapId) {
             try {
                 $query = 'SET @mapid = :mapid;';
@@ -955,4 +1121,5 @@
                 return null;
             };
         }
+#endregion
     }

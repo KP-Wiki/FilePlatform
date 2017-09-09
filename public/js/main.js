@@ -17,9 +17,10 @@ window.toggleForgot = function() {
     $(".logreg-forgot").slideToggle('slow');
 }
 
-window.submitForm = function(dataArray, path, reqType, hasFiles, redirectTo) {
-    reqType    = typeof reqType !== 'undefined' ? reqType : 'POST';
-    hasFiles   = typeof hasFiles !== 'undefined' ? hasFiles : false;
+window.submitForm = function(dataArray, path, reqType, hasFiles, isJSON, redirectTo) {
+    reqType    = typeof reqType    !== 'undefined' ? reqType    : 'POST';
+    hasFiles   = typeof hasFiles   !== 'undefined' ? hasFiles   : false;
+    isJSON     = typeof isJSON     !== 'undefined' ? isJSON     : true;
     redirectTo = typeof redirectTo !== 'undefined' ? redirectTo : null;
 
     if (hasFiles) {
@@ -42,7 +43,7 @@ window.submitForm = function(dataArray, path, reqType, hasFiles, redirectTo) {
                     window.location.href = urlBase + redirectTo;
             }
         });
-    } else {
+    } else if(isJSON) {
         $.ajax({
             url: urlBase + path,
             type: reqType,
@@ -61,15 +62,34 @@ window.submitForm = function(dataArray, path, reqType, hasFiles, redirectTo) {
                     window.location.href = urlBase + redirectTo;
             }
         });
+    } else {
+        $.ajax({
+            url: urlBase + path,
+            type: reqType,
+            data: dataArray,
+            cache: false,
+            contentType: false,
+            processData: false,
+            error: function(xhr, status, error) {
+                var jsonResponse = JSON.parse(xhr.responseText);
+                alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + jsonResponse.message);
+            },
+            success: function(result, status, xhr) {
+                if (result.result != 'Success')
+                    alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + result.message);
+
+                if (redirectTo != null)
+                    window.location.href = urlBase + redirectTo;
+            }
+        });
     }
 }
 
 $(document).ready(function() {
     $("#btnDownloadMap").click(function(){
-        // Retrieve current hostname, allow both http and https protocols
-        var revId = $('#btnDownloadMap').attr('kp-map-id');
+        var mapId = $('#btnDownloadMap').attr('kp-map-id');
 
-        $.fileDownload(urlBase + '/api/v1/maps/download/' + revId, {
+        $.fileDownload(urlBase + '/api/v1/maps/download/' + mapId, {
             successCallback: function (url) {
                 alert('Great success!');
             },
@@ -81,7 +101,19 @@ $(document).ready(function() {
 
     $('#uploadMapFrm').submit(function(event) {
         event.preventDefault();
-        submitForm(new FormData(this), '/api/v1/maps', 'POST', true, '/dashboard');
+        submitForm(new FormData(this), '/api/v1/maps', 'POST', true, false, '/dashboard');
+    });
+
+    $('#editMapInfoFrm').submit(function(event) {
+        event.preventDefault();
+        var mapId = $('#editMapInfoFrm').attr('kp-map-id');
+        submitForm(new FormData(this), '/api/v1/maps/' + mapId + '/updateinfo', 'PUT', false, false, '/map/' + mapId);
+    });
+
+    $('#editMapFilesFrm').submit(function(event) {
+        event.preventDefault();
+        var mapId = $('#editMapFilesFrm').attr('kp-map-id');
+        submitForm(new FormData(this), '/api/v1/maps/' + mapId + '/updatefiles', 'PUT', true, false, '/map/' + mapId);
     });
 
     $('#userRegisterFrm').formValidation({
@@ -151,10 +183,7 @@ $(document).ready(function() {
     });
 
     $('#userRegResetBtn').on('click', function() {
-        // Reset the recaptcha
         FormValidation.AddOn.reCaptcha2.reset('captchaContainer');
-
-        // Reset form
         $('#userRegisterFrm').formValidation('resetForm', true);
     });
 
@@ -163,11 +192,10 @@ $(document).ready(function() {
         rating: $('#ratingStarrr').attr('kp-map-rating'),
         change: function(e, value){
             if (value) {
-                // Retrieve current hostname, allow both http and https protocols
-                var mapID = $('#ratingStarrr').attr('kp-map-id');
+                var mapId = $('#ratingStarrr').attr('kp-map-id');
 
                 $.ajax({
-                    url: urlBase + '/api/v1/rating/' + mapID,
+                    url: urlBase + '/api/v1/rating/' + mapId,
                     error: function(xhr, status, error) {
                         var jsonResponse = JSON.parse(xhr.responseText);
                         $('#ratingResultError > .message').text(jsonResponse.message);
@@ -180,7 +208,7 @@ $(document).ready(function() {
                         $('#ratingResultSuccess').show();
 
                         $.ajax({
-                            url: urlBase + '/api/v1/rating/' + mapID,
+                            url: urlBase + '/api/v1/rating/' + mapId,
                             error: function(xhr, status, error) {
                             },
                             data: {'score': value},

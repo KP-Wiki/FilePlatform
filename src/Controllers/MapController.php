@@ -134,7 +134,7 @@
                 };
 
                 $pageTitle            = 'New Map';
-                $pageID               = 2;
+                $pageID               = 3;
                 $contentTemplate      = 'map_new.phtml';
                 $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
                                         "    <li><a href=\"/dashboard\">Dashboard</a></li>" . PHP_EOL .
@@ -173,7 +173,7 @@
                     return $response->withAddedHeader('Refresh', '1; url=/home');
                 } else {
                     $pageTitle            = 'Update Map Files';
-                    $pageID               = 2;
+                    $pageID               = 3;
                     $contentTemplate      = 'map_update_files.phtml';
                     $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
                                             "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
@@ -215,7 +215,7 @@
                     return $response->withAddedHeader('Refresh', '1; url=/home');
                 } else {
                     $pageTitle            = 'Update Map Info';
-                    $pageID               = 2;
+                    $pageID               = 3;
                     $contentTemplate      = 'map_update_info.phtml';
                     $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
                                             "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
