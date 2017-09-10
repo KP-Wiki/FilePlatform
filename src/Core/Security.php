@@ -201,8 +201,8 @@
                 $query = $database->select()
                                   ->count('*', 'user_count')
                                   ->from('Users')
-                                  ->where('user_name', '=', $username, 'OR')
-                                  ->where('user_email_address', '=', $emailAddress);
+                                  ->where('user_name', '=', $username)
+                                  ->where('user_email_address', '=', $emailAddress, 'OR');
                 $stmt = $query->execute();
 
                 $userCount               = $stmt->fetch();

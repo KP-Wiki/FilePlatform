@@ -317,7 +317,7 @@
                                    ->from('Revisions')
                                    ->leftJoin('Maps', 'Maps.map_pk', '=', 'Revisions.map_fk')
                                    ->where('Revisions.rev_pk', '=', $revId)
-                                   ->where('Revisions.rev_status_fk', '=', 1);
+                                   ->where('Revisions.rev_status_fk', '=', 1, 'AND');
             $stmt       = $query->execute();
             $mapItemArr = $stmt->fetchall();
 

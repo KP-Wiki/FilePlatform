@@ -118,12 +118,13 @@ $(document).ready(function() {
 
     $('#userRegisterFrm').formValidation({
         framework: 'bootstrap',
-        feedbackIcons: {
+        icon: {
             valid: 'glyphicon glyphicon-ok',
             invalid: 'glyphicon glyphicon-remove',
             validating: 'glyphicon glyphicon-refresh'
         },
-        exclude: ':disabled',
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
         addOns: {
             reCaptcha2: {
                 element: 'captchaContainer',
