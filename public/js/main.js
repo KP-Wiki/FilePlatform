@@ -86,8 +86,8 @@ window.submitForm = function(dataArray, path, reqType, hasFiles, isJSON, redirec
 }
 
 $(document).ready(function() {
-    $("#btnDownloadMap").click(function(){
-        var mapId = $('#btnDownloadMap').attr('kp-map-id');
+    $('#btnDownloadMap').click(function() {
+        var mapId = $(this).attr('kp-map-id');
 
         $.fileDownload(urlBase + '/api/v1/maps/download/' + mapId, {
             successCallback: function (url) {
@@ -95,6 +95,26 @@ $(document).ready(function() {
             },
             failCallback: function (html, url) {
                 alert('Unable to handle the request due to an AJAX fault! \r\nHtml : ' + html);
+            }
+        });
+    });
+
+    $('#btnFlagMap').click(function() {
+        var mapId = $(this).attr('kp-map-id');
+
+        $.ajax({
+            url: urlBase + '/api/v1/maps/flag/' + mapId,
+            type: '',
+            cache: false,
+            error: function(xhr, status, error) {
+                var jsonResponse = JSON.parse(xhr.responseText);
+                alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + jsonResponse.message);
+            },
+            success: function(result, status, xhr) {
+                if (result.result != 'Success')
+                    alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + result.message);
+                else
+                    alert('Thank you for submitting this map for review.');
             }
         });
     });

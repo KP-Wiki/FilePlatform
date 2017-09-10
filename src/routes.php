@@ -55,6 +55,7 @@
                 $this->get('', Controllers\Api\MapController::class . ':getAllMaps');                   // R
                 $this->get('/download/{revId}', Controllers\Api\MapController::class . ':downloadMap'); // R
                 $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser');  // R
+                $this->post('/flag/{mapId}', Controllers\Api\MapController::class . ':flagMap');
 
                 $this->group('/{mapId}', function () {
                     $this->get('', Controllers\Api\MapController::class . ':getMap');                      // R
