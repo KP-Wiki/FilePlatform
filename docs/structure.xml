@@ -1,0 +1,2085 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project title="Map Platform Documentation" version="2.8.5">
+  <partials/>
+  <file path="routes.php" generated-path="routes.html" hash="33a5a93d306933f6d75eca26acd98f20" package="MapPlatform">
+    <docblock line="0">
+      <description>The application route definitions</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="Controllers">\MapPlatform\Controllers</namespace-alias>
+    <source>eJytVU1v4jAQvfdX+LASH1qgPa1EK7ZAtSoHqojd9lL24CYDsXBiy3aoKOK/75gkECAupFoOxLJn5r15frbvfspQXhH8dZrN7Zc0yZ8QCJWSM58aJmKiRGKABDBjMbMTOgvM471HjyxBaRv742jtXlJ/QedAxlR6nJqZUNFujSYmFIogIIsEGSi6AEXuTMjeIqHEBwN1P48o421fRL1dVg51075uX+9mNYt9wOEvprQhdIlp9I0DSecnwIFqOMjpbL+JPuA2HYrYKME5gtxepcp0yMgjnhA8VSJt/xsq1OrNcUbWax0mJa7r2ncyS2J/q1q9QdYpko3GpjSGg8FgP9FGRKA663wU0wg2mFwAn448C7mf6XZ9TrUmbVLrYh27OFgNswJPWKDWaPU0GDus1zJCrRyh1rgtJxODoUGAXLLBl2g8gXkXatHHfNC6lEhWvsgDhX2AGU24ySxmBMmVLCX7iopR44eU883fCjxDUa5OTmbT2G/1C1MmoZxE1A9ZDITFS4iNUCv35i+jXZDTAKW9FhIr9/syHuW5FzZdpFnSeN8buVukkp31dq7GjTOyJDqi0n1qHDl4ZNXZnBOj26zO2v6PgmOT9yWb4iXgdDmu6cHqWW/PkRVrcoK3k7KEgBQaGVTBxKOCaxZs75+hUxeoWB0T+pzbpnKE0pYO5FvjTn1JOKdiuThJRfaJDKiBojxY/tlVPsCb30A1hDRnh2DP7kH5k70+Mmgg3mMuaHCxsc8ddsv2ISt6Qrlwo15CTuGjHs8vpea07mRbxunedLmKgT9x2GdYmLvHOvHZOTHwtjPaV0yaaoKc26wx0345X4v4O0WsunGg2QcE6SvyX63lZptiZi9XGeHjcfFFOX3w7JtUfF22+/7qJveI8WV+/wc43y/E</source>
+  </file>
+  <file path="Core\Utils\FormattingUtils.php" generated-path="Core.Utils.FormattingUtils.html" hash="484ecab9a83798a864499b5a02bf1ca5" package="MapPlatform\Core\Utils">
+    <docblock line="0">
+      <description>Generic data formatting and manipulation utilities</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Core\Utils"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Core\Utils" line="26" package="MapPlatform\Core\Utils">
+      <extends/>
+      <name>FormattingUtils</name>
+      <full_name>\MapPlatform\Core\Utils\FormattingUtils</full_name>
+      <docblock line="26">
+        <description>Data formatting/manipulation utilities</description>
+        <long-description></long-description>
+        <tag name="package" line="26" description="MapPlatform"/>
+        <tag name="subpackage" line="26" description="Core\Utils"/>
+        <tag name="author" line="26" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="26" description="1.0.0"/>
+        <tag name="since" line="26" description="First available since Release 1.0.0"/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="31" package="MapPlatform\Core\Utils">
+        <name>__construct</name>
+        <full_name>\MapPlatform\Core\Utils\FormattingUtils::__construct()</full_name>
+        <docblock line="31">
+          <description>FormattingUtils constructor.</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="45" package="MapPlatform\Core\Utils">
+        <name>arrayToOptions</name>
+        <full_name>\MapPlatform\Core\Utils\FormattingUtils::arrayToOptions()</full_name>
+        <docblock line="45">
+          <description>Transform an array into a string of options for a 'select input'.</description>
+          <long-description></long-description>
+          <tag name="param" line="45" description="&lt;p&gt;Array of strings to form into options, if key-value pairs are used, then the key will be the value and the value will be the text.&lt;/p&gt;" type="array" variable="$aValues">
+            <type>array</type>
+          </tag>
+          <tag name="param" line="45" description="" type="boolean" variable="$setValues">
+            <type>boolean</type>
+          </tag>
+          <tag name="return" line="45" description="" type="string">
+            <type>string</type>
+          </tag>
+          <tag name="throws" line="45" description="" type="\InvalidArgumentException">
+            <type>\InvalidArgumentException</type>
+          </tag>
+          <tag name="throws" line="45" description="" type="\MapPlatform\Core\Utils\RuntimeException">
+            <type>\MapPlatform\Core\Utils\RuntimeException</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="true">
+          <name>$aValues</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$setValues</name>
+          <default>False</default>
+          <type>boolean</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="77" package="MapPlatform\Core\Utils">
+        <name>dateDifference</name>
+        <full_name>\MapPlatform\Core\Utils\FormattingUtils::dateDifference()</full_name>
+        <docblock line="77">
+          <description>Get the difference between two dates
+  RESULT FORMAT:
+    '%y Year %m Month %d Day %h Hours %i Minute %s Seconds' =&gt;  1 Year 3 Month 14 Day 11 Hours 49 Minute 36 Seconds
+    '%y Year %m Month %d Day'                               =&gt;  1 Year 3 Month 14 Days
+    '%m Month %d Day'                                       =&gt;  3 Month 14 Day
+    '%d Day %h Hours'                                       =&gt;  14 Day 11 Hours
+    '%d Day'                                                =&gt;  14 Days
+    '%h Hours %i Minute %s Seconds'                         =&gt;  11 Hours 49 Minute 36 Seconds
+    '%i Minute %s Seconds'                                  =&gt;  49 Minute 36 Seconds
+    '%h Hours                                               =&gt;  11 Hours
+    '%a Days                                                =&gt;  468 Days</description>
+          <long-description></long-description>
+          <tag name="param" line="77" description="&lt;p&gt;First date&lt;/p&gt;" type="string" variable="$aDate1">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="77" description="&lt;p&gt;Second date&lt;/p&gt;" type="string" variable="$aDate2">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="77" description="&lt;p&gt;Output format&lt;/p&gt;" type="string" variable="$outFormat">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="77" description="" type="string">
+            <type>string</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$aDate1</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$aDate2</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$outFormat</name>
+          <default>'%a'</default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <source>eJzdVttuEzEQfUfiH0ZRQtIqJE1B3NIGCrSARNWqBCSkSpWzmXSt7torX1IK6r8zXm/20mxKgsQLfkjs9ZlzxjO2x3uvkzB5+ACo9be3fQe24QMKVDyAKTMMZlLFzBguLoGJKcRM8MRGzHApwBoeccNRL0xzitOPpzBHpR3q+dLsm4QFV+wS3eiYJadE52SKeW0nC8g7qfD8KwnpYppZE0qVjsYhjyW8VewKFeyZkE9iqeRPjurNZcx41AtkPCosFz5RG/R2ejslSS6C1CGAI660ATYnczaJEPzUGUbINFbt+r4jWIyaPMbycs4L14cPH3igJYJPYs4iPj1QlzZGYQ5/BJi4cOagci7eV3PQXzP+/12Eg4hpDUd5IEr+/sqglch5zTt4CKTQRtnASNUrA/vFILGTiPb+zIogjfHFRW7U2Spr3S7SVSc8VkxoF3E6NMCUYjfAhZHAgKjcWZIzkGnWtcsufW9rWn1gCJZY0654V2GmzCoWZ5xN9o1FFjUcpEMi9fQaSCuVT1UzpS7wGVzhzeO5M4KEURaICN2unHbBhCjcj4PANY8imGA69nB3+otRed7gD9Orc3IiZQRNjcZ7uXpNCo1VInN+NcyESl7rlQeoFnxmheEx1oLuSXsa37E88ZHr+HA/WsS7e3dpsA9HLNJY2SGuNRVqGxmab7eH5R3jGmUIWRBCJ88j09C8gv0RNOdLVK5RAjs5pePcWsaUZXv7jT2f/Qb0yLRw+DU0fCr3zxtujmR70HD9V9BobLnBKP0+d929vmcZNYbLgkgL/5MbriJcHJ58Tsn+qUe3S2HOdlfmzHDNI/wBTbq7p3w2Q4XugpqguUZ3SK6lK47kc8UC4Ozwy9fPYzg6OTs+GL+6MwnQbt3Ad2QKWjEcS2FCaE3phr+BVggfpaXT2OJwzIU1CC0NX5Cunqluu/0AA2/5JDMcPE0NB4PM8OnLheGTZwvDtfXbdbkrtZX6dRKbUZclqtw11NVgbUJ9J1yruNelrOGu47w/q/dybpjXjQQqSmsKLJayWSsvpYaUpYHbkNN7/ezFUtDrKlBWbf17wx3Ze0B+8X9CnVhDBTp7kv1FRSvVnLzYOMn3+TVD1YBefTiALvjerutJa/xrxpWSFmsvVxrHMqZSNyCE618EVF1MTrc1XIHfrcXvLuPJwywDHu8+dArZbomybFx/GTvjxyMfxk6xunrDW9+lv9/wCil5</source>
+  </file>
+  <file path="middleware.php" generated-path="middleware.html" hash="398ca20d5687bb7bc4966082ce39a170" package="MapPlatform">
+    <docblock line="0">
+      <description>The application middleware</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="TrailingSlash">\Psr7Middlewares\Middleware\TrailingSlash</namespace-alias>
+    <source>eJx1kDFvwkAMhff8Cg8dkkgkQR0YQCntgFiQopaRxeTcxOIud/IdIPHre4WSikr1Yuv5fXqyFy+udwnEKvP82iGHbU+AzmluMbAdwLBSms4o9OO4G5t1AycS/22a/dktHbYH7Ag26BqN4dOKGXd4DL0ViElsLLwJHkhgEXreGyv2wiTLziDrorWmHql71LSoimpUPQ8txXHF4gPgKWK41wQ3/Z00oacHprwdXMLr/0ceI9N4mW1G2e9+591WYgwP3YdG38+TK/IUfzapUak0HegMD5Z0hdpTlk1qIcVCbUifq2mWzZMvE89yyA==</source>
+  </file>
+  <file path="dependencies.php" generated-path="dependencies.html" hash="5140cb76f0ca74d1d1804d9e9c32f574" package="MapPlatform">
+    <docblock line="0">
+      <description>The application dependency and container definition</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="PhpRenderer">\Slim\Views\PhpRenderer</namespace-alias>
+    <namespace-alias name="Logger">\Monolog\Logger</namespace-alias>
+    <namespace-alias name="UidProcessor">\Monolog\Processor\UidProcessor</namespace-alias>
+    <namespace-alias name="StreamHandler">\Monolog\Handler\StreamHandler</namespace-alias>
+    <namespace-alias name="Core">\MapPlatform\Core</namespace-alias>
+    <namespace-alias name="Utils">\MapPlatform\Core\Utils</namespace-alias>
+    <source>eJylVU1v2kAQPcOv2EhItlGB9NQDCY1CG6VSkCiUXuKoWpbBXmW9a+2uSdKq/737YRvzEQ7UF+zZeW9m3jybq895mreRuQbdrvtFXfQjBYTznFGCNRUcrSAHvgJO3hDmK0QE15hykOZgTTm1OSW0YpjeT9EGpLLoT3tnNzkmzzgBNMH5lGG9FjKrz3ChUyGRaYFmAt1K/GzKXOmULjMhxW8K8ibJMGV9IrJRjapKfexf9i/rqKKcgLm9o1JphDcGhpcMkI/PgAFWsIMZuN/CROeMZvFPCi8qnqb5zI4vQQ7r84nggokkfhBJciw+lYKAUkLGC7qqHw7z7o2gDGQ81xJwVj410rYSxWMh4f2TeKEpU8O23+UAffk2tota06SQuN5QZ7u7a9QxO+6NEtDjKhhGW4KNGR7JcvA98GNQHQRPhmhdcOKMEnZIhP54MS1AgdaUJ8oWI65UGFSxIGqylHXtJUEXkiNuyjekD2uyx0BDlpvZ4VeOdRo8RV6Vv9veM6/uQdfMbev/eq44hluID5m7a9e190SzYY4zcH3uY3qjvFBp7Y/QwpuGCaPooI7HlFZxiB3zNOt6fT6gRojBBpjpJTpUvOTfVbMp35oycDY7qWBjfy45vqtgNvF9dm+GM/hnW2B4gt++KtjJcM4Mu+BTdTKqyBkVJhXsFPcKa3xrvlqnLbxajhkFrks/us/D/PuDec05EG1c5fZQ59M1Ci9qUG9EfJ7xXp1iL51K8eIIv74SyG3lMFhw90nVApUoe6vN/4ftdGk6vQiOOa0qVk/aareacyoghaT67eicrVZDPD9cme4Haxm+f4UQF6s=</source>
+  </file>
+  <file path="Core\Utils\MiscUtils.php" generated-path="Core.Utils.MiscUtils.html" hash="80928a7aa3169cab3f9302acc3809d38" package="MapPlatform\Core\Utils">
+    <docblock line="0">
+      <description>Misc utilities</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Core\Utils"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="Container">\Slim\Container</namespace-alias>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Core\Utils" line="27" package="MapPlatform\Core\Utils">
+      <extends/>
+      <name>MiscUtils</name>
+      <full_name>\MapPlatform\Core\Utils\MiscUtils</full_name>
+      <docblock line="27">
+        <description>Misc utilities</description>
+        <long-description></long-description>
+        <tag name="package" line="27" description="MapPlatform"/>
+        <tag name="subpackage" line="27" description="Core\Utils"/>
+        <tag name="author" line="27" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="27" description="1.0.0"/>
+        <tag name="since" line="27" description="First available since Release 1.0.0"/>
+      </docblock>
+      <property static="false" visibility="private" namespace="MapPlatform\Core\Utils" line="30" package="MapPlatform\Core\Utils">
+        <name>$container</name>
+        <full_name>\MapPlatform\Core\Utils\MiscUtils::container</full_name>
+        <default></default>
+        <docblock line="30">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="30" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="37" package="MapPlatform\Core\Utils">
+        <name>__construct</name>
+        <full_name>\MapPlatform\Core\Utils\MiscUtils::__construct()</full_name>
+        <docblock line="37">
+          <description>FileUtils constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="37" description="&lt;p&gt;The application controller.&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$container</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="46" package="MapPlatform\Core\Utils">
+        <name>guidv4</name>
+        <full_name>\MapPlatform\Core\Utils\MiscUtils::guidv4()</full_name>
+        <docblock line="46">
+          <description>Generate a v4 GUID</description>
+          <long-description></long-description>
+          <tag name="return" line="46" description="" type="string">
+            <type>string</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="61" package="MapPlatform\Core\Utils">
+        <name>getClientIp</name>
+        <full_name>\MapPlatform\Core\Utils\MiscUtils::getClientIp()</full_name>
+        <docblock line="61">
+          <description>Get the client's IP address</description>
+          <long-description></long-description>
+          <tag name="param" line="61" description="&lt;p&gt;Determine wether or not to check past the proxy&lt;/p&gt;" type="boolean" variable="$checkProxy">
+            <type>boolean</type>
+          </tag>
+          <tag name="return" line="61" description="" type="string">
+            <type>string</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$checkProxy</name>
+          <default>True</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="84" package="MapPlatform\Core\Utils">
+        <name>getGravatar</name>
+        <full_name>\MapPlatform\Core\Utils\MiscUtils::getGravatar()</full_name>
+        <docblock line="84">
+          <description>Get a Gravatar image tag for the specified email address</description>
+          <long-description></long-description>
+          <tag name="param" line="84" description="&lt;p&gt;The email address&lt;/p&gt;" type="string" variable="$emailAddress">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="84" description="&lt;p&gt;Size in pixels, defaults to 80px [ 1 - 2048 ]&lt;/p&gt;" type="string" variable="$size">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="84" description="&lt;p&gt;Default image set to use [ 404 | mm | identicon | monsterid | wavatar ]&lt;/p&gt;" type="string" variable="$defaultImg">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="84" description="&lt;p&gt;Maximum rating (inclusive) [ g | pg | r | x ]&lt;/p&gt;" type="string" variable="$rate">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="84" description="Image tag" type="string">
+            <type>string</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$emailAddress</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$size</name>
+          <default>80</default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$defaultImg</name>
+          <default>'mm'</default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$rate</name>
+          <default>'g'</default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <source>eJzdVm1vGjkQ/txK/Q9ziIYlSmDT49LoEtLSAOnqSIsIyZ2UVCuza8CKd72yvUB66X+/8S4vu1DSXK8nnc4J4JfxzDPPjMc+eRONoxfPAVt1dzftwC5cMOVBrBlnmlG1mF4ud993YUKlYiKE1xurbyPi3ZERNaMLEnU50UMhg9W6igcLkTMh6e0VGlKrZRLrsZDJqD9mgYB3ktxRCSd6zAaBkOIzo/LtKCCMVzwRnK52LjBhO6jYFTtjkoVeAgigzaTSQCa4nQw4hXSpRzkliub3VdNOSAKqEDHNunO7gn784nkqGKOCS87MWqgJC6k8Xi044YRw5jfkKA5oqFszj0Ya0S53/40A/O8o9jhRKvE6g/TPuVDKDdomEm7z/ELRW3b7YwpDibGaCnkHq/mFDdMiySZE08y2Jf35EKROtRmnCSCjTmkZe1rISlYkJ45hQfsbGA0wEkWcecQEPIEmBec0ryoLMx6gNAzj0Et2uO7SvrWCXs4yZFoRw6f2T1eu1/OOLuS+PObzOUVhwxGBSQ3Or5zmdn8l1bEMAZGxcPREX0Yx8yc1axO8WfiN3iNoEdFQKe5KEvoicCNFY1+4g3tNlXVwWM6FLLv15vAT7vbG0hLStzKzZdgBe2YP4QF/anb5GKpVUFQvq5gWYB/Y9ha1R19VezRX+3Oq9iijdsC0gsP910bvgb0Od87aRGE2hnpolV6ql2o/82/+SnuGVldh2mhrwMJXYzpb2i7vQa1czkf02TPz2YymBo3553GGRaekwOkC8X1JlfpWGg+EwAMbQpNqKgNMIZhSVCUBK0cotPHNG1PvDiKiUiORFLP7H5AhVJ8lcJ0Is92Y6BrFGIO+jOlG4rAh5MR2duCnVhDpe2vIOEJ3WRjF2nI+dK/67mWrd93q7UHpfb/fdc86TutD33W6yHbb6fRbPfe60XGajX4LJ5dz7U7jHMfXNXh4yNv+F9ua7cNyecNz04osamA8kZzv8bbZajeuOv1sKpn2BSjHSv0PmP3DbX/s/d7oNVtN0/sP8ptrP57srQQ8Tvl3G+21Lj4iq41m8wm2Niro/JjOTT21sBA4l3jLa7yXWWDeGpqMAB8iSTFQEfXYkFEfqHlHPLXqpJUiuTO37luTvWSfMVdDiNgMOdwDnw5JzLECY4U6sqMZ3MAB7MMru3YEnx7R00z3zX0xdRwVmKfbDdRszE0IAvxiPlYmhteqmTC3MpXMx/50zsRjFi7IjAVxAHi/mqGF7yIeKzbBonYDI1QSmS+Jn9m6nlwhBWdB95aSmq2lixhZxYTQRsrnHhSV4a2OFGF/zpkTjHCmFASYQ8XkFYCjUWnzso4lN7+4OtY6Ur9Wq9PptDKamzKPxmrarZagAoH/i4XIteBiSqWFPgR5NOa8VbYd/dIbVTdaUsAVKO346TgD2szKdNbAXkv4ItowkUW4Jwylk+dmvYDdfSni0MckTfr4zMeIYjwKQLiuFwqgpFcvJGqNx2ilANXT0tbzk9rJn5/5z18NgIdB</source>
+  </file>
+  <file path="AbstractClasses\PageController.php" generated-path="AbstractClasses.PageController.html" hash="2594cbd2adb231bc6a0590f2cbb20827" package="MapPlatform\AbstractClasses">
+    <docblock line="0">
+      <description>The abstract page controller</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="AbstractClasses"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="Request">\Slim\Http\Request</namespace-alias>
+    <namespace-alias name="Response">\Slim\Http\Response</namespace-alias>
+    <namespace-alias name="Container">\Slim\Container</namespace-alias>
+    <namespace-alias name="Core">\MapPlatform\Core</namespace-alias>
+    <class final="false" abstract="true" namespace="MapPlatform\AbstractClasses" line="29" package="MapPlatform\AbstractClasses">
+      <extends/>
+      <name>PageController</name>
+      <full_name>\MapPlatform\AbstractClasses\PageController</full_name>
+      <docblock line="29">
+        <description>Abstract PageController</description>
+        <long-description></long-description>
+        <tag name="package" line="29" description="MapPlatform"/>
+        <tag name="subpackage" line="29" description="AbstractClasses"/>
+        <tag name="author" line="29" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="29" description="1.0.0"/>
+        <tag name="since" line="29" description="First available since Release 1.0.0"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="MapPlatform\AbstractClasses" line="32" package="MapPlatform\AbstractClasses">
+        <name>$container</name>
+        <full_name>\MapPlatform\AbstractClasses\PageController::container</full_name>
+        <default></default>
+        <docblock line="32">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="32" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\AbstractClasses" line="39" package="MapPlatform\AbstractClasses">
+        <name>__construct</name>
+        <full_name>\MapPlatform\AbstractClasses\PageController::__construct()</full_name>
+        <docblock line="39">
+          <description>Class constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="39" description="" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$container</name>
+          <default></default>
+          <type>\Slim\Container</type>
+        </argument>
+      </method>
+      <method final="false" abstract="true" static="false" visibility="public" namespace="MapPlatform\AbstractClasses" line="52" package="MapPlatform\AbstractClasses">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\AbstractClasses\PageController::__invoke()</full_name>
+        <docblock line="52">
+          <description>Class invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="52" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="52" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="52" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="52" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="true" static="false" visibility="public" namespace="MapPlatform\AbstractClasses" line="63" package="MapPlatform\AbstractClasses">
+        <name>home</name>
+        <full_name>\MapPlatform\AbstractClasses\PageController::home()</full_name>
+        <docblock line="63">
+          <description>Show the default page.</description>
+          <long-description></long-description>
+          <tag name="param" line="63" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="63" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="63" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="63" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+    </class>
+    <source>eJzlVE1v2zAMvQ/Yf+Ahhzbo0va0Qz/WLcDQy4Cg7TFAQatMLESWPEpKsQ3775Oi2pYTN22vHQ8BEz6Sj49Uzr/UZf3xAwQ7Ho+TA2O4KwmwsI5ROKhxSSCMdmyUIm5ALXh2PYM1sZVGw+ed6FWNYhUrBPuB9UyhWxiuurj1RQP5+tRyqtBash0GvSsNb77dlbIy8I1xRQznrpRFZdj8lsRXywqlmghTXXaZDbFgp5OTyUnWV2qxYQXwXbJ1gOuQjoUiSKEbUoSW+nnHydFYkQ20KZ9pvsX/LGHTpw+VbpWs5tfO1fMb+unJurPhmK2NtrQdnIYVoNTEWSDvPjUcc3a32dCCWRB5+vwi3+eq2jsWkeqgBn+eUpJugQkyzPuaw0i0bnwdCw4X8Gh4Bd3vTcdoNRtHwtFDltgup7+gNORGyFgssPXCGZ7k4R407Cl038MwR+ecfKGkgIXXwkWh7+/bdgdDZQ5zYaKNwg7tp8tu4ov+dA3u78uDSr024SxeOWT+ZmDEyXkRnp5RxCdvKAGZ8ReMkJf2eSpMzrMeKr5f6fb0MsnT4AfbwxzBLt+jxOtw793cluYRXLjIB1qgV+nv+n+TtTTVmyWNBcOh/gPFE/W+</source>
+  </file>
+  <file path="Controllers\Api\RatingController.php" generated-path="Controllers.Api.RatingController.html" hash="32c075e92113ab2a71d7f4917ad75fe4" package="MapPlatform\Controllers\Api">
+    <docblock line="0">
+      <description>The central controller for all rating requests</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Controllers\Api"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <namespace-alias name="Request">\Slim\Http\Request</namespace-alias>
+    <namespace-alias name="Response">\Slim\Http\Response</namespace-alias>
+    <namespace-alias name="Core">\MapPlatform\Core</namespace-alias>
+    <namespace-alias name="ApiController">\MapPlatform\AbstractClasses\ApiController</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Controllers\Api" line="30" package="MapPlatform\Controllers\Api">
+      <extends>\MapPlatform\AbstractClasses\ApiController</extends>
+      <name>RatingController</name>
+      <full_name>\MapPlatform\Controllers\Api\RatingController</full_name>
+      <docblock line="30">
+        <description>Rating controller</description>
+        <long-description></long-description>
+        <tag name="package" line="30" description="MapPlatform"/>
+        <tag name="subpackage" line="30" description="Controllers\Api"/>
+        <tag name="author" line="30" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="30" description="1.0.0"/>
+        <tag name="since" line="30" description="First available since Release 1.0.0"/>
+        <tag name="inherited_from" description="\MapPlatform\AbstractClasses\ApiController" refers="\MapPlatform\AbstractClasses\ApiController" link="/classes/MapPlatform.AbstractClasses.ApiController.html"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="MapPlatform\Controllers\Api" line="31" package="MapPlatform\AbstractClasses">
+        <name>$container</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::container</full_name>
+        <default></default>
+        <docblock line="31">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="31" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="41" package="MapPlatform\Controllers\Api">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\Controllers\Api\RatingController::__invoke()</full_name>
+        <docblock line="41">
+          <description>RatingController invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="41" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="41" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="41" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="41" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="inherited_from" description="\MapPlatform\AbstractClasses\ApiController::__invoke()" refers="\MapPlatform\AbstractClasses\ApiController::__invoke()" link="/classes/MapPlatform.AbstractClasses.ApiController.html#method___invoke"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="54" package="MapPlatform\Controllers\Api">
+        <name>home</name>
+        <full_name>\MapPlatform\Controllers\Api\RatingController::home()</full_name>
+        <docblock line="54">
+          <description>RatingController default page.</description>
+          <long-description></long-description>
+          <tag name="param" line="54" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="54" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="54" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="54" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="38" package="MapPlatform\AbstractClasses">
+        <name>__construct</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__construct()</full_name>
+        <docblock line="38">
+          <description>Class constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="38" description="" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$container</name>
+          <default></default>
+          <type>\Slim\Container</type>
+        </argument>
+        <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
+      </method>
+      <method final="false" abstract="true" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="51" package="MapPlatform\AbstractClasses">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__invoke()</full_name>
+        <docblock line="51">
+          <description>Class invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="51" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="51" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="51" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="51" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+        <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
+      </method>
+    </class>
+    <source>eJzlVV1v2jAUfZ+0/3AVIREQELqXSaOjZRVTW6kdonmZxoQuxiRWHduzHdpu2n+fg4GEL23SHuuH2NE99/rc4xPn/EKl6u0bcCNqNv0CmhCnFAgVViMHIt0sOacaFlIDcg4aLRMJaPojp8aaTdo2fXQ9giXVhkkB7w+ilwrJIya0eLtDNeJoXeGsjJt8toFcbTc3k4FiJQZzmzo2xYhTlkn4pPHRUTy3KZtlUsufjOrLJEPGO0Rm/TJzQ8yNs063063sywRZsQL4zLSxgEuXjjNOwYfGlFM0dDcv8guBGTWONq32NNnj3/NY/8xdpRuxRM7mA53kmdN7+Eyoso5dr4Q8cJZNrq1Vk7HX+0TMKCkMrQR3eehTocHMuHMm9oqjMXRFs2Ttcg7dMfbHXxrjlRwxKRRad1+yBvpsqZgb2BHOZ/xaV9gRsCpipQwTS+na61RROxlOVI0ZTA4MAbX1l/hXuPdIgferYwmoNb5ADXViTlPR1OZaHCtexUXli8pnnBFY5IIU/obp1Pcb7vfQgkOaLU+nUdWzGGsWW1yvDP/eGPeftJ/TBebcgnKGfCUHkMrs/8Svuc/QtPvFLYBMUN3uc5kkxczEQobBHQqnZnGrxVJyA/UIFYuWZ5Et/hlEM2UD6EA4zJR9CVd7fKsTtCR1v5j69wZcQBDABwiiAnYk3oGgDlrmlgaN3h43R96d50AX18dHr2jY6FU9ccw/7f4Ts+mtkSIsK7TgXbfbgtuHL/fT0XgYx1/ddHMfN3bdtp7+AIUOFdI=</source>
+  </file>
+  <file path="Core\SQLConnector.php" generated-path="Core.SQLConnector.html" hash="464a5cc178c347bac36a28c396432d72" package="MapPlatform\Core">
+    <docblock line="0">
+      <description>The SQL database connector</description>
+      <long-description>This package should be used for all connections towards SQL databases.
+
+PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Core"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <namespace-alias name="DatabaseConnector">\MapPlatform\AbstractClasses\DatabaseConnector</namespace-alias>
+    <namespace-alias name="Container">\Slim\Container</namespace-alias>
+    <namespace-alias name="Database">\Slim\PDO\Database</namespace-alias>
+    <namespace-alias name="Statement">\Slim\PDO\Statement</namespace-alias>
+    <namespace-alias name="PDO">\PDO</namespace-alias>
+    <namespace-alias name="PDOException">\PDOException</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Core" line="34" package="MapPlatform\Core">
+      <extends/>
+      <name>SQLConnector</name>
+      <full_name>\MapPlatform\Core\SQLConnector</full_name>
+      <docblock line="34">
+        <description>SQL DatabaseConnector</description>
+        <long-description></long-description>
+        <tag name="package" line="34" description="MapPlatform"/>
+        <tag name="subpackage" line="34" description="Core"/>
+        <tag name="author" line="34" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="34" description="1.0.0"/>
+        <tag name="since" line="34" description="First available since Release 1.0.0"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="MapPlatform\Core" line="37" package="MapPlatform\Core">
+        <name>$container</name>
+        <full_name>\MapPlatform\Core\SQLConnector::container</full_name>
+        <default></default>
+        <docblock line="37">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="37" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="MapPlatform\Core" line="39" package="MapPlatform\Core">
+        <name>$DSN</name>
+        <full_name>\MapPlatform\Core\SQLConnector::DSN</full_name>
+        <default></default>
+        <docblock line="39">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="39" description="&lt;p&gt;The Data Source Name&lt;/p&gt;" type="string" variable="$DSN">
+            <type>string</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="public" namespace="MapPlatform\Core" line="41" package="MapPlatform\Core">
+        <name>$PDO</name>
+        <full_name>\MapPlatform\Core\SQLConnector::PDO</full_name>
+        <default></default>
+        <docblock line="41">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="41" description="&lt;p&gt;The Php Data Object&lt;/p&gt;" type="mixed" variable="$PDO">
+            <type>mixed</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="48" package="MapPlatform\Core">
+        <name>__construct</name>
+        <full_name>\MapPlatform\Core\SQLConnector::__construct()</full_name>
+        <docblock line="48">
+          <description>Class constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="48" description="&lt;p&gt;The application controller.&lt;/p&gt;" type="\Slim\Container" variable="$aConstainer">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="true">
+          <name>$aConstainer</name>
+          <default></default>
+          <type>\Slim\Container</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="MapPlatform\Core" line="57" package="MapPlatform\Core">
+        <name>buildDSN</name>
+        <full_name>\MapPlatform\Core\SQLConnector::buildDSN()</full_name>
+        <docblock line="57">
+          <description>Build a new DSN.</description>
+          <long-description></long-description>
+          <tag name="param" line="57" description="&lt;p&gt;The database settings.&lt;/p&gt;" type="array" variable="$aConfig">
+            <type>array</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$aConfig</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="77" package="MapPlatform\Core">
+        <name>connect</name>
+        <full_name>\MapPlatform\Core\SQLConnector::connect()</full_name>
+        <docblock line="77">
+          <description>connect Connect to the specifieddatabase.</description>
+          <long-description></long-description>
+          <tag name="return" line="77" description="Indicator wether the connection succeeded or not." type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="99" package="MapPlatform\Core">
+        <name>close</name>
+        <full_name>\MapPlatform\Core\SQLConnector::close()</full_name>
+        <docblock line="99">
+          <description>Close the database connection.</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+    </class>
+    <source>eJy1Vm1v2kgQ/pxI+Q8jhA6ICG0/9QSFloJzjZQAB0RXKYnQ2l5gL4vXt7tO0lb97zfrd2NIEVL3i+3dnZlnnnnzh4/+2j87BVxvzs+jFziH+ZrC7O9rcIkmNlEUHOF51NFCJldyV5kCnziPZEVBrUXAXbApBIq6sBQSCOeJNBOeAi2eiXRVQb1qldROvkzgiUqFMvC+dPopMXhD/AknGg1tskMV2Mn5QEiaHZBArxGSwbwR8FmSRyrhg14zeyOk+M6o/LTaEMZbjtj0MrEEx7vW29bbnBnmORRfL5lUGsgTChKbIwnh/pRyapgrCL2JXjyyoQohFvDfG6yds9PoCvIHV94T4czty1WwoZ62XhzqGxI72ZW8fN9WWhJHDzhRyOn9MGZ3kMQuJzfjzBj0NGEeLR1MhuNUetfZTBNNDaTcIe4Xv/Jwyxlmwl8CuD/OuI4LNRwdbVx7An5UzB0TFeP2lrc/zk5PTpAZNEwk3BcDA1UnfTU1uZSYOc9CPkK2nxgwy5dCo24svUywkx2nZjBRmLeC6nA2CvWaSMBMBBKdGKGJfUrx/i51G/ZiTjHoobbJ2o80ju1/UbCoLLA5c8K7aV4UcyMiO0xi4yVCDQxbrfxx4SomCdJSos4gIb6P1ojJwpAxKTinRVVlbMvAC3sVLBap/Xqm948qGZjt8Kth4ge5VcX8Uhe9LDxdyN/PsffzNfc/Bwz7KAGPPgOS/kvniZTkW+hy2rIV1RqDrPZ6m4Y1ddg2VtFcPVIXAl+yVclJtoR6cnhXo94KXas9QLcLFfUfZ5pWGkWBHDMm5bqwQ7pVFimsSrsCrZzgWihde+gUpShX1KBj3iL0YQfMJtxVXAy0XWmGcJV8qjw0fgvgGZXYTbq7cP9aupO0xy35JMA7ff8dXhjAx/rg2mbW7fXgAA3OmkhM5W6gl39WDi2f+IcD4l6LPx2gsTaUTx22ZNRNELxSV5LqQGJJCMFxELumi+A8eaaoR4bKsp8aUIHjUOpiKeEVT+hDG0ysol7uIk5IlYnYVj+56K2orteS4q41XkmIULbdTqs61tooNF6ztPy2jSCVv+iZtt6NOlFsqZ4lVTPBelfDuS9NeaUbPrZwHFau2YyqEVW12/35fLqwptOb8dCCbg/Czfh78U9/Oroa/dVobPnyEzAAzhrq6W8FVOlLibgc7BxlXKxW5kmlFLJeufXCmY1J4RTzQxOJ7KYttA0mb30clXoh62iuCXMZ0EaZQLPihLkkPP1pSsF3zJA/2Tkp0PuLHoazr3Em24GmZZKaebECW9bXgTWZX41H23QdoHxoXfZvr+eLS2s++LKI7ISn0UZ/NhsPjlBr3dxe9+fWYjK1Jv2pNTPgQ07KrMWMGU4PLewBFzjadH7OZXV4cNkZJTuKrpDuAedFUPHjf9z6fpQ=</source>
+  </file>
+  <file path="AbstractClasses\ApiController.php" generated-path="AbstractClasses.ApiController.html" hash="12a890819d2fc64ca4bce484846f6083" package="MapPlatform\AbstractClasses">
+    <docblock line="0">
+      <description>The abstract API controller</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="AbstractClasses"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="Request">\Slim\Http\Request</namespace-alias>
+    <namespace-alias name="Response">\Slim\Http\Response</namespace-alias>
+    <namespace-alias name="Container">\Slim\Container</namespace-alias>
+    <class final="false" abstract="true" namespace="MapPlatform\AbstractClasses" line="28" package="MapPlatform\AbstractClasses">
+      <extends/>
+      <name>ApiController</name>
+      <full_name>\MapPlatform\AbstractClasses\ApiController</full_name>
+      <docblock line="28">
+        <description>Abstract ApiController</description>
+        <long-description></long-description>
+        <tag name="package" line="28" description="MapPlatform"/>
+        <tag name="subpackage" line="28" description="AbstractClasses"/>
+        <tag name="author" line="28" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="28" description="1.0.0"/>
+        <tag name="since" line="28" description="First available since Release 1.0.0"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="MapPlatform\AbstractClasses" line="31" package="MapPlatform\AbstractClasses">
+        <name>$container</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::container</full_name>
+        <default></default>
+        <docblock line="31">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="31" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\AbstractClasses" line="38" package="MapPlatform\AbstractClasses">
+        <name>__construct</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__construct()</full_name>
+        <docblock line="38">
+          <description>Class constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="38" description="" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$container</name>
+          <default></default>
+          <type>\Slim\Container</type>
+        </argument>
+      </method>
+      <method final="false" abstract="true" static="false" visibility="public" namespace="MapPlatform\AbstractClasses" line="51" package="MapPlatform\AbstractClasses">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__invoke()</full_name>
+        <docblock line="51">
+          <description>Class invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="51" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="51" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="51" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="51" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+    </class>
+    <source>eJzdU01PwzAMvSPxH3zYASYYcOLA55iE4IA0AcdJkxu8NVqaFCcdAsR/J13WNh3l40xObv1sP7+XnF7kab69Bf4c9PshgD48pgSYWMcoHAzHtyCMdmyUIq4wNXZ8M4YlsZVGw/GX7GWOYoFzKr/uMB8rdDPDWZO3RVJBhuuJI4XWkm0wWLjU8OrrMZWZgSvGBTGculQmmWHzJokv5xlKNRAmO28qK2L+HA0OB4fRXKnFihXAtWTrAJe+HBNFEFL3pAgttesOQqAxI+tpU7zTZIP/yfZWQBe+y4OS2eTGuXxyT88FWXfSnbO50ZY2kyMvP0pNXPeM3RrWTuVy9L1R/9OK+pqKkmqXBO/riqCaJ4IMk7as0BN1WN79GXuDXwwvoPlfDSxPzsaRcPQUFdbWtO0JO650LJt5soVwhgdxugX1NvnpPzCM0TGnIlFSwKzQwpU6T6f1uJ2uNruxMOXpeQvt/nmz8Vl7uwr38fuiUi+NvxV/XDJ+FtDjEPwKDy+lxIeoqwCZ8RV6yHP7PRUmV7Duav6z0vXNiyQPi+9sLrMHX/nuBV67a2W9qp8nbo1p</source>
+  </file>
+  <file path="Core\Utils\RenderUtils.php" generated-path="Core.Utils.RenderUtils.html" hash="bb1a1edc6992ea1228c5a7fdf9ea80b2" package="MapPlatform\Core\Utils">
+    <docblock line="0">
+      <description>Generic HTML rendering utilities</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Core\Utils"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <namespace-alias name="Response">\Slim\Http\Response</namespace-alias>
+    <namespace-alias name="Container">\Slim\Container</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Core\Utils" line="28" package="MapPlatform\Core\Utils">
+      <extends/>
+      <name>RenderUtils</name>
+      <full_name>\MapPlatform\Core\Utils\RenderUtils</full_name>
+      <docblock line="28">
+        <description>HTML page rendering utilities</description>
+        <long-description></long-description>
+        <tag name="package" line="28" description="MapPlatform"/>
+        <tag name="subpackage" line="28" description="Core\Utils"/>
+        <tag name="author" line="28" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="28" description="1.0.0"/>
+        <tag name="since" line="28" description="First available since Release 1.0.0"/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="33" package="MapPlatform\Core\Utils">
+        <name>__construct</name>
+        <full_name>\MapPlatform\Core\Utils\RenderUtils::__construct()</full_name>
+        <docblock line="33">
+          <description>RenderUtils constructor.</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="51" package="MapPlatform\Core\Utils">
+        <name>render</name>
+        <full_name>\MapPlatform\Core\Utils\RenderUtils::render()</full_name>
+        <docblock line="51">
+          <description>Get the text inside of a file.</description>
+          <long-description></long-description>
+          <tag name="param" line="51" description="" type="string" variable="$aPageTitle">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="51" description="" type="integer" variable="$aPageID">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="51" description="" type="string" variable="$aContentTemplate">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="51" description="" type="\Slim\Http\Response" variable="$aResponse">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="51" description="" type="array" variable="$aValues">
+            <type>array</type>
+          </tag>
+          <tag name="param" line="51" description="" type="\Slim\Container" variable="$aContainer">
+            <type>\Slim\Container</type>
+          </tag>
+          <tag name="return" line="51" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="throws" line="51" description="" type="\InvalidArgumentException">
+            <type>\InvalidArgumentException</type>
+          </tag>
+          <tag name="throws" line="51" description="" type="\MapPlatform\Core\Utils\RuntimeException">
+            <type>\MapPlatform\Core\Utils\RuntimeException</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$aPageTitle</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$aPageID</name>
+          <default></default>
+          <type>integer</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$aContentTemplate</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+        <argument line="0" by_reference="true">
+          <name>$aResponse</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="true">
+          <name>$aValues</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+        <argument line="0" by_reference="true">
+          <name>$aContainer</name>
+          <default></default>
+          <type>\Slim\Container</type>
+        </argument>
+      </method>
+    </class>
+    <source>eJzdU01v00AQvVfqf5gDStrIJOXEIW0pNLSJRFEUAheCqo0zjlfdD2s9DgXU/876e00ct2f24lnvezOz782ev4vC6PgI7BoNBnkAA7hFhYb7MF3efQKDamN3agsJccGJY1wCK8J8OocdmphrBW/3Tq8i5j+wLaa7OxbNBaNAG1mfx8m6hFxrg6uvtlBcH7OEQm2y3TLkUsMHwx7QwDmFfC210b85mqutZFwMfS0va2bZk11vhmfDM6ckV37WEMANNzEB21k6WwuE/GiBAlmMTd4oDxSTGNuO0b3Oqm59fHyUAxObYKZ2TPDNe7NNJCr6+OhjRLapcQ35IrhcTYmi1cLm1SrGfw+vtSLGrStVatevzKcole8lZv13dviCxbFFpFd3ev1TwBpi5fUcLPhWbzKJT9oMXdCo3kTJWtjnECTKT52D+/uKdHLq1nkq3WkreosEFCIQPhJwFfMNgg6AQcAFNko3aNYuwyTYcqmtr9jc+rLkJLANxRUVkNmkM0s6UHYalygj639rrtX+WFpiGbYxmDHsl8V8YyKpBq8lZzXNRSNZfFgAg5QY1dbPYQ6FRv+MDz6+VvAiUcQltoI6piF/cyf7BnkNO7yD4ntOofZV6d+rDfAKuXul3h7UuvYcYRsTmq6S8L1ftdr/Yf9fuM2PuzizSUZwOLNJJ+Ez2xWMC9fz15e5eGkUIPnhSV+x3TAKSYq+V+U47cxdqGnzP5N7X/gXVrjRmtCkF3iu+yBDtl6gWaCY6QPZipFyze4H9v1gpzRPeWg/fwFtnDPH</source>
+  </file>
+  <file path="Controllers\Api\MapController.php" generated-path="Controllers.Api.MapController.html" hash="fd8cdb78a9dc14dd29acb32506dc17ff" package="MapPlatform\Controllers\Api">
+    <docblock line="0">
+      <description>The central controller for all map features</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Controllers\Api"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <namespace-alias name="Request">\Slim\Http\Request</namespace-alias>
+    <namespace-alias name="Response">\Slim\Http\Response</namespace-alias>
+    <namespace-alias name="Core">\MapPlatform\Core</namespace-alias>
+    <namespace-alias name="ApiController">\MapPlatform\AbstractClasses\ApiController</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Controllers\Api" line="30" package="MapPlatform\Controllers\Api">
+      <extends>\MapPlatform\AbstractClasses\ApiController</extends>
+      <name>MapController</name>
+      <full_name>\MapPlatform\Controllers\Api\MapController</full_name>
+      <docblock line="30">
+        <description>Map controller</description>
+        <long-description></long-description>
+        <tag name="package" line="30" description="MapPlatform"/>
+        <tag name="subpackage" line="30" description="Controllers\Api"/>
+        <tag name="author" line="30" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="30" description="1.0.0"/>
+        <tag name="since" line="30" description="First available since Release 1.0.0"/>
+        <tag name="inherited_from" description="\MapPlatform\AbstractClasses\ApiController" refers="\MapPlatform\AbstractClasses\ApiController" link="/classes/MapPlatform.AbstractClasses.ApiController.html"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="MapPlatform\Controllers\Api" line="31" package="MapPlatform\AbstractClasses">
+        <name>$container</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::container</full_name>
+        <default></default>
+        <docblock line="31">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="31" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="41" package="MapPlatform\Controllers\Api">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::__invoke()</full_name>
+        <docblock line="41">
+          <description>MapController invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="41" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="41" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="41" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="41" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="inherited_from" description="\MapPlatform\AbstractClasses\ApiController::__invoke()" refers="\MapPlatform\AbstractClasses\ApiController::__invoke()" link="/classes/MapPlatform.AbstractClasses.ApiController.html#method___invoke"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="54" package="MapPlatform\Controllers\Api">
+        <name>getAllMaps</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::getAllMaps()</full_name>
+        <docblock line="54">
+          <description>MapController Get all maps.</description>
+          <long-description></long-description>
+          <tag name="param" line="54" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="54" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="54" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="54" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="70" package="MapPlatform\Controllers\Api">
+        <name>getMap</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::getMap()</full_name>
+        <docblock line="70">
+          <description>MapController Get a specific map.</description>
+          <long-description></long-description>
+          <tag name="param" line="70" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="70" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="70" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="70" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="86" package="MapPlatform\Controllers\Api">
+        <name>getMapsByUser</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::getMapsByUser()</full_name>
+        <docblock line="86">
+          <description>MapController Get a map by user ID.</description>
+          <long-description></long-description>
+          <tag name="param" line="86" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="86" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="86" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="86" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="109" package="MapPlatform\Controllers\Api">
+        <name>addMap</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::addMap()</full_name>
+        <docblock line="109">
+          <description>MapController Add map function.</description>
+          <long-description></long-description>
+          <tag name="param" line="109" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="109" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="109" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="109" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="126" package="MapPlatform\Controllers\Api">
+        <name>updateMap</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::updateMap()</full_name>
+        <docblock line="126">
+          <description>MapController Update map function.</description>
+          <long-description></long-description>
+          <tag name="param" line="126" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="126" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="126" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="126" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="143" package="MapPlatform\Controllers\Api">
+        <name>deleteMap</name>
+        <full_name>\MapPlatform\Controllers\Api\MapController::deleteMap()</full_name>
+        <docblock line="143">
+          <description>MapController Delete map function.</description>
+          <long-description></long-description>
+          <tag name="param" line="143" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="143" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="143" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="143" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="38" package="MapPlatform\AbstractClasses">
+        <name>__construct</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__construct()</full_name>
+        <docblock line="38">
+          <description>Class constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="38" description="" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$container</name>
+          <default></default>
+          <type>\Slim\Container</type>
+        </argument>
+        <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
+      </method>
+      <method final="false" abstract="true" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="51" package="MapPlatform\AbstractClasses">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__invoke()</full_name>
+        <docblock line="51">
+          <description>Class invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="51" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="51" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="51" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="51" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+        <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
+      </method>
+    </class>
+    <source>eJztV11v2jAUfZ+0/3CFKgEVELqXSaNlhZauqVqGKH3YxoRMcglWnY/ZDm237r/vBgMJUFR11bRK1A/Y5n743ONjJ9n/GI2jt2+AmrW7awawC70xgoOBlkyAE1IfCoESRqEEJgT4LIIRMh1LVPOYRWzntAMTlIqHAbxfsx5GzLlmHiazCxZ1BNOU1U/tKh7OXY4WK6t+I+KpD4v1mKAkrTfmfghNya4J374e86EfyvAnR3no+YyLihP69TRyDozaXqVaqWbW5YEzRQVwwqXSwCYUzoYCwZi6KJApXI6zzCBgPiqCjdma+iv4a8bX/MaUyQ4mTHC3Ib3YJ7Jbtw5GmtDVUpdLwf3+qdZRv4s/YlR6g01FYaAwY1zGITeZGkNFm+zoI8GUwinMFDXFrEuDojOS2JL9dRJ6knpSyIC3GgNXwRJlxv3XLHyJugV9mRw8mIRUWCXrsuROdErmQ39NB7AjzeBRdyONxN+MHgpgUrI72GHSU5uhSKQDHzyUPOtnpZMoHgruwCgOnETWMBiYegurNZRgHWbJwClmyUzaDMXCr5aaf8/1+jjxn1DPbzK1Jex7qBtCEA3qWfzv0BlU5XpyBTAeoCzXReh5Sc+DUVjIZQ495C0WcWuyZyU050GGscZcsbaSkFaMhW5ICQeGikKxlt3Jh3a9XL/henymwqCQxpfgXbVagrPLz+1Bp9vq9b5QZ7d7xWdoBFSEDh8RkVTD9iiFmHhVyRNUkrwRDe+Sx6sE+3irdKKad1dU9v+Ri5UwbuWgYhJ/yydz281/p39yG7VknEhIIy40ysGEycJKfAlO7PNeqzu4bLTtnv21NWhfXTRpvqKUaT5Ccs6VtjX6irIGsRB/I18+gsIC24HJA/f3C7z7B1AtLockTY9leAMB3sDiDbKQtwV69PI+EyR8gHzCkUm0vvJLOEgN1zUfFjN5bckhYq778i5bl2lGQp2DKdfpqHeYVOg2Q9dId8n/pV7OVxFVgtsoq3ha+auy/pWyjulrcTuV5U4rf1XWU5U16/4A64RwGQ==</source>
+  </file>
+  <file path="Core\Utils\FileUtils.php" generated-path="Core.Utils.FileUtils.html" hash="0647ef99d89f080c629129295ff17da4" package="MapPlatform\Core\Utils">
+    <docblock line="0">
+      <description>Generic file utilities</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Core\Utils"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="Container">\Slim\Container</namespace-alias>
+    <namespace-alias name="Minify">\MatthiasMullie\Minify</namespace-alias>
+    <namespace-alias name="Imagick">\Imagick</namespace-alias>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Core\Utils" line="29" package="MapPlatform\Core\Utils">
+      <extends/>
+      <name>FileUtils</name>
+      <full_name>\MapPlatform\Core\Utils\FileUtils</full_name>
+      <docblock line="29">
+        <description>File utilities</description>
+        <long-description></long-description>
+        <tag name="package" line="29" description="MapPlatform"/>
+        <tag name="subpackage" line="29" description="Core\Utils"/>
+        <tag name="author" line="29" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="29" description="1.0.0"/>
+        <tag name="since" line="29" description="First available since Release 1.0.0"/>
+      </docblock>
+      <property static="false" visibility="private" namespace="MapPlatform\Core\Utils" line="32" package="MapPlatform\Core\Utils">
+        <name>$container</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::container</full_name>
+        <default></default>
+        <docblock line="32">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="32" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="39" package="MapPlatform\Core\Utils">
+        <name>__construct</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::__construct()</full_name>
+        <docblock line="39">
+          <description>FileUtils constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="39" description="&lt;p&gt;The application controller.&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$container</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="50" package="MapPlatform\Core\Utils">
+        <name>getFileText</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::getFileText()</full_name>
+        <docblock line="50">
+          <description>Get the text inside of a file.</description>
+          <long-description></long-description>
+          <tag name="param" line="50" description="" type="string" variable="$aFile">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="50" description="" type="string">
+            <type>string</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$aFile</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core\Utils" line="71" package="MapPlatform\Core\Utils">
+        <name>minify</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::minify()</full_name>
+        <docblock line="71">
+          <description>Perform the main actions on the files and determine if it should/can be minified.</description>
+          <long-description></long-description>
+          <tag name="param" line="71" description="" type="array" variable="$arr">
+            <type>array</type>
+          </tag>
+          <tag name="param" line="71" description="" type="string" variable="$type">
+            <type>string</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$arr</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$type</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="116" package="MapPlatform\Core\Utils">
+        <name>minifyJS</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::minifyJS()</full_name>
+        <docblock line="116">
+          <description>Minify all JS files in the array.</description>
+          <long-description></long-description>
+          <tag name="param" line="116" description="" type="array" variable="$arr">
+            <type>array</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$arr</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="125" package="MapPlatform\Core\Utils">
+        <name>minifyCSS</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::minifyCSS()</full_name>
+        <docblock line="125">
+          <description>Minify all CSS files in the array.</description>
+          <long-description></long-description>
+          <tag name="param" line="125" description="" type="array" variable="$arr">
+            <type>array</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$arr</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="136" package="MapPlatform\Core\Utils">
+        <name>resizeImage</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::resizeImage()</full_name>
+        <docblock line="136">
+          <description>Resize images to specified size</description>
+          <long-description></long-description>
+          <tag name="param" line="136" description="&lt;p&gt;The image as an Imagick object&lt;/p&gt;" type="\MapPlatform\Core\Utils\&amp;amp;\Imagick\Imagick" variable="$imageObject">
+            <type>\MapPlatform\Core\Utils\&amp;\Imagick\Imagick</type>
+          </tag>
+          <tag name="param" line="136" description="&lt;p&gt;New image width&lt;/p&gt;" type="integer" variable="$maxWidth">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="136" description="&lt;p&gt;New image height&lt;/p&gt;" type="integer" variable="$maxHeight">
+            <type>integer</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="true">
+          <name>$imageObject</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$maxWidth</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$maxHeight</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="158" package="MapPlatform\Core\Utils">
+        <name>reArrayFiles</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::reArrayFiles()</full_name>
+        <docblock line="158">
+          <description>Re-arrange file array to usable format</description>
+          <long-description></long-description>
+          <tag name="param" line="158" description="&lt;p&gt;File array to re-arrange&lt;/p&gt;" type="\MapPlatform\Core\Utils\&amp;amp;array" variable="$aFileArr">
+            <type>\MapPlatform\Core\Utils\&amp;array</type>
+          </tag>
+          <tag name="return" line="158" description="Re-arranged array" type="array">
+            <type>array</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="true">
+          <name>$aFileArr</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core\Utils" line="177" package="MapPlatform\Core\Utils">
+        <name>mkdirRecursive</name>
+        <full_name>\MapPlatform\Core\Utils\FileUtils::mkdirRecursive()</full_name>
+        <docblock line="177">
+          <description>Recursively create directories</description>
+          <long-description></long-description>
+          <tag name="param" line="177" description="&lt;p&gt;The full path&lt;/p&gt;" type="string" variable="$path">
+            <type>string</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$path</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+    <source>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</source>
+  </file>
+  <file path="Core\Security.php" generated-path="Core.Security.html" hash="6a542ee8724ea027b6aa4dcaa3da9714" package="MapPlatform\Core">
+    <docblock line="0">
+      <description>The internal security class</description>
+      <long-description>This package should be used for all security features
+
+PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Core"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Core" line="28" package="MapPlatform\Core">
+      <extends/>
+      <name>Security</name>
+      <full_name>\MapPlatform\Core\Security</full_name>
+      <docblock line="28">
+        <description>Security</description>
+        <long-description></long-description>
+        <tag name="package" line="28" description="MapPlatform"/>
+        <tag name="subpackage" line="28" description="Core"/>
+        <tag name="author" line="28" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="28" description="1.0.0"/>
+        <tag name="since" line="28" description="First available since Release 1.0.0"/>
+      </docblock>
+      <property static="false" visibility="private" namespace="MapPlatform\Core" line="31" package="MapPlatform\Core">
+        <name>$container</name>
+        <full_name>\MapPlatform\Core\Security::container</full_name>
+        <default></default>
+        <docblock line="31">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="31" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="38" package="MapPlatform\Core">
+        <name>__construct</name>
+        <full_name>\MapPlatform\Core\Security::__construct()</full_name>
+        <docblock line="38">
+          <description>Security constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="38" description="&lt;p&gt;The application controller.&lt;/p&gt;" type="\Slim\Container" variable="$aContainer">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$aContainer</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="45" package="MapPlatform\Core">
+        <name>initSession</name>
+        <full_name>\MapPlatform\Core\Security::initSession()</full_name>
+        <docblock line="45">
+          <description>Initialize the user session</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="53" package="MapPlatform\Core">
+        <name>destroySession</name>
+        <full_name>\MapPlatform\Core\Security::destroySession()</full_name>
+        <docblock line="53">
+          <description>Destroy the user session</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="63" package="MapPlatform\Core">
+        <name>restartSession</name>
+        <full_name>\MapPlatform\Core\Security::restartSession()</full_name>
+        <docblock line="63">
+          <description>Restart the user session</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="82" package="MapPlatform\Core">
+        <name>pbkdf2</name>
+        <full_name>\MapPlatform\Core\Security::pbkdf2()</full_name>
+        <docblock line="82">
+          <description>PBKDF2 key derivation function as defined by RSA's PKCS #5: https://www.ietf.org/rfc/rfc2898.txt
+Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt</description>
+          <long-description></long-description>
+          <tag name="param" line="82" description="&lt;p&gt;The hash algorithm to use. Recommended: SHA256&lt;/p&gt;" type="string" variable="$algorithm">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="82" description="&lt;p&gt;The password.&lt;/p&gt;" type="string" variable="$password">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="82" description="&lt;p&gt;A salt that is unique to the password.&lt;/p&gt;" type="string" variable="$salt">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="82" description="&lt;p&gt;Iteration count. Higher is better, but slower. Recommended: At least 1000.&lt;/p&gt;" type="integer" variable="$count">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="82" description="&lt;p&gt;The length of the derived key in bytes.&lt;/p&gt;" type="integer" variable="$keyLength">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="82" description="&lt;p&gt;If true, the key is returned in raw binary format. Hex encoded otherwise.&lt;/p&gt;" type="boolean" variable="$rawOutput">
+            <type>boolean</type>
+          </tag>
+          <tag name="return" line="82" description="A $keyLength-byte key derived from the password and salt." type="mixed">
+            <type>mixed</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$algorithm</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$password</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$salt</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$count</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$keyLength</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$rawOutput</name>
+          <default>False</default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="130" package="MapPlatform\Core">
+        <name>isValidPassword</name>
+        <full_name>\MapPlatform\Core\Security::isValidPassword()</full_name>
+        <docblock line="130">
+          <description>Compare the given password and salt with the given hash</description>
+          <long-description></long-description>
+          <tag name="param" line="130" description="&lt;p&gt;The raw password to compare with&lt;/p&gt;" type="string" variable="$password">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="130" description="&lt;p&gt;The salt to use for the comparison&lt;/p&gt;" type="string" variable="$salt">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="130" description="&lt;p&gt;The hash to compare against&lt;/p&gt;" type="string" variable="$hash">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="130" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$password</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$salt</name>
+          <default></default>
+          <type/>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$hash</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="private" namespace="MapPlatform\Core" line="149" package="MapPlatform\Core">
+        <name>isValidReCaptcha</name>
+        <full_name>\MapPlatform\Core\Security::isValidReCaptcha()</full_name>
+        <docblock line="149">
+          <description>Check validity of ReCaptcha response value</description>
+          <long-description></long-description>
+          <tag name="param" line="149" description="&lt;p&gt;The response provided by Google&lt;/p&gt;" type="string" variable="$reCaptchaResponse">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="149" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$reCaptchaResponse</name>
+          <default></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="178" package="MapPlatform\Core">
+        <name>register</name>
+        <full_name>\MapPlatform\Core\Security::register()</full_name>
+        <docblock line="178">
+          <description>Check validity of ReCaptcha response value</description>
+          <long-description></long-description>
+          <tag name="param" line="178" description="&lt;p&gt;POST values as an array&lt;/p&gt;" type="array" variable="$aDataArray">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="178" description="The status repsresented as an array" type="array">
+            <type>array</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$aDataArray</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="277" package="MapPlatform\Core">
+        <name>login</name>
+        <full_name>\MapPlatform\Core\Security::login()</full_name>
+        <docblock line="277">
+          <description>Check validity of ReCaptcha response value</description>
+          <long-description></long-description>
+          <tag name="param" line="277" description="&lt;p&gt;POST values as an array&lt;/p&gt;" type="array" variable="$aDataArray">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="277" description="The status repsresented as an array" type="array">
+            <type>array</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$aDataArray</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="361" package="MapPlatform\Core">
+        <name>checkRememberMe</name>
+        <full_name>\MapPlatform\Core\Security::checkRememberMe()</full_name>
+        <docblock line="361">
+          <description>Check existance and validity of a user's remember-me cookie</description>
+          <long-description></long-description>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Core" line="461" package="MapPlatform\Core">
+        <name>logout</name>
+        <full_name>\MapPlatform\Core\Security::logout()</full_name>
+        <docblock line="461">
+          <description>Deauthorize a user</description>
+          <long-description></long-description>
+          <tag name="return" line="461" description="The status repsresented as an array" type="array">
+            <type>array</type>
+          </tag>
+        </docblock>
+      </method>
+    </class>
+    <source>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</source>
+  </file>
+  <file path="Controllers\Api\MiscController.php" generated-path="Controllers.Api.MiscController.html" hash="09a40bff4963d1f722358d09b67caa74" package="MapPlatform\Controllers\Api">
+    <docblock line="0">
+      <description>The central controller for all misc features</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Controllers\Api"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <namespace-alias name="Request">\Slim\Http\Request</namespace-alias>
+    <namespace-alias name="Response">\Slim\Http\Response</namespace-alias>
+    <namespace-alias name="Core">\MapPlatform\Core</namespace-alias>
+    <namespace-alias name="ApiController">\MapPlatform\AbstractClasses\ApiController</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Controllers\Api" line="30" package="MapPlatform\Controllers\Api">
+      <extends>\MapPlatform\AbstractClasses\ApiController</extends>
+      <name>MiscController</name>
+      <full_name>\MapPlatform\Controllers\Api\MiscController</full_name>
+      <docblock line="30">
+        <description>Misc feature controller</description>
+        <long-description></long-description>
+        <tag name="package" line="30" description="MapPlatform"/>
+        <tag name="subpackage" line="30" description="Controllers\Api"/>
+        <tag name="author" line="30" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="30" description="1.0.0"/>
+        <tag name="since" line="30" description="First available since Release 1.0.0"/>
+        <tag name="inherited_from" description="\MapPlatform\AbstractClasses\ApiController" refers="\MapPlatform\AbstractClasses\ApiController" link="/classes/MapPlatform.AbstractClasses.ApiController.html"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="MapPlatform\Controllers\Api" line="31" package="MapPlatform\AbstractClasses">
+        <name>$container</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::container</full_name>
+        <default></default>
+        <docblock line="31">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="31" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="41" package="MapPlatform\Controllers\Api">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\Controllers\Api\MiscController::__invoke()</full_name>
+        <docblock line="41">
+          <description>MiscController invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="41" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="41" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="41" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="41" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="inherited_from" description="\MapPlatform\AbstractClasses\ApiController::__invoke()" refers="\MapPlatform\AbstractClasses\ApiController::__invoke()" link="/classes/MapPlatform.AbstractClasses.ApiController.html#method___invoke"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="54" package="MapPlatform\Controllers\Api">
+        <name>resizeDefault</name>
+        <full_name>\MapPlatform\Controllers\Api\MiscController::resizeDefault()</full_name>
+        <docblock line="54">
+          <description>MiscController default image resizer.</description>
+          <long-description></long-description>
+          <tag name="param" line="54" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="54" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="54" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="54" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="81" package="MapPlatform\Controllers\Api">
+        <name>testScript</name>
+        <full_name>\MapPlatform\Controllers\Api\MiscController::testScript()</full_name>
+        <docblock line="81">
+          <description>MiscController script tester.</description>
+          <long-description></long-description>
+          <tag name="param" line="81" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="81" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="81" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="81" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="38" package="MapPlatform\AbstractClasses">
+        <name>__construct</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__construct()</full_name>
+        <docblock line="38">
+          <description>Class constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="38" description="" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$container</name>
+          <default></default>
+          <type>\Slim\Container</type>
+        </argument>
+        <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
+      </method>
+      <method final="false" abstract="true" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="51" package="MapPlatform\AbstractClasses">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__invoke()</full_name>
+        <docblock line="51">
+          <description>Class invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="51" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="51" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="51" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="51" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+        <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
+      </method>
+    </class>
+    <source>eJzlWFtv2zYUfh+w/3AWFKAd+JY069amTZe2buMiTYLYbbElgUFLtM1FEjWScpIO+e87JOVIsmknazHsoXyIFfFcv3Mhj56/TKfpjz8ArvbmpnuATRhMGQQs0ZJGEAj8FVHEJIyFBBpFEHMVwJhRnUmm5kx3zCcHJzBjUnGRwC9Lu7+lNLikE2b++0DTk4hqFBsX+yobzUle36lW5/spL2hopqdoi1mDKY8FvJL0Eg18rqd8FAspvnAmf5vElEetQMR7BefcMFxbrU6rU9LLk8BaBfCWS6WBzpCdjiIGbuuURYwqVuVru4eExkyh2azs0/mC/buO1v3NUFIvmdGIh/tyksWIdvc6YKlG63YLkn7E4/MDrdPzU/ZXxpResadSkShW2qzaIVdt7Y8URjnQryOqFLNmFlYjz3JufCgFv5Qc30mgA4OTxaCwGdi1ZkmooAKeo/8756+AWABZEsKTmUDXWmWaCj0CKmkM50spAY+ke7iX3GWJoXdPPgYqJb2BR1RO1GpTJMPwJz7hZbp28U+ajSKOeZMlgclwGA6dv7VFHxqwbGbDmVMvo2lWbsUd3W6xfTtP3QcgH7IxzSINPDa5iML4l+8mDs7bNw6BbwrGIyxJ1dwzHYHyhMnmXiQmE/PLk7GobZR6AJA2TXl7ttV26vMAbEALat041Tc1q+KMBFQHUzxxyEUdXsLGBjyDjbYh8+y3YIOAFJlmG/XdBdPQqDGfwAuPkROma0QxrXkyUaR+RmwWKHKxKMO9Rxln1Y2SgjOSe9IztG+4JBdoFrlMh9udrSfNzq/Nx53h9lZz+2lzZ6eVJhPS+GpZT5udx8MtlLjTfLxlZVVFXeyWK8AsRJ7RYAq1uStU5V4txbJw+Hj0Jws0ep2wKzCm8OAyF7CIsj8JxjxiHzWP8K0LtvWnVpbeKHyO6fVnHuopuai+PGB8MtUYZp/Okqjm3pXkuqLjfpYQM12Km1p9F6qkt0sYLnYc1Mf19L0SSe2M4EuMF4EXe0D6WRAwpYwf251OA973j4+GJ6fdweB3/OkdDepf2axUIHmqQaPN302TMs72rd/f1qFCqqlpAjmvLf4TKhULX4nQxH8x3F/V04y1Lkr/XUNbaVfIRtnkXsMIGChQNypJJU/0UNYsOg0YyIzVv6GBLmGo5Y23vbiADvDuhGKxS2A6D2c0t+OMFNumht72Dgfd02F//6g36P3RHfYHWEPvvKU9yXiYP/vMNbNL3o8M5WzHE3YrxyH1FtvXCdVTI2vej2iaDlicznuy04i9uZWD67OqkJZbNhYpS2oLWhpArkgd8MYbclYjHxN7K9UCDLEBif3kQdisse17ZXmNMsQ+pMZBJFSFZQUS2B8tiZD9lAVou6362jKlWR3T/hwBSXnKCPokSb0B7TYoHfIEOJ48YLZATyl2MjNrTnkUwhXH2RLPqBDGUsR+8Vse8VeFeKyWe+RbnJCUJiGVISBDijxa+NVt+9VBro5J+SB1SIcxXaPLm8lGqLLJ4izwEgVXLtur+XkqhLb56WNhySxnyT3rH3QPD4l9hUdXe8ST9oiqqe92srTI595Rd//09YE796548mTnYYwHxx+6BHKtxo8HcR3uH737uP+u69SxZPix/4wlxI+NiGOMMzpq7GJATLX6UDLV23bV8slM5BRz/fVhr8WuGTRn0PzkWKvF6g2ZFObYR43maehqHPE+yzE215pqOTXyODccBDY6/jrkY6hxNcRTTmQywMLNldW91zezqleJ8tqcZ1ciriAS4lJBxC9NCnP1bCVPXt2fMadtY5oiuJH9CJDgRYqFplO53LeVvkaOLeNTLPX75WDVrBG0/XBBWISrBLVX4Ne2vjJX1HkyoUjzr+tltu7NW9tLgZvqBjoTeCBQnCtpGIng0i983rFtHM467sJrVfhy2XLkDXvO4U+T3PBTpiVnM2d73nmMoeVW5Gd+pKYsiu6uVWAaBV6QGY2HeNYPzVnKEq3mdmx5L+WFoK5ReOwMWCtoe71DPdvZeZwKic1bu257I7IceprcgEvpETOTDgR4jcIriSvEPDwJHq2YB/8iSBXIV7tapdteSVcYU5TvCtIsQfMvF28IqyFaN5qsbqwET0KdqerQsqYRE3M7s9TVNFnHgin3pspVygk/34PGpvm6BRZhdFc0wf8BR+veWhRjhBknUEduPphPhBhjv8pUC57VyEpQfn44KAvvbsHOFjiPzL8y41Fz7Z/83SDr/9RhzS9Pum8pj1b5Ssy3Zefl3ZjBrvMhY5ll+ZuFWWsCklv6UFzKmNy6R/z5B/u7pkk=</source>
+  </file>
+  <file path="Controllers\Api\DownloadController.php" generated-path="Controllers.Api.DownloadController.html" hash="4233b92962c0d2665a145f5ef33c2828" package="MapPlatform\Controllers\Api">
+    <docblock line="0">
+      <description>The central controller for all download requests</description>
+      <long-description>PHP version 7</long-description>
+      <tag name="package" line="0" description="MapPlatform"/>
+      <tag name="subpackage" line="0" description="Controllers\Api"/>
+      <tag name="author" line="0" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+      <tag name="version" line="0" description="1.0.0"/>
+      <tag name="since" line="0" description="First available since Release 1.0.0"/>
+    </docblock>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <namespace-alias name="Request">\Slim\Http\Request</namespace-alias>
+    <namespace-alias name="Response">\Slim\Http\Response</namespace-alias>
+    <namespace-alias name="Core">\MapPlatform\Core</namespace-alias>
+    <namespace-alias name="ApiController">\MapPlatform\AbstractClasses\ApiController</namespace-alias>
+    <class final="false" abstract="false" namespace="MapPlatform\Controllers\Api" line="30" package="MapPlatform\Controllers\Api">
+      <extends>\MapPlatform\AbstractClasses\ApiController</extends>
+      <name>DownloadController</name>
+      <full_name>\MapPlatform\Controllers\Api\DownloadController</full_name>
+      <docblock line="30">
+        <description>Download controller</description>
+        <long-description></long-description>
+        <tag name="package" line="30" description="MapPlatform"/>
+        <tag name="subpackage" line="30" description="Controllers\Api"/>
+        <tag name="author" line="30" description="Thimo Braker" link="mailto:thibmorozier@gmail.com"/>
+        <tag name="version" line="30" description="1.0.0"/>
+        <tag name="since" line="30" description="First available since Release 1.0.0"/>
+        <tag name="inherited_from" description="\MapPlatform\AbstractClasses\ApiController" refers="\MapPlatform\AbstractClasses\ApiController" link="/classes/MapPlatform.AbstractClasses.ApiController.html"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="MapPlatform\Controllers\Api" line="31" package="MapPlatform\AbstractClasses">
+        <name>$container</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::container</full_name>
+        <default></default>
+        <docblock line="31">
+          <description></description>
+          <long-description></long-description>
+          <tag name="var" line="31" description="&lt;p&gt;The framework container&lt;/p&gt;" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="41" package="MapPlatform\Controllers\Api">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\Controllers\Api\DownloadController::__invoke()</full_name>
+        <docblock line="41">
+          <description>DownloadController invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="41" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="41" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="41" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="41" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="inherited_from" description="\MapPlatform\AbstractClasses\ApiController::__invoke()" refers="\MapPlatform\AbstractClasses\ApiController::__invoke()" link="/classes/MapPlatform.AbstractClasses.ApiController.html#method___invoke"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="54" package="MapPlatform\Controllers\Api">
+        <name>home</name>
+        <full_name>\MapPlatform\Controllers\Api\DownloadController::home()</full_name>
+        <docblock line="54">
+          <description>DownloadController default page.</description>
+          <long-description></long-description>
+          <tag name="param" line="54" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="54" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="54" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="54" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="38" package="MapPlatform\AbstractClasses">
+        <name>__construct</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__construct()</full_name>
+        <docblock line="38">
+          <description>Class constructor.</description>
+          <long-description></long-description>
+          <tag name="param" line="38" description="" type="\Slim\Container" variable="$container">
+            <type>\Slim\Container</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$container</name>
+          <default></default>
+          <type>\Slim\Container</type>
+        </argument>
+        <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
+      </method>
+      <method final="false" abstract="true" static="false" visibility="public" namespace="MapPlatform\Controllers\Api" line="51" package="MapPlatform\AbstractClasses">
+        <name>__invoke</name>
+        <full_name>\MapPlatform\AbstractClasses\ApiController::__invoke()</full_name>
+        <docblock line="51">
+          <description>Class invoker.</description>
+          <long-description></long-description>
+          <tag name="param" line="51" description="" type="\Slim\Http\Request" variable="$request">
+            <type>\Slim\Http\Request</type>
+          </tag>
+          <tag name="param" line="51" description="" type="\Slim\Http\Response" variable="$response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+          <tag name="param" line="51" description="" type="array" variable="$args">
+            <type>array</type>
+          </tag>
+          <tag name="return" line="51" description="" type="\Slim\Http\Response">
+            <type>\Slim\Http\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$request</name>
+          <default></default>
+          <type>\Slim\Http\Request</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Slim\Http\Response</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>array</type>
+        </argument>
+        <inherited_from>\MapPlatform\AbstractClasses\ApiController</inherited_from>
+      </method>
+    </class>
+    <source>eJzlVV1v2jAUfZ+0/3AVIREQJLQvk0ZHy7pObaV2iOZlGhO6GJNYdWzPdmi7af99DgGS8KFN2mP9EDu6516fe3zinJ2rRL19A26E7XaxgDZECQVChdXIgUg3S86phoXUgJzDXD4JLnEOmv7IqLFmk7gtMLoewZJqw6SAd3vRC4XkEWOav92hGnG0rnRaxk0220Aut9ubyVCxEoOZTRyffEQJSyV81PjoSJ7ZhM1SqeVPRvVFnCLjAZHpoMzcEHPjJOgFvcq+TJAVK4DPTBsLuHTpOOMUitCYcoqG1vPCYiEwpcbRptWeJjv8+wW2eGau0o1YImfzoY6z1Cl+9Uyoso5dv4Q8cJZOrq1Vk3Gh95GYUVIYWgnWeehjoeHMuJMm9pKjMXRFs2Ttcvb98WljgNIcr+SQSa7Rtv+SN9BnS8XcQE28IufXukZNxLqQlUJMLKVrMajiajlOWI0pTPZsAY319/hXeOGUHF+sDiWg1vgCDdSxOU5FU5tpcah4FReWLyqbcUZgkQmSuxym06Jff7eHDuzT7BR0WlVF87FmscX1y/DvjX3/Uf05XWDGLShny1dyBIlM/0/+hvsYTXeQ3wXIBNXdAZdxnM9MLKTv3aFwaua3WyQlN9AMUbFweRLa/N9BNFPWgwD8q1TZF3+1x7cmQUsS97Npfm/BOXgevAcvzGEH4gF4TdAys9Rr9Xe4OfLuPIc6v0Q+FIr6rX7VFYcc1B08MZvcGin8skIHTnu9Dtw+fLmfjsZXUfTVTTf3Uavut/X0B0nhGfE=</source>
+  </file>
+  <package name="MapPlatform" full_name="MapPlatform">
+    <package name="AbstractClasses" full_name="MapPlatform\AbstractClasses"/>
+    <package name="Controllers" full_name="MapPlatform\Controllers">
+      <package name="Api" full_name="MapPlatform\Controllers\Api"/>
+    </package>
+    <package name="Core" full_name="MapPlatform\Core">
+      <package name="Utils" full_name="MapPlatform\Core\Utils"/>
+    </package>
+  </package>
+  <package name="global" full_name="global"/>
+  <namespace name="MapPlatform" full_name="MapPlatform">
+    <namespace name="AbstractClasses" full_name="MapPlatform\AbstractClasses"/>
+    <namespace name="Controllers" full_name="MapPlatform\Controllers">
+      <namespace name="Api" full_name="MapPlatform\Controllers\Api"/>
+    </namespace>
+    <namespace name="Core" full_name="MapPlatform\Core">
+      <namespace name="Utils" full_name="MapPlatform\Core\Utils"/>
+    </namespace>
+  </namespace>
+  <deprecated count="0"/>
+</project>

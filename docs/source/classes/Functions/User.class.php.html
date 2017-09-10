@@ -1,0 +1,159 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions;
+    use \Exception;
+
+    class User
+    {
+        private $utils = null;
+
+        public function __construct(&amp;$utilsClass) {
+            $this -&gt; utils = $utilsClass;
+        }
+
+        public function updateUserInfo(&amp;$securityClass, &amp;$dbHandler) {
+            global $request;
+
+            $algorithm       = 'sha512';
+            $iterationCount  = 1024;
+            $keyLength       = 1024;
+            $outputRaw       = False;
+            $userId          = $_SESSION['user'] -&gt; id;
+
+            try {
+                if (!isset($_POST['settingCurPass']) ||
+                     Empty($_POST['settingCurPass']))
+                    throw new Exception('Invalid request, inputs missing');
+
+                $selectQuery = 'SELECT ' . PHP_EOL .
+                               '    `user_password`, ' . PHP_EOL .
+                               '    `user_salt` ' . PHP_EOL .
+                               'FROM ' . PHP_EOL .
+                               '    `Users` ' . PHP_EOL .
+                               'WHERE ' . PHP_EOL .
+                               '    `user_pk` = :userid;';
+                $dbHandler -&gt; PrepareAndBind($selectQuery, Array('userid' =&gt; $userId));
+                $userInfo      = $dbHandler -&gt; ExecuteAndFetch();
+                $passwordCheck = $securityClass -&gt; isValidPassword($_POST['settingCurPass'], $userInfo['user_salt'], $userInfo['user_password']);
+
+                if (!$passwordCheck) {
+                    $this -&gt; utils -&gt; http_response_code(401);
+                    $content['status']  = 'Error';
+                    $content['message'] = 'Invalid password.&lt;br /&gt;' . PHP_EOL .
+                                          'Please try again.';
+
+                    return $content;
+                };
+
+                if (isset($_POST['settingEmailAddress']) &amp;&amp; !Empty($_POST['settingEmailAddress'])) {
+                    $emailAddress = $this -&gt; utils -&gt; cleanInput($_POST['settingEmailAddress']);
+
+                    if (Empty($emailAddress)) {
+                        $this -&gt; utils -&gt; http_response_code(400);
+                        $content['status']  = 'Error';
+                        $content['message'] = 'Invalid email address.&lt;br /&gt;' . PHP_EOL .
+                                              'Please try again.';
+
+                        return $content;
+                    };
+
+                    $updateQuery = 'UPDATE ' . PHP_EOL .
+                                   '    `Users` ' . PHP_EOL .
+                                   'SET ' . PHP_EOL .
+                                   '    `user_email_address` = :emailaddress' . PHP_EOL .
+                                   'WHERE ' . PHP_EOL .
+                                   '    `user_pk` = :userid;';
+                    $dbHandler -&gt; PrepareAndBind($updateQuery, Array('userid'       =&gt; $userId,
+                                                                     'emailaddress' =&gt; $emailAddress));
+                    $dbHandler -&gt; Execute();
+                } else {
+                    $emailQuery = '';
+                };
+
+                if ((isset($_POST['settingNewPass'])    &amp;&amp; !Empty($_POST['settingNewPass'])) &amp;&amp;
+                    (isset($_POST['settingRepeatPass']) &amp;&amp; !Empty($_POST['settingRepeatPass']))) {
+                    $LevenshteinForpasswords = Levenshtein($_POST['settingNewPass'], $_POST['settingRepeatPass']);
+
+                    if ($LevenshteinForpasswords !== 0) {
+                        $this -&gt; utils -&gt; http_response_code(400);
+                        $content['status']  = 'Error';
+                        $content['message'] = 'Passwords do not match.&lt;br /&gt;' . PHP_EOL .
+                                              'Please try again.';
+
+                        return $content;
+                    };
+
+                    $hashVal     = $securityClass -&gt; pbkdf2($algorithm, $_POST['settingNewPass'], $userInfo['user_salt'], $iterationCount, $keyLength, $outputRaw);
+                    $updateQuery = 'UPDATE ' . PHP_EOL .
+                                   '    `Users` ' . PHP_EOL .
+                                   'SET ' . PHP_EOL .
+                                   '    `user_password` = :password' . PHP_EOL .
+                                   'WHERE ' . PHP_EOL .
+                                   '    `user_pk` = :userid;';
+                    $dbHandler -&gt; PrepareAndBind($updateQuery, Array('userid'   =&gt; $userId,
+                                                                     'password' =&gt; $hashVal));
+                    $dbHandler -&gt; Execute();
+                } else {
+                    $passwordQuery = '';
+                };
+
+                $this -&gt; utils -&gt; http_response_code(200);
+                $content['status']  = 'Success';
+                $content['message'] = 'User information updated successfully!&lt;br /&gt;' . PHP_EOL .
+                                      'Redirecting you now.';
+
+                return $content;
+            } catch (Exception $e) {
+                $this -&gt; utils -&gt; http_response_code(400);
+                $content['status']  = 'Error';
+                $content['message'] = 'Unable to update user information.&lt;br /&gt;' . PHP_EOL .
+                                      'Please try again.';
+
+                return $content;
+            };
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

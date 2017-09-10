@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    /**
+     * The central controller for all map features
+     *
+     * PHP version 7
+     *
+     * @package    MapPlatform
+     * @subpackage Controllers\Api
+     * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version    1.0.0
+     * @since      First available since Release 1.0.0
+     */
+    namespace MapPlatform\Controllers\Api;
+    
+    use InvalidArgumentException;
+    use Slim\Http\Request;
+    use Slim\Http\Response;
+    use MapPlatform\Core;
+    use MapPlatform\AbstractClasses\ApiController;
+
+    /**
+     * Map controller
+     *
+     * @package    MapPlatform
+     * @subpackage Controllers\Api
+     * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version    1.0.0
+     * @since      First available since Release 1.0.0
+     */
+    class MapController extends ApiController
+    {
+        /**
+         * MapController invoker.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function __invoke(Request $request, Response $response, $args) {
+            return $response;
+        }
+
+        /**
+         * MapController Get all maps.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getAllMaps(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Get a specific map.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getMap(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Get a map by user ID.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getMapsByUser(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps/user/&quot; . $args['userId'] . &quot;' route&quot;);
+            $userId = filter_var($args['userId'], FILTER_SANITIZE_NUMBER_INT);
+            $mapListItems = null;
+            $resultArr = array();
+
+            if ($userId === null || $userId &lt;= 0)
+                throw new Exception('Ilegal user ID : ' . $userId);
+
+            
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Add map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function addMap(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $data = $request-&gt;getParsedBody();
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Update map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function updateMap(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $data = $request-&gt;getParsedBody();
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MapController Delete map function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function deleteMap(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/maps' route&quot;);
+            $data = $request-&gt;getParsedBody();
+            $resultArr = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

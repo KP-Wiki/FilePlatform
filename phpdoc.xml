@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+    <title>Map Platform Documentation</title>
+    <parser>
+        <target>docs</target>
+        <markers>
+            <item>TODO</item>
+            <item>FIXME</item>
+            <item>HACK</item>
+            <item>INFO</item>
+        </markers>
+        <extensions>
+            <extension>php</extension>
+            <extension>php3</extension>
+            <extension>phtml</extension>
+        </extensions>
+    </parser>
+    <transformer>
+        <target>docs</target>
+    </transformer>
+    <transformations>
+        <template name="zend" />
+    </transformations>
+    <files>
+        <directory>./src</directory> <!-- Scan and parse all the php files except those found in the paths below -->
+        <ignore>settings.php</ignore>
+        <ignore>classes/</ignore>
+    </files>
+</phpdoc>

@@ -1,0 +1,200 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    /**
+     * The central controller for all misc features
+     *
+     * PHP version 7
+     *
+     * @package    MapPlatform
+     * @subpackage Controllers\Api
+     * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version    1.0.0
+     * @since      First available since Release 1.0.0
+     */
+    namespace MapPlatform\Controllers\Api;
+    
+    use InvalidArgumentException;
+    use Slim\Http\Request;
+    use Slim\Http\Response;
+    use MapPlatform\Core;
+    use MapPlatform\AbstractClasses\ApiController;
+
+    /**
+     * Misc feature controller
+     *
+     * @package    MapPlatform
+     * @subpackage Controllers\Api
+     * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version    1.0.0
+     * @since      First available since Release 1.0.0
+     */
+    class MiscController extends ApiController
+    {
+        /**
+         * MiscController invoker.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function __invoke(Request $request, Response $response, $args) {
+            return $response;
+        }
+
+        /**
+         * MiscController default image resizer.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function resizeDefault(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/resizedefault&quot; . (Empty($args['catchall']) ? &quot;&quot; : &quot;/&quot; . $args['catchall']) . &quot;' route&quot;);
+            $config = $this-&gt;container-&gt;get('settings')['images'];
+            $images = [
+                $config['defaultImageDir'] . 'kp_2016-08-30_21-29-44.png',
+                $config['defaultImageDir'] . 'kp_2016-09-03_18-34-31.png'
+            ];
+
+            foreach ($images as $image) {
+                $imageObject = new Imagick($image);
+                $this-&gt;container-&gt;fileUtils-&gt;resizeImage($imageObject, $config['maxWidth'], $config['maxHeight']);
+                $imageObject-&gt;writeImage($image);
+                $imageObject-&gt;destroy(); 
+            };
+
+            return $response-&gt;withJson(['result' =&gt; 'Success'], 200, JSON_PRETTY_PRINT);
+        }
+
+        /**
+         * MiscController script tester.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function testScript(Request $request, Response $response, $args) {
+            $data = $request-&gt;getParsedBody();
+
+            $this-&gt;container-&gt;logger-&gt;info(&quot;MapPlatform '/api/v1/testscript&quot; . (Empty($args['catchall']) ? &quot;&quot; : &quot;/&quot; . $args['catchall']) . &quot;' route&quot;);
+            $this-&gt;container-&gt;logger-&gt;debug(&quot;MapPlatform '/api/v1/testscript' data: &quot; . print_r($data, True));
+            $config = $this-&gt;container-&gt;get('settings');
+
+            try {
+                $ScriptText = filter_var($data['ScriptText'], FILTER_SANITIZE_STRING);
+                $guid       = $this-&gt;container-&gt;miscUtils-&gt;guidv4();
+
+                $scriptFilePath = $config['appTempDir'] . $guid . '.script';
+                $scriptFile     = fopen($scriptFilePath, 'w') or die('Unable to open file!');
+
+                fwrite($scriptFile, $ScriptText);
+                fclose($scriptFile);
+
+                $descriptorSpec = array(
+                    0 =&gt; array('pipe', 'r'), // stdin is a pipe that the child will read from
+                    1 =&gt; array('pipe', 'w'), // stdout is a pipe that the child will write standard output to
+                    2 =&gt; array('pipe', 'w')  // stderr is a pipe that the child will write error output to
+                );
+                $pipes   = array();
+                $cwd     = $config['appRootDir'];
+                $env     = array('SHELL'    =&gt; '/bin/bash',
+                                 'WINEARCH' =&gt; 'win64',
+                                 'HOME'     =&gt; $cwd,
+                                 'LANGUAGE' =&gt; 'en_US:en');
+                $command = 'wine ' . $config['appRootDir'] . '/ScriptValidatorCLI.exe -v -V ' . $scriptFilePath;
+                $process = proc_open($env['SHELL'], $descriptorSpec, $pipes, $cwd, $env);
+
+                if (is_resource($process)) {
+                    /**
+                     * $pipes now looks like this:
+                     *   0 =&gt; Writable handle connected to child stdin
+                     *   1 =&gt; Readable handle connected to child stdout
+                     *   2 =&gt; Readable handle connected to child stderr
+                     */
+                    // Write the command to the stdin pipe and close it to avoid a deadlock
+                    fwrite($pipes[0], $command);
+                    fclose($pipes[0]);
+
+                    // Retrieve the output and error output
+                    $shellResponse    = stream_get_contents($pipes[1]);
+                    $shellErrorOutput = stream_get_contents($pipes[2]);
+
+                    // It is important that you close any pipes before calling proc_close in order to avoid a deadlock
+                    fclose($pipes[1]);
+                    fclose($pipes[2]);
+                    proc_close($process);
+                    unlink($scriptFilePath);
+
+                    return $response-&gt;withJson([
+                        'status' =&gt; 'Success',
+                        'data' =&gt; $shellResponse,
+                        'errData' =&gt; $shellErrorOutput
+                    ], 200, JSON_PRETTY_PRINT);
+                } else {
+                    unlink($scriptFilePath);
+
+                    return $response-&gt;withJson([
+                        'status' =&gt; 'Error',
+                        'message' =&gt; 'PHP goofed us. :('
+                    ], 500, JSON_PRETTY_PRINT);
+                };
+            } catch (Exception $ex) {
+                $result = [
+                    'result' =&gt; 'Fail',
+                    'trace' =&gt; print_r($ex, True)
+                ];
+
+                return $response-&gt;withJson($result, 500, JSON_PRETTY_PRINT);
+            };
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

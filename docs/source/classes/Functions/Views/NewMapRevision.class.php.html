@@ -1,0 +1,129 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions\Views;
+
+    class NewMapRevision
+    {
+        private $utils = null;
+
+        public function __construct(&amp;$utilsClass) {
+            $this -&gt; utils = $utilsClass;
+        }
+
+        public function getContent(&amp;$dbHandler) {
+            global $request;
+
+            $mapItem     = null;
+            $mapId       = IntVal($request['call_parts'][1]);
+            $mapInfoFunc = new \Functions\MapInfo($this -&gt; utils);
+            $mapItem     = $mapInfoFunc -&gt; getMapDetails($dbHandler, $mapId);
+
+            $content = '&lt;div class=&quot;row&quot;&gt;' . PHP_EOL .
+                       '    &lt;div class=&quot;col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad&quot;&gt;' . PHP_EOL .
+                       '        &lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/uploadmaprev/' . $mapId . '&quot; id=&quot;newMapRevFrm&quot; role=&quot;form&quot;&gt;' . PHP_EOL .
+                       '            &lt;div class=&quot;panel panel-default&quot;&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;panel-heading&quot;&gt;' . PHP_EOL .
+                       '                    &lt;h4&gt;' . $mapItem['data']['map_name'] . '&lt;/h4&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;table class=&quot;table table-user-information&quot;&gt;' . PHP_EOL .
+                       '                    &lt;tbody&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;Map Version&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-9&quot;&gt;' . PHP_EOL .
+                       '                                &lt;input type=&quot;text&quot; id=&quot;newMapRevVersion&quot; name=&quot;newMapRevVersion&quot; class=&quot;form-control&quot; value=&quot;' .
+                       $mapItem['data']['rev_map_version'] . '&quot; required&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;.MAP File&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-9&quot;&gt;' . PHP_EOL .
+                       '                                &lt;input type=&quot;file&quot; id=&quot;newMapRevMapFile&quot; name=&quot;newMapRevMapFile&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot;' .
+                       ' data-buttonBefore=&quot;true&quot; data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;.map&quot; required&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;.DAT File&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-9&quot;&gt;' . PHP_EOL .
+                       '                                &lt;input type=&quot;file&quot; id=&quot;newMapRevDatFile&quot; name=&quot;newMapRevDatFile&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot;' .
+                       ' data-buttonBefore=&quot;true&quot; data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;.dat&quot; required&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;.SCRIPT File&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-9&quot;&gt;' . PHP_EOL .
+                       '                                &lt;input type=&quot;file&quot; id=&quot;newMapRevScriptFile&quot; name=&quot;newMapRevScriptFile&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot;' .
+                       ' data-buttonBefore=&quot;true&quot; data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;.script&quot;&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;.LIBX Files&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-9&quot;&gt;' . PHP_EOL .
+                       '                                &lt;input type=&quot;file&quot; id=&quot;newMapRevLibxFiles&quot; name=&quot;newMapRevLibxFiles[]&quot; class=&quot;filestyle&quot; data-buttonName=&quot;btn-primary&quot;' .
+                       ' data-buttonBefore=&quot;true&quot; data-iconName=&quot;glyphicon glyphicon-open-file&quot; accept=&quot;.libx&quot; multiple&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-lg-12&quot; colspan=&quot;2&quot;&gt;' . PHP_EOL .
+                       '                                &lt;button class=&quot;btn btn-success&quot; type=&quot;submit&quot; title=&quot;Submit new Map Information&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;span class=&quot;glyphicon glyphicon-floppy-save&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Submit' . PHP_EOL .
+                       '                                &lt;/button&gt;' . PHP_EOL .
+                       '                                &lt;a class=&quot;btn btn-danger pull-right&quot; id=&quot;btnCancelUpdateMapInfo&quot; title=&quot;Cancel&quot;' .
+                       ' href=&quot;/mapdetails/' . $mapId . '&quot; role=&quot;button&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;span class=&quot;glyphicon glyphicon-remove&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Cancel' . PHP_EOL .
+                       '                                &lt;/a&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                    &lt;/tbody&gt;' . PHP_EOL .
+                       '                &lt;/table&gt;' . PHP_EOL .
+                       '            &lt;/div&gt;' . PHP_EOL .
+                       '        &lt;/form&gt;' . PHP_EOL .
+                       '    &lt;/div&gt;' . PHP_EOL .
+                       '&lt;/div&gt;';
+
+            return $content;
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

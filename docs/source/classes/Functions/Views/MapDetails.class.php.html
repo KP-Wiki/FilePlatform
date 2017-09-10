@@ -1,0 +1,307 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions\Views;
+
+    class MapDetails
+    {
+        private $utils = null;
+
+        public function __construct(&amp;$utilsClass) {
+            $this -&gt; utils = $utilsClass;
+        }
+
+        public function getContent(&amp;$dbHandler) {
+            global $request;
+
+            $mapItem     = null;
+            $mapId       = IntVal($request['call_parts'][1]);
+            $mapInfoFunc = new \Functions\MapInfo($this -&gt; utils);
+            $mapItem     = $mapInfoFunc -&gt; getMapDetails($dbHandler, $mapId);
+
+            $screenshotQuery = 'SELECT ' .
+                               '    `screen_title`, ' .
+                               '    `screen_alt`, ' .
+                               '    `screen_file_name`, ' .
+                               '    `screen_path`, ' .
+                               '    `screen_order` ' .
+                               'FROM ' .
+                               '    `Screenshots` ' .
+                               'WHERE ' .
+                               '    `rev_fk` = :revid;';
+            $dbHandler -&gt; PrepareAndBind($screenshotQuery, Array('revid' =&gt; $mapItem['data']['rev_pk']));
+            $screenshotItems = $dbHandler -&gt; ExecuteAndFetchAll();
+            $dbHandler -&gt; Clean();
+
+            if (is_array($screenshotItems) &amp;&amp; count($screenshotItems) &gt; 0) {
+                $firstItem = True;
+
+                foreach ($screenshotItems as $screenshotItem) {
+                    if ($firstItem) {
+                        $carouselIndicators = '                &lt;li data-target=&quot;#screenshot_carousel&quot; data-slide-to=&quot;' . $screenshotItem['screen_order'] .
+                                              '&quot; class=&quot;active&quot;&gt;&lt;/li&gt;' . PHP_EOL;
+                        $carouselItems      = '                    &lt;div class=&quot;item active&quot;&gt;' . PHP_EOL .
+                                              '                        &lt;img src=&quot;' . $screenshotItem['screen_path'] . $screenshotItem['screen_file_name'] .
+                                              '&quot; alt=&quot;' . $screenshotItem['screen_alt'] . '&quot;&gt;' . PHP_EOL .
+                                              '                        &lt;div class=&quot;carousel-caption&quot;&gt;' . PHP_EOL .
+                                              '                            ' . $screenshotItem['screen_title'] . PHP_EOL .
+                                              '                        &lt;/div&gt;' . PHP_EOL .
+                                              '                    &lt;/div&gt;' . PHP_EOL;
+                        $firstItem          = False;
+                    } else {
+                        $carouselIndicators .= '                &lt;li data-target=&quot;#screenshot_carousel&quot; data-slide-to=&quot;' . $screenshotItem['screen_order'] .
+                                               '&quot;&gt;&lt;/li&gt;' . PHP_EOL;
+                        $carouselItems      .= '                    &lt;div class=&quot;item&quot;&gt;' . PHP_EOL .
+                                               '                        &lt;img src=&quot;' . $screenshotItem['screen_path'] . $screenshotItem['screen_file_name'] .
+                                               '&quot; alt=&quot;' . $screenshotItem['screen_alt'] . '&quot;&gt;' . PHP_EOL .
+                                               '                        &lt;div class=&quot;carousel-caption&quot;&gt;' . PHP_EOL .
+                                               '                            ' . $screenshotItem['screen_title'] . PHP_EOL .
+                                               '                        &lt;/div&gt;' . PHP_EOL .
+                                               '                    &lt;/div&gt;' . PHP_EOL;
+                    };
+                };
+            } else {
+                $carouselIndicators = '                &lt;li data-target=&quot;#screenshot_carousel&quot; data-slide-to=&quot;0&quot; class=&quot;active&quot;&gt;&lt;/li&gt;' . PHP_EOL .
+                                      '                &lt;li data-target=&quot;#screenshot_carousel&quot; data-slide-to=&quot;1&quot;&gt;&lt;/li&gt;' . PHP_EOL;
+                $carouselItems      = '                    &lt;div class=&quot;item active&quot;&gt;' . PHP_EOL .
+                                      '                        &lt;img src=&quot;/uploads/images/kp_2016-08-30_21-29-44.png&quot; alt=&quot;Knights Province Image 1&quot;&gt;' . PHP_EOL .
+                                      '                        &lt;div class=&quot;carousel-caption&quot;&gt;' . PHP_EOL .
+                                      '                            A first look at combat' . PHP_EOL .
+                                      '                        &lt;/div&gt;' . PHP_EOL .
+                                      '                    &lt;/div&gt;' . PHP_EOL .
+                                      '                    &lt;div class=&quot;item&quot;&gt;' . PHP_EOL .
+                                      '                        &lt;img src=&quot;/uploads/images/kp_2016-09-03_18-34-31.png&quot; alt=&quot;Knights Province Image 2&quot;&gt;' . PHP_EOL .
+                                      '                        &lt;div class=&quot;carousel-caption&quot;&gt;' . PHP_EOL .
+                                      '                            A basic village' . PHP_EOL .
+                                      '                        &lt;/div&gt;' . PHP_EOL .
+                                      '                    &lt;/div&gt;' . PHP_EOL;
+            };
+
+            $content = '&lt;div class=&quot;row&quot;&gt;' . PHP_EOL .
+                       '    &lt;div class=&quot;col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad&quot;&gt;' . PHP_EOL .
+                       '        &lt;div class=&quot;panel panel-default&quot;&gt;' . PHP_EOL .
+                       '            &lt;div class=&quot;panel-heading&quot;&gt;' . PHP_EOL .
+                       '                &lt;h4&gt;' . $mapItem['data']['map_name'] . '&lt;/h4&gt;' . PHP_EOL .
+                       '            &lt;/div&gt;' . PHP_EOL .
+                       '            &lt;div class=&quot;col-sm-6&quot;&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;rating-block&quot;&gt;' . PHP_EOL .
+                       '                    &lt;h4&gt;Average user rating&lt;/h4&gt;' . PHP_EOL .
+                       '                    &lt;h2 id=&quot;ratingAvg&quot; class=&quot;bold padding-bottom-7&quot;&gt;' .
+                       ($mapItem['data']['avg_rating'] === 0 ? 'n/a' : $mapItem['data']['avg_rating'] . '&lt;small&gt; / 5&lt;/small&gt;') . '&lt;/h2&gt;' . PHP_EOL .
+                       '                    &lt;div class=&quot;starrr&quot; id=&quot;ratingStarrr&quot; kp-map-id=&quot;' . $mapId .
+                       '&quot; kp-map-rating=&quot;' . $mapItem['data']['avg_rating'] . '&quot;&gt;&lt;/div&gt;&lt;br /&gt;' . PHP_EOL .
+                       '                    &lt;div id=&quot;ratingResultSuccess&quot; class=&quot;alert alert-success alert-dismissible spacersmall&quot; role=&quot;alert&quot; ' .
+                       'style=&quot;display: none;&quot;&gt;' . PHP_EOL .
+                       '                        &lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;alert&quot; aria-label=&quot;Close&quot;&gt;' .
+                       '                            &lt;span aria-hidden=&quot;true&quot;&gt;&amp;times;&lt;/span&gt;' .
+                       '                        &lt;/button&gt;' . PHP_EOL .
+                       '                        &lt;span class=&quot;message&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                    &lt;/div&gt;' . PHP_EOL .
+                       '                    &lt;div id=&quot;ratingResultError&quot; class=&quot;alert alert-danger alert-dismissible spacersmall&quot; role=&quot;alert&quot; style=&quot;display: none;&quot;&gt;' . PHP_EOL .
+                       '                        &lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;alert&quot; aria-label=&quot;Close&quot;&gt;' .
+                       '                            &lt;span aria-hidden=&quot;true&quot;&gt;&amp;times;&lt;/span&gt;' .
+                       '                        &lt;/button&gt;' . PHP_EOL .
+                       '                        &lt;span class=&quot;message&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                    &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '            &lt;/div&gt;' . PHP_EOL .
+                       '            &lt;div class=&quot;col-sm-6&quot;&gt;' . PHP_EOL .
+                       '                &lt;h4&gt;Breakdown&lt;/h4&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;row&quot; style=&quot;margin-left:2px;&quot;&gt;' . PHP_EOL .
+                       '                    5 &lt;span class=&quot;glyphicon glyphicon-star&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                    &lt;span style=&quot;margin-left:10px;&quot;&gt;' . $mapItem['data']['rating_five'] . ' Vote&lt;/span&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;row&quot; style=&quot;margin-left:2px;&quot;&gt;' . PHP_EOL .
+                       '                    4 &lt;span class=&quot;glyphicon glyphicon-star&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                    &lt;span style=&quot;margin-left:10px;&quot;&gt;' . $mapItem['data']['rating_four'] . ' Votes&lt;/span&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;row&quot; style=&quot;margin-left:2px;&quot;&gt;' . PHP_EOL .
+                       '                    3 &lt;span class=&quot;glyphicon glyphicon-star&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                    &lt;span style=&quot;margin-left:10px;&quot;&gt;' . $mapItem['data']['rating_three'] . ' Votes&lt;/span&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;row&quot; style=&quot;margin-left:2px;&quot;&gt;' . PHP_EOL .
+                       '                    2 &lt;span class=&quot;glyphicon glyphicon-star&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                    &lt;span style=&quot;margin-left:10px;&quot;&gt;' . $mapItem['data']['rating_two'] . ' Votes&lt;/span&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;row&quot; style=&quot;margin-left:2px;&quot;&gt;' . PHP_EOL .
+                       '                    1 &lt;span class=&quot;glyphicon glyphicon-star&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                       '                    &lt;span style=&quot;margin-left:10px;&quot;&gt;' . $mapItem['data']['rating_one'] . ' Votes&lt;/span&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '            &lt;/div&gt;' . PHP_EOL .
+                       '            &lt;table class=&quot;table table-user-information&quot;&gt;' . PHP_EOL .
+                       '                &lt;tbody&gt;' . PHP_EOL .
+                       '                    &lt;tr&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;Author&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-9&quot;&gt;' . PHP_EOL .
+                       '                            &lt;a href=&quot;/profile/' . $mapItem['data']['user_pk'] . '&quot;&gt;' . $mapItem['data']['user_name'] . '&lt;/a&gt;' . PHP_EOL .
+                       '                        &lt;/td&gt;' . PHP_EOL .
+                       '                    &lt;/tr&gt;' . PHP_EOL .
+                       '                    &lt;tr&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;Downloads&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-9&quot;&gt;' . $mapItem['data']['map_downloads'] . '&lt;/td&gt;' . PHP_EOL .
+                       '                    &lt;/tr&gt;' . PHP_EOL .
+                       '                    &lt;tr&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;Version&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-9&quot;&gt;' . $mapItem['data']['rev_map_version'] . '&lt;/td&gt;' . PHP_EOL .
+                       '                    &lt;/tr&gt;' . PHP_EOL .
+                       '                    &lt;tr&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;Last change date&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-9&quot;&gt;' . $mapItem['data']['rev_upload_date'] . '&lt;/td&gt;' . PHP_EOL .
+                       '                    &lt;/tr&gt;' . PHP_EOL .
+                       '                    &lt;tr&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;Description&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-sm-9&quot;&gt;' . nl2br($mapItem['data']['rev_map_description']) . '&lt;/td&gt;' . PHP_EOL .
+                       '                    &lt;/tr&gt;' . PHP_EOL .
+                       '                    &lt;tr&gt;' . PHP_EOL .
+                       '                        &lt;td class=&quot;col-lg-12&quot; colspan=&quot;2&quot;&gt;' . PHP_EOL .
+                       '                            &lt;button class=&quot;btn btn-success&quot; id=&quot;btnDownloadMap&quot; type=&quot;submit&quot; title=&quot;Download this map&quot; kp-map-id=&quot;' .
+                       $mapItem['data']['rev_pk'] . '&quot;&gt;' . PHP_EOL .
+                       '                                &lt;span class=&quot;glyphicon glyphicon-download-alt&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Download' . PHP_EOL .
+                       '                            &lt;/button&gt;' . PHP_EOL;
+
+            if ($mapItem['data']['user_pk'] == $_SESSION['user'] -&gt; id) {
+                $content .= '&amp;nbsp;&amp;nbsp;' . PHP_EOL .
+                            '                            &lt;a class=&quot;btn btn-primary&quot; id=&quot;btnUpdateMapInfo&quot; title=&quot;Edit Map Information&quot;' .
+                            ' href=&quot;/editmapinfo/' . $mapId . '&quot; role=&quot;button&quot;&gt;' . PHP_EOL .
+                            '                                &lt;span class=&quot;glyphicon glyphicon-pencil&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Edit Info' . PHP_EOL .
+                            '                            &lt;/a&gt;' . PHP_EOL;
+            };
+
+            $content .= '                            &lt;button class=&quot;btn btn-danger pull-right&quot; id=&quot;btnFlagMap&quot; type=&quot;submit&quot; title=&quot;Flag this map&quot; kp-map-id=&quot;' .
+                        $mapItem['data']['rev_pk'] . '&quot;&gt;' . PHP_EOL .
+                        '                                &lt;span class=&quot;glyphicon glyphicon-flag&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                        '                            &lt;/button&gt;' . PHP_EOL .
+                        '                        &lt;/td&gt;' . PHP_EOL .
+                        '                    &lt;/tr&gt;' . PHP_EOL .
+                        '                &lt;/tbody&gt;' . PHP_EOL .
+                        '            &lt;/table&gt;' . PHP_EOL .
+                        '        &lt;/div&gt;' . PHP_EOL .
+                        '    &lt;/div&gt;' . PHP_EOL .
+                        '&lt;/div&gt;' . PHP_EOL .
+                        '&lt;div class=&quot;row spacer&quot;&gt;' . PHP_EOL .
+                        '    &lt;div class=&quot;col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-2&quot; ' .
+                        'style=&quot;margin-bottom: 25px;&quot;&gt;' . PHP_EOL .
+                        '        &lt;center&gt;' . PHP_EOL .
+                        '            &lt;div id=&quot;screenshot_carousel&quot; class=&quot;carousel slide&quot; data-ride=&quot;carousel&quot;&gt;' . PHP_EOL .
+                        '                &lt;!-- Indicators --&gt;' . PHP_EOL .
+                        '                &lt;ol class=&quot;carousel-indicators&quot;&gt;' . PHP_EOL .
+                        $carouselIndicators .
+                        '                &lt;/ol&gt;' . PHP_EOL .
+                        '                &lt;!-- Wrapper for slides --&gt;' . PHP_EOL .
+                        '                &lt;center&gt;' . PHP_EOL .
+                        '                    &lt;div class=&quot;carousel-inner&quot; role=&quot;listbox&quot;&gt;' . PHP_EOL .
+                        $carouselItems .
+                        '                    &lt;/div&gt;' . PHP_EOL .
+                        '                &lt;/center&gt;' . PHP_EOL .
+                        '                &lt;!-- Controls --&gt;' . PHP_EOL .
+                        '                &lt;a class=&quot;left carousel-control&quot; href=&quot;#screenshot_carousel&quot; role=&quot;button&quot; data-slide=&quot;prev&quot;&gt;' . PHP_EOL .
+                        '                    &lt;span class=&quot;glyphicon glyphicon-chevron-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                        '                    &lt;span class=&quot;sr-only&quot;&gt;Previous&lt;/span&gt;' . PHP_EOL .
+                        '                &lt;/a&gt;' . PHP_EOL .
+                        '                &lt;a class=&quot;right carousel-control&quot; href=&quot;#screenshot_carousel&quot; role=&quot;button&quot; data-slide=&quot;next&quot;&gt;' . PHP_EOL .
+                        '                    &lt;span class=&quot;glyphicon glyphicon-chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;' . PHP_EOL .
+                        '                    &lt;span class=&quot;sr-only&quot;&gt;Next&lt;/span&gt;' . PHP_EOL .
+                        '                &lt;/a&gt;' . PHP_EOL .
+                        '            &lt;/div&gt;' . PHP_EOL .
+                        '        &lt;/center&gt;' . PHP_EOL .
+                        '    &lt;/div&gt;' . PHP_EOL .
+                        '&lt;/div&gt;';
+
+            return $content;
+        }
+
+        public function getEditContent(&amp;$dbHandler) {
+            global $request;
+
+            $mapItem     = null;
+            $mapId       = IntVal($request['call_parts'][1]);
+            $mapInfoFunc = new \Functions\MapInfo($this -&gt; utils);
+            $mapItem     = $mapInfoFunc -&gt; getMapDetails($dbHandler, $mapId);
+
+            $content = '&lt;div class=&quot;row&quot;&gt;' . PHP_EOL .
+                       '    &lt;div class=&quot;col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad&quot;&gt;' . PHP_EOL .
+                       '        &lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/updatemapinfo/' . $mapItem['data']['rev_pk'] . '&quot; id=&quot;editMapInfoFrm&quot; role=&quot;form&quot;&gt;' . PHP_EOL .
+                       '            &lt;div class=&quot;panel panel-default&quot;&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;panel-heading&quot;&gt;' . PHP_EOL .
+                       '                    &lt;h4&gt;' . $mapItem['data']['map_name'] . '&lt;/h4&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;table class=&quot;table table-user-information&quot;&gt;' . PHP_EOL .
+                       '                    &lt;tbody&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;Short Description&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-9&quot;&gt;' . PHP_EOL .
+                       '                                &lt;input type=&quot;text&quot; id=&quot;editMapDescShort&quot; name=&quot;editMapDescShort&quot; class=&quot;form-control&quot; value=&quot;' .
+                       nl2br($mapItem['data']['rev_map_description_short']) . '&quot; required&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-3&quot;&gt;&lt;b&gt;Full Description&lt;/b&gt;&lt;/td&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-sm-9&quot;&gt;' . PHP_EOL .
+                       '                                &lt;textarea id=&quot;editMapDescFull&quot; name=&quot;editMapDescFull&quot; class=&quot;form-control&quot; rows=&quot;3&quot; required&gt;' .
+                       $mapItem['data']['rev_map_description'] . '&lt;/textarea&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                        &lt;tr&gt;' . PHP_EOL .
+                       '                            &lt;td class=&quot;col-lg-12&quot; colspan=&quot;2&quot;&gt;' . PHP_EOL .
+                       '                                &lt;button class=&quot;btn btn-success&quot; type=&quot;submit&quot; title=&quot;Submit new Map Information&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;span class=&quot;glyphicon glyphicon-floppy-save&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Submit' . PHP_EOL .
+                       '                                &lt;/button&gt;' . PHP_EOL .
+                       '                                &lt;a class=&quot;btn btn-danger pull-right&quot; id=&quot;btnCancelUpdateMapInfo&quot; title=&quot;Cancel&quot;' .
+                       ' href=&quot;/mapdetails/' . $mapId . '&quot; role=&quot;button&quot;&gt;' . PHP_EOL .
+                       '                                    &lt;span class=&quot;glyphicon glyphicon-remove&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Cancel' . PHP_EOL .
+                       '                                &lt;/a&gt;' . PHP_EOL .
+                       '                            &lt;/td&gt;' . PHP_EOL .
+                       '                        &lt;/tr&gt;' . PHP_EOL .
+                       '                    &lt;/tbody&gt;' . PHP_EOL .
+                       '                &lt;/table&gt;' . PHP_EOL .
+                       '            &lt;/div&gt;' . PHP_EOL .
+                       '        &lt;/form&gt;' . PHP_EOL .
+                       '    &lt;/div&gt;' . PHP_EOL .
+                       '&lt;/div&gt;';
+
+            return $content;
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

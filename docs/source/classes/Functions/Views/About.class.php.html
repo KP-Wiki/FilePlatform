@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions\Views;
+
+    class About
+    {
+        public function __construct() {
+        }
+
+        public function getContent() {
+            global $request;
+
+            return '&lt;p&gt;' . PHP_EOL .
+                   '    Please note that this website is still under heavy development!&lt;br /&gt;' . PHP_EOL .
+                   '    &lt;br /&gt;' . PHP_EOL .
+                   '    The following is still planned:.&lt;br /&gt;' . PHP_EOL .
+                   '    &lt;pre&gt;' . PHP_EOL .
+                   '        1&gt; Submission moderation queues for the end-user\'s security.' . PHP_EOL .
+                   '        2&gt; Map image updating for submissions.' . PHP_EOL .
+                   '        3&gt; Map revision rollback for submitters.' . PHP_EOL .
+                   '        4&gt; Improved API features for integration with Knights Province (And perhaps KaM Remake).' . PHP_EOL .
+                   '        5&gt; Functional map and user flagging for moderation features.' . PHP_EOL .
+                   '        6&gt; More in the future. :)' . PHP_EOL .
+                   '    &lt;/pre&gt;' . PHP_EOL .
+                   '&lt;/p&gt;&lt;br /&gt;' . PHP_EOL .
+                   '&lt;p&gt;' . PHP_EOL .
+                   '    Your request :' . PHP_EOL .
+                   '    &lt;pre&gt;' . print_r($request, True) . '&lt;/pre&gt;' . PHP_EOL .
+                   '&lt;/p&gt;';
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

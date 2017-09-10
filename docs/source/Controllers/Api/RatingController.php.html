@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    /**
+     * The central controller for all rating requests
+     *
+     * PHP version 7
+     *
+     * @package    MapPlatform
+     * @subpackage Controllers\Api
+     * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version    1.0.0
+     * @since      First available since Release 1.0.0
+     */
+    namespace MapPlatform\Controllers\Api;
+    
+    use InvalidArgumentException;
+    use Slim\Http\Request;
+    use Slim\Http\Response;
+    use MapPlatform\Core;
+    use MapPlatform\AbstractClasses\ApiController;
+
+    /**
+     * Rating controller
+     *
+     * @package    MapPlatform
+     * @subpackage Controllers\Api
+     * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version    1.0.0
+     * @since      First available since Release 1.0.0
+     */
+    class RatingController extends ApiController
+    {
+        /**
+         * RatingController invoker.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function __invoke(Request $request, Response $response, $args) {
+            return $response;
+        }
+
+        /**
+         * RatingController default page.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function home(Request $request, Response $response, $args) {
+            $this-&gt;container-&gt;logger-&gt;info(&quot;ManagementTools '/api/v1/testscript&quot; . (Empty($args['catchall']) ? &quot;&quot; : &quot;/&quot; . $args['catchall']) . &quot;' route&quot;);
+            $resultArr   = array();
+
+            return $response-&gt;withJson($resultArr, 200, JSON_PRETTY_PRINT);
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

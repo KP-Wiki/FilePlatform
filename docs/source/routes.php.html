@@ -1,0 +1,108 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    /**
+     * The application route definitions
+     *
+     * PHP version 7
+     *
+     * @package MapPlatform
+     * @author  Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version 1.0.0
+     * @since   First available since Release 1.0.0
+     */
+    use MapPlatform\Controllers;
+
+    // IP Pool routes
+    $app-&gt;group('/ippools', function () {
+        $this-&gt;get('/customer/{customername}', Controllers\IPPoolController::class . ':getPoolByCustomerName')-&gt;setName('ippools-customer');
+        $this-&gt;get('/netaddr/{netaddr}', Controllers\IPPoolController::class . ':getPoolByNetworkAddress')-&gt;setName('ippools-netaddr');
+        // Default route to /ippools
+        $this-&gt;get('[/{catchall}]', Controllers\IPPoolController::class . ':home')-&gt;setName('ippools');
+    });
+
+    // Virtual machine inventory routes
+    $app-&gt;group('/vminventory', function () {
+        // Default route to /vminventory
+        $this-&gt;get('[/{catchall}]', Controllers\VMInventoryController::class . ':home')-&gt;setName('vminventory');
+    });
+
+    // API routes
+    $app-&gt;group('/api', function () {
+        $this-&gt;group('/v1', function () {
+            $this-&gt;group('/maps', function () {
+                $this-&gt;group('/user', function () {
+                    $this-&gt;get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser'); // R
+                });
+
+                $this-&gt;post('', Controllers\Api\MapController::class . ':addMap');        // C
+                $this-&gt;get('', Controllers\Api\MapController::class . ':getAllMaps');     // R
+                $this-&gt;get('/{mapId}', Controllers\Api\MapController::class . ':getMap'); // R
+                $this-&gt;put('', Controllers\Api\MapController::class . ':updateMap');      // U
+                $this-&gt;delete('', Controllers\Api\MapController::class . ':deleteMap');   // D
+            });
+
+            $this-&gt;group('/download', function () {
+                $this-&gt;get('[/{catchall}]', Controllers\Api\DownloadController::class);
+            });
+
+            $this-&gt;group('/rating', function () {
+                $this-&gt;post('', Controllers\Api\RatingController::class . ':addRating');        // C
+                $this-&gt;get('/{mapId}', Controllers\Api\RatingController::class . ':getRating'); // R
+            });
+
+            $this-&gt;group('/testscript', function () {
+                $this-&gt;post('[/{catchall}]', Controllers\Api\MiscController::class . ':testScript');
+            });
+
+            $this-&gt;group('/resizedefault', function () {
+                $this-&gt;get('[/{catchall}]', Controllers\Api\MiscController::class . ':resizeDefault');
+            });
+        });
+    });
+
+    // Default route to /home
+    $app-&gt;get('/[{catchall}]', Controllers\HomeController::class);
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,147 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    /**
+     * The SQL database connector
+     *
+     * This package should be used for all connections towards SQL databases.
+     *
+     * PHP version 7
+     *
+     * @package MapPlatform
+     * @subpackage Core
+     * @author  Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version 1.0.0
+     * @since   First available since Release 1.0.0
+     */
+    namespace MapPlatform\Core;
+
+    use InvalidArgumentException;
+    use MapPlatform\AbstractClasses\DatabaseConnector;
+    use Slim\Container;
+    use Slim\PDO\Database;
+    use Slim\PDO\Statement;
+    use PDO;
+    use PDOException;
+
+    /**
+     * SQL DatabaseConnector
+     *
+     * @package    MapPlatform
+     * @subpackage Core
+     * @author     Thimo Braker &lt;thibmorozier@gmail.com&gt;
+     * @version    1.0.0
+     * @since      First available since Release 1.0.0
+     */
+    class SQLConnector
+    {
+		/** @var \Slim\Container $container The framework container */
+        protected $container;
+        /** @var string $DSN The Data Source Name */
+        protected $DSN;
+        /** @var mixed $PDO The Php Data Object */
+        public $PDO;
+
+        /**
+         * Class constructor.
+         *
+         * @param \Slim\Container The application controller.
+         */
+        public function __construct(Container &amp;$aConstainer) {
+            $this-&gt;container = $aConstainer;
+        }
+
+        /**
+         * Build a new DSN.
+         *
+         * @param array The database settings.
+         */
+        protected function buildDSN(array $aConfig) {
+            if ($aConfig['engine'] == &quot;sqlite&quot;)
+                $this-&gt;DSN = $aConfig['engine'] .
+                             &quot;:&quot; . $aConfig['host'];
+            elseif (in_array($aConfig['engine'], [&quot;dblib&quot;, &quot;sqlsrv&quot;]))
+                $this-&gt;DSN = $aConfig['engine'] .
+                             &quot;:Server=&quot; . $aConfig['host'] .
+                             &quot;;Database=&quot; . $aConfig['database'];
+            else
+                $this-&gt;DSN = $aConfig['engine'] .
+                             &quot;:host=&quot; . $aConfig['host'] .
+                             &quot;;dbname=&quot; . $aConfig['database'] .
+                             &quot;;charset=utf8&quot;;
+        }
+
+        /**
+         * connect Connect to the specifieddatabase.
+         *
+         * @return bool Indicator wether the connection succeeded or not.
+         */
+        public function connect() {
+            $config = $this-&gt;container-&gt;get('settings')['database'];
+            $this::buildDSN($config);
+
+            try {
+                $this-&gt;PDO = new Database($this-&gt;DSN, $config['user'], $config['password'], array(PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_WARNING));
+            } catch (Exception $ex) {
+                $this-&gt;container-&gt;logger-&gt;error(&quot;Unable to connect to the target database: &quot; . print_r($ex, True));
+
+                return False;
+            };
+			
+            $this-&gt;PDO-&gt;setAttribute(PDO::ATTR_ERRMODE,            PDO::ERRMODE_EXCEPTION);
+            $this-&gt;PDO-&gt;setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $this-&gt;PDO-&gt;setAttribute(PDO::ATTR_EMULATE_PREPARES,   False);
+
+            return True;
+        }
+
+        /**
+         * Close the database connection.
+         */
+        public function close() {
+            $this-&gt;PDO = null;
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

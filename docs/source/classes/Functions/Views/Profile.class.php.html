@@ -1,0 +1,115 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+    namespace Functions\Views;
+
+    class Profile
+    {
+        private $utils = null;
+
+        public function __construct(&amp;$utilsClass) {
+            $this -&gt; utils = $utilsClass;
+        }
+
+        public function getContent(&amp;$dbHandler) {
+            global $request;
+
+            $userId = IntVal($request['call_parts'][1]);
+
+            $query = 'SELECT ' . PHP_EOL .
+                     '    `Users`.`user_name`, ' . PHP_EOL .
+                     '    `Users`.`user_email_address`, ' . PHP_EOL .
+                     '    `Groups`.`group_name` ' . PHP_EOL .
+                     'FROM ' . PHP_EOL .
+                     '    `Users` ' . PHP_EOL .
+                     'LEFT JOIN ' . PHP_EOL .
+                     '    `Groups` ON `Users`.`group_fk` = `Groups`.`group_pk` ' . PHP_EOL .
+                     'WHERE ' . PHP_EOL .
+                     '    `Users`.`user_pk` = :userid;';
+            $dbHandler -&gt; PrepareAndBind($query, Array('userid' =&gt; $userId));
+            $user = $dbHandler -&gt; ExecuteAndFetch();
+
+            $content = '&lt;div class=&quot;row&quot;&gt;' . PHP_EOL .
+                       '    &lt;div class=&quot;col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 toppad&quot;&gt;' . PHP_EOL .
+                       '        &lt;div class=&quot;panel panel-default&quot;&gt;' . PHP_EOL .
+                       '            &lt;div class=&quot;panel-heading&quot;&gt;' . PHP_EOL .
+                       '                &lt;span class=&quot;panel-title&quot;&gt;Info Card&lt;/span&gt;' . PHP_EOL .
+                       '            &lt;/div&gt;' . PHP_EOL .
+                       '            &lt;div class=&quot;panel-body&quot;&gt;' . PHP_EOL .
+                       '                &lt;div class=&quot;row&quot;&gt;' . PHP_EOL .
+                       '                    &lt;div class=&quot;col-md-3 col-lg-3&quot; align=&quot;center&quot;&gt;' . PHP_EOL .
+                       '                        ' . $this -&gt; utils -&gt; getGravatar($user['user_email_address'],
+                                                                                  250,
+                                                                                  'identicon',
+                                                                                  'pg') . PHP_EOL .
+                       '                    &lt;/div&gt;' . PHP_EOL .
+                       '                    &lt;div class=&quot;col-md-9 col-lg-9&quot;&gt;' . PHP_EOL .
+                       '                        &lt;table class=&quot;table table-user-information&quot;&gt;' . PHP_EOL .
+                       '                            &lt;tbody&gt;' . PHP_EOL .
+                       '                                &lt;tr&gt;' . PHP_EOL .
+                       '                                    &lt;td&gt;&lt;span class=&quot;glyphicon glyphicon-user&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Username&lt;/td&gt;' . PHP_EOL .
+                       '                                    &lt;td&gt;' . PHP_EOL .
+                       '                                        ' . $user['user_name'] . PHP_EOL .
+                       '                                    &lt;/td&gt;' . PHP_EOL .
+                       '                                &lt;/tr&gt;' . PHP_EOL .
+                       '                                &lt;tr&gt;' . PHP_EOL .
+                       '                                    &lt;td&gt;&lt;span class=&quot;glyphicon glyphicon-tag&quot;&gt;&lt;/span&gt;&amp;nbsp;&amp;nbsp;Group&lt;/td&gt;' . PHP_EOL .
+                       '                                    &lt;td&gt;' . PHP_EOL .
+                       '                                        ' . $user['group_name'] . PHP_EOL .
+                       '                                    &lt;/td&gt;' . PHP_EOL .
+                       '                                &lt;/tr&gt;' . PHP_EOL .
+                       '                            &lt;/tbody&gt;' . PHP_EOL .
+                       '                        &lt;/table&gt;' . PHP_EOL .
+                       '                    &lt;/div&gt;' . PHP_EOL .
+                       '                &lt;/div&gt;' . PHP_EOL .
+                       '            &lt;/div&gt;' . PHP_EOL .
+                       '        &lt;/div&gt;' . PHP_EOL .
+                       '    &lt;/div&gt;' . PHP_EOL .
+                       '&lt;/div&gt;' . PHP_EOL;
+
+            return $content;
+        }
+    }
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all();
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>
