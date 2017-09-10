@@ -57,10 +57,10 @@
                 $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser');  // R
 
                 $this->group('/{mapId}', function () {
-                    $this->get('', Controllers\Api\MapController::class . ':getMap');                     // R
-                    $this->put('/updateinfo', Controllers\Api\MapController::class . ':updateMapInfo');   // U
-                    $this->put('/updatefiles', Controllers\Api\MapController::class . ':updateMapFiles'); // U
-                    $this->delete('', Controllers\Api\MapController::class . ':deleteMap');               // D
+                    $this->get('', Controllers\Api\MapController::class . ':getMap');                      // R
+                    $this->post('/updateinfo', Controllers\Api\MapController::class . ':updateMapInfo');   // U
+                    $this->post('/updatefiles', Controllers\Api\MapController::class . ':updateMapFiles'); // U
+                    $this->delete('', Controllers\Api\MapController::class . ':deleteMap');                // D
                 });
             });
 

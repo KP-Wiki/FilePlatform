@@ -1,6 +1,6 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 main">
-                    <form enctype="multipart/form-data" kp-map-id="<?=$mapId;?>" id="editMapFilesFrm" name="editMapFilesFrm" role="form">
+                    <form enctype="multipart/form-data" method="POST" kp-map-id="<?=$mapId;?>" id="editMapFilesFrm" name="editMapFilesFrm" role="form">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <span class="panel-title"><?=$mapName;?></span>
@@ -40,7 +40,7 @@
                                     <tr>
                                         <td class="col-sm-3"><b>.SCRIPT File</b></td>
                                         <td class="col-sm-9">
-                                            <input type="file" id="editMapDcriptFile" name="editMapDcriptFile" class="filestyle"
+                                            <input type="file" id="editMapScriptFile" name="editMapScriptFile" class="filestyle"
                                                                                                                data-buttonName="btn-primary"
                                                                                                                data-buttonBefore="true"
                                                                                                                data-iconName="glyphicon glyphicon-open-file"

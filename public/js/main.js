@@ -106,14 +106,14 @@ $(document).ready(function() {
 
     $('#editMapInfoFrm').submit(function(event) {
         event.preventDefault();
-        var mapId = $('#editMapInfoFrm').attr('kp-map-id');
-        submitForm(new FormData(this), '/api/v1/maps/' + mapId + '/updateinfo', 'PUT', false, false, '/map/' + mapId);
+        var mapId = $(this).attr('kp-map-id');
+        submitForm(new FormData(this), '/api/v1/maps/' + mapId + '/updateinfo', 'POST', false, false, '/map/' + mapId);
     });
 
     $('#editMapFilesFrm').submit(function(event) {
         event.preventDefault();
-        var mapId = $('#editMapFilesFrm').attr('kp-map-id');
-        submitForm(new FormData(this), '/api/v1/maps/' + mapId + '/updatefiles', 'PUT', true, false, '/map/' + mapId);
+        var mapId = $(this).attr('kp-map-id');
+        submitForm(new FormData(this), '/api/v1/maps/' + mapId + '/updatefiles', 'POST', true, false, '/map/' + mapId);
     });
 
     $('#userRegisterFrm').formValidation({

@@ -17,6 +17,7 @@
     use \Slim\Http\Stream;
     use \MapPlatform\Core;
     use \MapPlatform\AbstractClasses\ApiController;
+    use \DateTime;
     use \Imagick;
     use \ZipArchive;
     use \Exception;
@@ -58,16 +59,17 @@
          */
         public function getAllMaps(Request $request, Response $response, $args) {
             $this->container->logger->info("MapPlatform '/api/v1/maps' route");
+            $this->container->security->checkRememberMe();
             $database = $this->container->dataBase->PDO;
 
             try {
                 $query       = $database->select(['Maps.map_pk',
                                                   'Maps.map_name',
                                                   'Maps.map_downloads',
+                                                  'Maps.user_fk',
                                                   'Revisions.rev_map_description_short',
                                                   'Revisions.rev_map_description',
                                                   'Revisions.rev_upload_date',
-                                                  'Users.user_pk',
                                                   'Users.user_name',
                                                   'MapTypes.map_type_name'
                                                 ])
@@ -103,7 +105,7 @@
                         'rev_map_description_short' => $mapItem['rev_map_description_short'],
                         'rev_map_description'       => $mapItem['rev_map_description'],
                         'rev_upload_date'           => $lastChangeDate->format('Y-m-d H:i'),
-                        'user_pk'                   => $mapItem['user_pk'],
+                        'user_pk'                   => $mapItem['user_fk'],
                         'user_name'                 => $mapItem['user_name'],
                         'map_type_name'             => $mapItem['map_type_name'],
                         'avg_rating'                => ($avgRating['avg_rating'] === null ? 'n/a' : FloatVal($avgRating['avg_rating']))
@@ -133,6 +135,7 @@
          */
         public function getMap(Request $request, Response $response, $args) {
             $this->container->logger->info("MapPlatform '/api/v1/maps/" . $args['mapId'] . "' route");
+            $this->container->security->checkRememberMe();
             $mapId    = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
             $database = $this->container->dataBase->PDO;
 
@@ -162,7 +165,7 @@
                             'rev_map_description'       => $mapItem['rev_map_description'],
                             'rev_upload_date'           => $lastChangeDate -> format('Y-m-d H:i'),
                             'rev_map_version'           => $mapItem['rev_map_version'],
-                            'user_pk'                   => $mapItem['user_pk'],
+                            'user_pk'                   => $mapItem['user_fk'],
                             'user_name'                 => $mapItem['user_name'],
                             'map_type_name'             => $mapItem['map_type_name'],
                             'avg_rating'                => ($mapItem['avg_rating'] === null ? 'n/a' : FloatVal($mapItem['avg_rating'])),
@@ -205,6 +208,7 @@
          */
         public function getMapsByUser(Request $request, Response $response, $args) {
             $this->container->logger->info("MapPlatform '/api/v1/maps/user/" . $args['userId'] . "' route");
+            $this->container->security->checkRememberMe();
             $userId   = filter_var($args['userId'], FILTER_SANITIZE_NUMBER_INT);
             $database = $this->container->dataBase->PDO;
 
@@ -222,10 +226,10 @@
                 $query       = $database->select(['Maps.map_pk',
                                                   'Maps.map_name',
                                                   'Maps.map_downloads',
+                                                  'Maps.user_fk',
                                                   'Revisions.rev_map_description_short',
                                                   'Revisions.rev_map_description',
                                                   'Revisions.rev_upload_date',
-                                                  'Users.user_pk',
                                                   'Users.user_name',
                                                   'MapTypes.map_type_name'
                                                 ])
@@ -261,7 +265,7 @@
                         'rev_map_description_short' => $mapItem['rev_map_description_short'],
                         'rev_map_description'       => $mapItem['rev_map_description'],
                         'rev_upload_date'           => $lastChangeDate->format('Y-m-d H:i'),
-                        'user_pk'                   => $mapItem['user_pk'],
+                        'user_pk'                   => $mapItem['user_fk'],
                         'user_name'                 => $mapItem['user_name'],
                         'map_type_name'             => $mapItem['map_type_name'],
                         'avg_rating'                => ($avgRating['avg_rating'] === null ? 'n/a' : FloatVal($avgRating['avg_rating']))
@@ -291,6 +295,7 @@
          */
         public function downloadMap(Request $request, Response $response, $args) {
             $this->container->logger->info("ManagementTools '/api/v1/maps/download/" . $args['revId'] . "' route");
+            $this->container->security->checkRememberMe();
             $mapItem = null;
             $revId   = filter_var($args['revId'], FILTER_SANITIZE_NUMBER_INT);
 
@@ -493,17 +498,16 @@
                                                 'rev_map_description_short',
                                                 'rev_map_description',
                                                 'rev_status_fk'
-                                        ])
-                                        ->into('Revisions')
-                                        ->values([
-                                            $mapId,
-                                            $mapName . '.zip',
-                                            $mapDirForDB,
-                                            $mapVersion,
-                                            $mapDescShort,
-                                            $mapDescFull,
-                                            1 // 1 = Enabled and visible
-                                        ]);
+                                      ])
+                                      ->into('Revisions')
+                                      ->values([$mapId,
+                                                $mapName . '.zip',
+                                                $mapDirForDB,
+                                                $mapVersion,
+                                                $mapDescShort,
+                                                $mapDescFull,
+                                                1 // 1 = Enabled and visible
+                                      ]);
                     $database->beginTransaction();
                     $revId = $query->execute(True);
 
@@ -553,7 +557,6 @@
             } else {
                 try {
                     $database = $this->container->dataBase->PDO;
-                    $config   = $this->container->get('settings')['files'];
                     $data     = $request->getParsedBody();
                     $mapId    = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
                     $this->container->logger->debug("data: " . print_r($data, True));
@@ -575,11 +578,57 @@
                                                                                                      FILTER_FLAG_ENCODE_LOW ||
                                                                                                      FILTER_FLAG_ENCODE_HIGH ||
                                                                                                      FILTER_FLAG_ENCODE_AMP);
-                    $mapItem          = $this->getMapFromDB($database, $mapId);
+                    $this->container->logger->debug("mapId: " . print_r($mapId, True));
+                    $mapItem = $this->getMinimalMapFromDB($database, $mapId);
 
                     if (($mapItem != null) && ($mapItem['map_name'] != null)) {
-                        if ($mapItem['user_pk'] == $_SESSION['user']->id) {
-                            $this->container->logger->error('updateMapInfo -> User ' . $_SESSION['user']->id .
+                        if ($mapItem['user_fk'] == $_SESSION['user']->id) {
+                            $query = $database->insert(['map_fk',
+                                                        'rev_map_file_name',
+                                                        'rev_map_file_path',
+                                                        'rev_map_version',
+                                                        'rev_map_description_short',
+                                                        'rev_map_description',
+                                                        'rev_status_fk'
+                                              ])
+                                              ->into('Revisions')
+                                              ->values([$mapId,
+                                                        $mapItem['rev_map_file_name'],
+                                                        $mapItem['rev_map_file_path'],
+                                                        $mapItem['rev_map_version'],
+                                                        $editMapDescShort,
+                                                        $editMapDescFull,
+                                                        1 // 1 = Enabled and visible
+                                              ]);
+                            $database->beginTransaction();
+                            $revId = $query->execute(True);
+
+                            if ($revId <= 0) {
+                                $database->rollBack();
+                                throw new Exception('Could not update the map');
+                            };
+
+                            $database->commit();
+                            $query = $database->update()
+                                              ->table('Revisions')
+                                              ->set(['rev_status_fk' => 3 /* Disabled */])
+                                              ->where('rev_pk', '=', $mapItem['rev_pk']);
+                            $database->beginTransaction();
+                            $affectedRows = $query->execute();
+
+                            if ($affectedRows <= 0) {
+                                $database->rollBack();
+                                throw new Exception('Could not update the previous revision');
+                            };
+
+                            $database->commit();
+
+                            return $response->withJson([
+                                'result' => 'Success',
+                                'message' => 'Updated the map successfully.'
+                            ], 200, JSON_PRETTY_PRINT);
+                        } else {
+                            $this->container->logger->error('updateMapFiles -> User ' . $_SESSION['user']->id .
                                                             ' tried to edit someone else\'s map.');
 
                             return $response->withJson([
@@ -621,10 +670,10 @@
                 return $response->withJson(['result' => 'Nope'], 400, JSON_PRETTY_PRINT);
             } else {
                 try {
-                    $database   = $this->container->dataBase->PDO;
-                    $config     = $this->container->get('settings')['files'];
-                    $data       = $request->getParsedBody();
-                    $mapId      = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
+                    $database = $this->container->dataBase->PDO;
+                    $config   = $this->container->get('settings')['files'];
+                    $data     = $request->getParsedBody();
+                    $mapId    = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
                     $this->container->logger->debug("data: " . print_r($data, True));
 
                     if (Empty($data['editMapRevVersion']) ||
@@ -637,14 +686,96 @@
                         ], 400, JSON_PRETTY_PRINT);
                     };
 
-                    $mapItem    = $this->getMapFromDB($database, $mapId);
+                    $mapItem    = $this->getMinimalMapFromDB($database, $mapId);
                     $mapVersion = filter_var($data['editMapRevVersion'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_BACKTICK ||
                                                                                                  FILTER_FLAG_ENCODE_LOW ||
                                                                                                  FILTER_FLAG_ENCODE_HIGH ||
                                                                                                  FILTER_FLAG_ENCODE_AMP);
 
                     if (($mapItem != null) && ($mapItem['map_name'] != null)) {
-                        if ($mapItem['user_pk'] == $_SESSION['user']->id) {
+                        if ($mapItem['user_fk'] == $_SESSION['user']->id) {
+                            $mapName         = $mapItem['map_name'];
+                            $mapDirInArchive = $mapName . '/';
+                            $mapDirForDB     = $mapDirInArchive . $mapVersion . '/';
+                            $mapDirOnDisk    = $config['uploadDirFull'] . $mapDirForDB;
+
+                            // Create the directory that will hold our newly created ZIP archive
+                            $this->container->fileUtils->mkdirRecursive($mapDirForDB, $config['uploadDirFull']);
+                            $mapArchive = new ZipArchive();
+
+                            // Try to create the new archive
+                            if (!$mapArchive->open($mapDirOnDisk . $mapName . '.zip', ZipArchive::CREATE))
+                                throw new Exception('Unable to create the archive');
+
+                            // Create a new directory
+                            $mapArchive-> addEmptyDir($mapDirInArchive);
+                            // Add the required files
+                            $mapArchive->addFile($_FILES['editMapMapFile']['tmp_name'], $mapDirInArchive . $mapName . '.map');
+                            $mapArchive->addFile($_FILES['editMapDatFile']['tmp_name'], $mapDirInArchive . $mapName . '.dat');
+
+                            if (!Empty($_FILES['editMapDcriptFile']['name']))
+                                $mapArchive->addFile($_FILES['editMapScriptFile']['tmp_name'], $mapDirInArchive . $mapName . '.script');
+
+                            // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
+                            if (!Empty($_FILES['editMapLibxFiles']['name'][0])) {
+                                $libxFiles = $this->container->fileUtils->reArrayFiles($_FILES['editMapLibxFiles']);
+
+                                // Add the files
+                                foreach ($libxFiles as $libxFile) {
+                                    $fileBitsArr   = Explode('.', $libxFile['name']);
+                                    $fileBitsCount = count($fileBitsArr);
+                                    $fileExtention = '.' . $fileBitsArr[$fileBitsCount - 2] . '.libx'; // Get the language part as well
+                                    $mapArchive->addFile($libxFile['tmp_name'], $mapDirInArchive . $mapName . $fileExtention);
+                                };
+                            };
+
+                            $mapArchive->close();
+
+                            $query = $database->insert(['map_fk',
+                                                        'rev_map_file_name',
+                                                        'rev_map_file_path',
+                                                        'rev_map_version',
+                                                        'rev_map_description_short',
+                                                        'rev_map_description',
+                                                        'rev_status_fk'
+                                              ])
+                                              ->into('Revisions')
+                                              ->values([$mapId,
+                                                        $mapItem['rev_map_file_name'],
+                                                        $mapDirForDB,
+                                                        $mapVersion,
+                                                        $mapItem['rev_map_description_short'],
+                                                        $mapItem['rev_map_description'],
+                                                        1 // 1 = Enabled and visible
+                                              ]);
+                            $database->beginTransaction();
+                            $revId = $query->execute(True);
+
+                            if ($revId <= 0) {
+                                $database->rollBack();
+                                throw new Exception('Could not update the map');
+                            };
+
+                            $database->commit();
+                            $query = $database->update()
+                                            ->table('Revisions')
+                                            ->set(['rev_status_fk' => 3 /* Disabled */])
+                                            ->where('rev_pk', '=', $mapItem['rev_pk']);
+                            $database->beginTransaction();
+                            $affectedRows = $query->execute();
+
+                            if ($affectedRows <= 0) {
+                                $database->rollBack();
+                                throw new Exception('Could not update the previous revision');
+                            };
+
+                            $database->commit();
+
+                            return $response->withJson([
+                                'result' => 'Success',
+                                'message' => 'Updated the map successfully.'
+                            ], 200, JSON_PRETTY_PRINT);
+                        } else {
                             $this->container->logger->error('updateMapFiles -> User ' . $_SESSION['user']->id .
                                                             ' tried to edit someone else\'s map.');
 
@@ -1084,18 +1215,18 @@
         private function getMapFromDB(&$aDatabase, $aMapId) {
             try {
                 $query = 'SET @mapid = :mapid;';
-                $stmt  = $aDatabase->prepare($query)
-                                   ->bindParam(':mapid', $aMapId);
+                $stmt  = $aDatabase->prepare($query);
+                $stmt->bindParam(':mapid', $aMapId);
                 $stmt->execute();
 
                 $query   = $aDatabase->select(['Maps.map_name',
                                                'Maps.map_downloads',
+                                               'Maps.user_fk',
                                                'Revisions.rev_pk',
                                                'Revisions.rev_map_description_short',
                                                'Revisions.rev_map_description',
                                                'Revisions.rev_upload_date',
                                                'Revisions.rev_map_version',
-                                               'Users.user_pk',
                                                'Users.user_name',
                                                'MapTypes.map_type_name',
                                                'ROUND(AVG(CAST(Ratings.rating_amount AS DECIMAL(12,2))), 1) AS avg_rating',
@@ -1112,6 +1243,32 @@
                                      ->leftJoin('Ratings', 'Ratings.map_fk', '=', 'Maps.map_pk')
                                      ->where('Revisions.rev_status_fk', '=', 1)
                                      ->where('Maps.map_visible', '=', 1, 'AND')
+                                     ->where('Maps.map_pk', '=', $aMapId, 'AND');
+                $stmt    = $query->execute();
+                $mapItem = $stmt->fetch();
+
+                return $mapItem;
+            } catch (Exception $ex) {
+                return null;
+            };
+        }
+
+        private function getMinimalMapFromDB(&$aDatabase, $aMapId) {
+            try {
+                $query   = $aDatabase->select(['Maps.map_name',
+                                               'Maps.user_fk',
+                                               'Revisions.rev_pk',
+                                               'Revisions.rev_map_file_name',
+                                               'Revisions.rev_map_file_path',
+                                               'Revisions.rev_map_version',
+                                               'Revisions.rev_map_description_short',
+                                               'Revisions.rev_map_description'
+                                            ])
+                                     ->from('Maps')
+                                     ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                                     ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                                     ->where('Revisions.rev_status_fk', '=', 1)
+                                     /* ->where('Maps.map_visible', '=', 1, 'AND') // Disabled for possible use later on */
                                      ->where('Maps.map_pk', '=', $aMapId, 'AND');
                 $stmt    = $query->execute();
                 $mapItem = $stmt->fetch();

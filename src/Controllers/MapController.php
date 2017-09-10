@@ -76,7 +76,7 @@
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
                 $pageTitle            = 'Map Details';
-                $pageID               = 2;
+                $pageID               = 0;
                 $contentTemplate      = 'map.phtml';
                 $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
                                         "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
@@ -294,11 +294,6 @@
 
         private function getMapItemMinimal($aMapId) {
             $database = $this->container->dataBase->PDO;
-
-            $query = 'SET @mapid = :mapid;';
-            $stmt  = $database->prepare($query);
-            $stmt->bindParam(':mapid', $aMapId);
-            $stmt->execute();
 
             $query   = $database->select(['Maps.map_name',
                                           'Revisions.rev_pk',
