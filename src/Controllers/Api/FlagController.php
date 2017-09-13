@@ -228,6 +228,69 @@
                 ], 500, JSON_PRETTY_PRINT);
             };
         }
+
+        /**
+         * FlagController Add user flag function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+         public function flagUser(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/flags/user/" . $args['userId'] . "' route");
+            $this->container->security->checkRememberMe();
+
+            try {
+                $database = $this->container->dataBase->PDO;
+                $userId   = filter_var($args['userId'], FILTER_SANITIZE_NUMBER_INT);
+
+                if ($userId === null || $userId <= 0) {
+                    return $response->withJson([
+                        'result' => 'Error',
+                        'message' => 'Invalid request, inputs missing'
+                    ], 400, JSON_PRETTY_PRINT);
+                };
+
+                $query   = $database->select(['count(*) AS userCount'])
+                                    ->from('Users')
+                                    ->where('user_pk', '=', $userId);
+                $stmt    = $query->execute();
+                $usrItem = $stmt->fetch();
+
+                if (!array_key_exists('userCount', $usrItem) || $usrItem['userCount'] <= 0)
+                    return $response->withJson([
+                        'result' => 'Error',
+                        'message' => 'User does not exists!'
+                    ], 400, JSON_PRETTY_PRINT);
+
+                $query = $database->insert(['user_fk', 'flag_status_fk'])
+                                  ->into('Flags')
+                                  ->values([$userId, 0]);
+                $database->beginTransaction();
+                $flagId = $query->execute(True);
+
+                if ($flagId <= 0) {
+                    $database->rollBack();
+                    throw new Exception('Could not add the flag to the database');
+                };
+
+                $database->commit();
+
+                return $response->withJson([
+                    'result'  => 'Success',
+                    'message' => 'Map has been flagged successfully!'
+                ], 200, JSON_PRETTY_PRINT);
+            } catch (Exception $ex) {
+                $this->container->logger->error('flagMap -> Exception: ' . $ex->getMessage());
+
+                return $response->withJson([
+                    'result'  => 'Error',
+                    'message' => $ex->getMessage()
+                ], 500, JSON_PRETTY_PRINT);
+            };
+        }
 #endregion
 
 #region Update

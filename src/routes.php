@@ -57,10 +57,10 @@
             $this->group('/maps', function () {
                 $this->post('', Controllers\Api\MapController::class . ':addMap');                      // C
                 $this->get('', Controllers\Api\MapController::class . ':getAllMaps');                   // R
-                $this->get('/download/{revId}', Controllers\Api\MapController::class . ':downloadMap'); // R
-                $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser');  // R
+                $this->get('/download/{revId:[0-9]+}', Controllers\Api\MapController::class . ':downloadMap'); // R
+                $this->get('/user/{userId:[0-9]+}', Controllers\Api\MapController::class . ':getMapsByUser');  // R
 
-                $this->group('/{mapId}', function () {
+                $this->group('/{mapId:[0-9]+}', function () {
                     $this->get('', Controllers\Api\MapController::class . ':getMap');                      // R
                     $this->post('/updateinfo', Controllers\Api\MapController::class . ':updateMapInfo');   // U
                     $this->post('/updatefiles', Controllers\Api\MapController::class . ':updateMapFiles'); // U
@@ -69,14 +69,15 @@
             });
 
             $this->group('/flags', function () {
-                $this->post('/map/{revId}', Controllers\Api\FlagController::class . ':flagMap'); // C
-                $this->get('/queue', Controllers\Api\FlagController::class . ':getQueue');       // R
-                $this->get('/mine', Controllers\Api\FlagController::class . ':getMine');         // R
+                $this->post('/map/{revId:[0-9]+}', Controllers\Api\FlagController::class . ':flagMap');    // C
+                $this->post('/user/{userId:[0-9]+}', Controllers\Api\FlagController::class . ':flagUser'); // C
+                $this->get('/queue', Controllers\Api\FlagController::class . ':getQueue');                 // R
+                $this->get('/mine', Controllers\Api\FlagController::class . ':getMine');                   // R
             });
 
             $this->group('/rating', function () {
-                $this->post('/{mapId}', Controllers\Api\RatingController::class . ':addRating'); // C
-                $this->get('/{mapId}', Controllers\Api\RatingController::class . ':getRating'); // R
+                $this->post('/{mapId:[0-9]+}', Controllers\Api\RatingController::class . ':addRating'); // C
+                $this->get('/{mapId:[0-9]+}', Controllers\Api\RatingController::class . ':getRating'); // R
             });
 
             $this->group('/testscript', function () {
