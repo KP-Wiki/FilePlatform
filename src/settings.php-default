@@ -99,7 +99,6 @@
                 'js' => [
                     $jsDir . '/json2.js'                  => $jsDir . '/json2.min.js',
                     $jsDir . '/modernizr.js'              => $jsDir . '/modernizr.min.js',
-                    $jsDir . '/npm.js'                    => $jsDir . '/npm.min.js',
                     $jsDir . '/bootstrap-table-export.js' => $jsDir . '/bootstrap-table-export.min.js',
                     $jsDir . '/jquery.fileDownload.js'    => $jsDir . '/jquery.fileDownload.min.js',
                     $jsDir . '/starrr.js'                 => $jsDir . '/starrr.min.js',
