@@ -41,6 +41,10 @@
         });
     });
 
+    $app->group('/admin_', function () {
+        $this->get('flags', Controllers\FlagController::class . ':getFlags')->setName('adminFlags');
+    });
+
     // Map routes
     $app->group('/images', function () {
         $this->get('/default/{imageName}', Controllers\ImageController::class . ':getDefaultImage')->setName('getDefaultImage');
@@ -55,7 +59,6 @@
                 $this->get('', Controllers\Api\MapController::class . ':getAllMaps');                   // R
                 $this->get('/download/{revId}', Controllers\Api\MapController::class . ':downloadMap'); // R
                 $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser');  // R
-                $this->post('/flag/{mapId}', Controllers\Api\MapController::class . ':flagMap');
 
                 $this->group('/{mapId}', function () {
                     $this->get('', Controllers\Api\MapController::class . ':getMap');                      // R
@@ -63,6 +66,12 @@
                     $this->post('/updatefiles', Controllers\Api\MapController::class . ':updateMapFiles'); // U
                     $this->delete('', Controllers\Api\MapController::class . ':deleteMap');                // D
                 });
+            });
+
+            $this->group('/flags', function () {
+                $this->post('/map/{revId}', Controllers\Api\FlagController::class . ':flagMap'); // C
+                $this->get('/queue', Controllers\Api\FlagController::class . ':getQueue');       // R
+                $this->get('/mine', Controllers\Api\FlagController::class . ':getMine');         // R
             });
 
             $this->group('/rating', function () {

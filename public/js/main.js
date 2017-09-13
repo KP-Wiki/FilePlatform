@@ -87,9 +87,9 @@ window.submitForm = function(dataArray, path, reqType, hasFiles, isJSON, redirec
 
 $(document).ready(function() {
     $('#btnDownloadMap').click(function() {
-        var mapId = $(this).attr('kp-map-id');
+        var revId = $(this).attr('kp-rev-id');
 
-        $.fileDownload(urlBase + '/api/v1/maps/download/' + mapId, {
+        $.fileDownload(urlBase + '/api/v1/maps/download/' + revId, {
             successCallback: function (url) {
                 alert('Great success!');
             },
@@ -100,11 +100,11 @@ $(document).ready(function() {
     });
 
     $('#btnFlagMap').click(function() {
-        var mapId = $(this).attr('kp-map-id');
+        var revId = $(this).attr('kp-rev-id');
 
         $.ajax({
-            url: urlBase + '/api/v1/maps/flag/' + mapId,
-            type: '',
+            url: urlBase + '/api/v1/flags/map/' + revId,
+            type: 'POST',
             cache: false,
             error: function(xhr, status, error) {
                 var jsonResponse = JSON.parse(xhr.responseText);
