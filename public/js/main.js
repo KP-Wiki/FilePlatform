@@ -1,26 +1,64 @@
 window.urlBase = $(location).attr('protocol') + '//' + $(location).attr('hostname');
 
 // Format the name to a link
-window.mapNameFormatter = function(value, row, index) {
+window.mapNameFormatter = (value, row, index) => {
     return '<a href="/map/' + row.map_pk + '"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;' + value + '</a>';
 }
 
-window.newMapRevFormatter = function(value, row, index) {
+window.newMapRevFormatter = (value, row, index) => {
     return '<center><a href="/map/' + row.map_pk + '/updatefiles"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;Update</a></center>';
 }
 
-window.mapAuthorFormatter = function(value, row, index) {
+window.mapAuthorFormatter = (value, row, index) => {
     return '<a href="/profile/' + row.user_pk + '"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;' + value + '</a>';
 }
 
-window.toggleForgot = function() {
-    $(".logreg-forgot").slideToggle('slow');
+window.adminFlagAssignFormatter = (value, row, index) => {
+    return '<button onclick="adminFlagBtnClick(\'assign\', ' + row.flag_pk + ')" class="btn btn-primary" role="button">Assign</button>';
 }
 
-window.submitForm = function(dataArray, path, reqType, hasFiles, isJSON, redirectTo) {
-    reqType    = typeof reqType    !== 'undefined' ? reqType    : 'POST';
-    hasFiles   = typeof hasFiles   !== 'undefined' ? hasFiles   : false;
-    isJSON     = typeof isJSON     !== 'undefined' ? isJSON     : true;
+window.adminFlagcloseFormatter = (value, row, index) => {
+    if (row.flag_status_fk == 1) {
+        return '<button onclick="adminFlagBtnClick(\'close\', ' + row.flag_pk + ')" class="btn btn-primary" role="button">close</button>';
+    } else {
+        return '<button disabled="disabled" class="btn btn-primary" role="button">close</button>';
+    }
+}
+
+window.adminFlagReopenFormatter = (value, row, index) => {
+    if (row.flag_status_fk == 2) {
+        return '<button onclick="adminFlagBtnClick(\'reopen\', ' + row.flag_pk + ')" class="btn btn-primary" role="button">Re-open</button>';
+    } else {
+        return '<button disabled="disabled" class="btn btn-primary" role="button">Re-open</button>';
+    }
+}
+
+window.toggleForgot = () => {
+    $('.logreg-forgot').slideToggle('slow');
+}
+
+window.adminFlagBtnClick = (action, flagId) => {
+    switch(action) {
+        case 'assign': {
+            $.post(urlBase + '/api/v1/flags/' + flagId + '/assign');
+            break;
+        }
+        case 'close': {
+            $.post(urlBase + '/api/v1/flags/' + flagId + '/close');
+            break;
+        }
+        case 'reopen': {
+            $.post(urlBase + '/api/v1/flags/' + flagId + '/reopen');
+            break;
+        }
+        default: alert("Invalid use of this function.");
+    }
+}
+
+window.submitForm = (dataArray, path, reqType, hasFiles, isJSON, redirectTo) => {
+    reqType = typeof reqType !== 'undefined' ? reqType : 'POST';
+    hasFiles = typeof hasFiles !== 'undefined' ? hasFiles : false;
+    isJSON = typeof isJSON !== 'undefined' ? isJSON : true;
     redirectTo = typeof redirectTo !== 'undefined' ? redirectTo : null;
 
     if (hasFiles) {
@@ -31,11 +69,11 @@ window.submitForm = function(dataArray, path, reqType, hasFiles, isJSON, redirec
             cache: false,
             contentType: false,
             processData: false,
-            error: function(xhr, status, error) {
-                var jsonResponse = JSON.parse(xhr.responseText);
+            error: (xhr, status, error) => {
+                const jsonResponse = JSON.parse(xhr.responseText);
                 alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + jsonResponse.message);
             },
-            success: function(result, status, xhr) {
+            success: (result, status, xhr) => {
                 if (result.result != 'Success')
                     alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + result.message);
 
@@ -50,11 +88,11 @@ window.submitForm = function(dataArray, path, reqType, hasFiles, isJSON, redirec
             data: dataArray,
             dataType: 'json',
             cache: false,
-            error: function(xhr, status, error) {
-                var jsonResponse = JSON.parse(xhr.responseText);
+            error: (xhr, status, error) => {
+                const jsonResponse = JSON.parse(xhr.responseText);
                 alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + jsonResponse.message);
             },
-            success: function(result, status, xhr) {
+            success: (result, status, xhr) => {
                 if (result.result != 'Success')
                     alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + result.message);
 
@@ -70,11 +108,11 @@ window.submitForm = function(dataArray, path, reqType, hasFiles, isJSON, redirec
             cache: false,
             contentType: false,
             processData: false,
-            error: function(xhr, status, error) {
+            error: (xhr, status, error) => {
                 var jsonResponse = JSON.parse(xhr.responseText);
                 alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + jsonResponse.message);
             },
-            success: function(result, status, xhr) {
+            success: (result, status, xhr) => {
                 if (result.result != 'Success')
                     alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + result.message);
 
@@ -85,54 +123,55 @@ window.submitForm = function(dataArray, path, reqType, hasFiles, isJSON, redirec
     }
 }
 
-$(document).ready(function() {
-    $('#btnDownloadMap').click(function() {
-        var revId = $(this).attr('kp-rev-id');
+$(document).ready(() => {
+    $('#btnDownloadMap').click(() => {
+        const revId = $(this).attr('kp-rev-id');
 
         $.fileDownload(urlBase + '/api/v1/maps/download/' + revId, {
-            successCallback: function (url) {
+            successCallback: (url) => {
                 alert('Great success!');
             },
-            failCallback: function (html, url) {
+            failCallback: (html, url) => {
                 alert('Unable to handle the request due to an AJAX fault! \r\nHtml : ' + html);
             }
         });
     });
 
-    $('#btnFlagMap').click(function() {
-        var revId = $(this).attr('kp-rev-id');
+    $('#btnFlagMap').click(() => {
+        const revId = $(this).attr('kp-rev-id');
 
         $.ajax({
             url: urlBase + '/api/v1/flags/map/' + revId,
             type: 'POST',
             cache: false,
-            error: function(xhr, status, error) {
-                var jsonResponse = JSON.parse(xhr.responseText);
+            error: (xhr, status, error) => {
+                const jsonResponse = JSON.parse(xhr.responseText);
                 alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + jsonResponse.message);
             },
-            success: function(result, status, xhr) {
-                if (result.result != 'Success')
+            success: (result, status, xhr) => {
+                if (result.result != 'Success') {
                     alert('Unable to handle the request due to an AJAX fault!\r\n\r\nMessage:\r\n' + result.message);
-                else
+                } else {
                     alert('Thank you for submitting this map for review.');
+                }
             }
         });
     });
 
-    $('#uploadMapFrm').submit(function(event) {
+    $('#uploadMapFrm').submit((event) => {
         event.preventDefault();
         submitForm(new FormData(this), '/api/v1/maps', 'POST', true, false, '/dashboard');
     });
 
-    $('#editMapInfoFrm').submit(function(event) {
+    $('#editMapInfoFrm').submit((event) => {
         event.preventDefault();
-        var mapId = $(this).attr('kp-map-id');
+        const mapId = $(this).attr('kp-map-id');
         submitForm(new FormData(this), '/api/v1/maps/' + mapId + '/updateinfo', 'POST', false, false, '/map/' + mapId);
     });
 
-    $('#editMapFilesFrm').submit(function(event) {
+    $('#editMapFilesFrm').submit((event) => {
         event.preventDefault();
-        var mapId = $(this).attr('kp-map-id');
+        const mapId = $(this).attr('kp-map-id');
         submitForm(new FormData(this), '/api/v1/maps/' + mapId + '/updatefiles', 'POST', true, false, '/map/' + mapId);
     });
 
@@ -203,7 +242,7 @@ $(document).ready(function() {
         }
     });
 
-    $('#userRegResetBtn').on('click', function() {
+    $('#userRegResetBtn').on('click', () => {
         FormValidation.AddOn.reCaptcha2.reset('captchaContainer');
         $('#userRegisterFrm').formValidation('resetForm', true);
     });
@@ -211,30 +250,30 @@ $(document).ready(function() {
     $('#ratingStarrr').starrr({
         max: 5,
         rating: $('#ratingStarrr').attr('kp-map-rating'),
-        change: function(e, value){
+        change: (e, value) => {
             if (value) {
-                var mapId = $('#ratingStarrr').attr('kp-map-id');
+                const mapId = $('#ratingStarrr').attr('kp-map-id');
 
                 $.ajax({
                     url: urlBase + '/api/v1/rating/' + mapId,
-                    error: function(xhr, status, error) {
-                        var jsonResponse = JSON.parse(xhr.responseText);
+                    error: (xhr, status, error) => {
+                        const jsonResponse = JSON.parse(xhr.responseText);
                         $('#ratingResultError > .message').text(jsonResponse.message);
                         $('#ratingResultError').show();
                     },
                     data: {'score': value},
                     dataType: 'json',
-                    success: function(result, status, xhr) {
+                    success: (result, status, xhr) => {
                         $('#ratingResultSuccess > .message').text(result.data);
                         $('#ratingResultSuccess').show();
 
                         $.ajax({
                             url: urlBase + '/api/v1/rating/' + mapId,
-                            error: function(xhr, status, error) {
+                            error: (xhr, status, error) => {
                             },
                             data: {'score': value},
                             dataType: 'json',
-                            success: function(result, status, xhr) {
+                            success: (result, status, xhr) => {
                                 $('#ratingStarrr').attr('kp-map-rating', result.data.avg_rating);
                                 $('#ratingAvg').html(result.data.avg_rating + '<small> / 5</small>');
                                 $('#ratingFive').text(result.data.rating_five + ' Vote(s)');
@@ -252,16 +291,16 @@ $(document).ready(function() {
         }
     });
 
-    var navListItems = $('div.setup-panel > div > a'),
-        allWells     = $('.setup-content'),
-        allNextBtn   = $('.nextBtn');
+    const navListItems = $('div.setup-panel > div > a');
+    const allWells = $('.setup-content');
+    const allNextBtn = $('.nextBtn');
 
     allWells.hide();
 
-    navListItems.click(function (e) {
+    navListItems.click((e) => {
         e.preventDefault();
-        var $item   = $(this),
-            $target = $($item.attr('href'));
+        const $item = $(this);
+        const $target = $($item.attr('href'));
 
         if (!$item.hasClass('disabled')) {
             navListItems.removeClass('btn-primary').addClass('btn-default');
@@ -272,15 +311,15 @@ $(document).ready(function() {
         }
     });
 
-    allNextBtn.click(function(){
-        var curStep        = $(this).closest(".setup-content"),
-            curStepBtn     = curStep.attr("id"),
-            nextStepWizard = $('div.setup-panel > div > a[href="#' + curStepBtn + '"]').parent().next().children("a"),
-            curInputs      = curStep.find("input[type='text'],input[type='url'],input[type='file'],select,textarea"),
-            isValid        = true;
+    allNextBtn.click(() => {
+        const curStep = $(this).closest(".setup-content");
+        const curStepBtn = curStep.attr("id");
+        const nextStepWizard = $('div.setup-panel > div > a[href="#' + curStepBtn + '"]').parent().next().children("a");
+        const curInputs = curStep.find("input[type='text'],input[type='url'],input[type='file'],select,textarea");
+        const isValid = true;
         $(".form-group").removeClass("has-error");
 
-        for(var i = 0; i < curInputs.length; i++){
+        for(let i = 0; i < curInputs.length; i++){
             if (!curInputs[i].validity.valid){
                 isValid = false;
                 $(curInputs[i]).closest(".form-group").addClass("has-error");

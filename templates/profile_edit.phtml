@@ -1,63 +1,63 @@
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 main">
-                    <form method="POST" action="/profile/edit" id="settingFrm" name="settingFrm" class="form">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <span class="panel-title">Profile Settings</span>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-md-3 col-lg-3" align="center">
-                                        <img class="img-rounded img-responsive" alt="" src="<?=$user['gravatar'];?>">
-                                    </div>
-                                    <div class="col-md-9 col-lg-9">
-                                        <table class="table table-user-information">
-                                            <tbody>
-                                                <tr>
-                                                    <td><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Username</td>
-                                                    <td>
-                                                        <?=$user['user_name'];?>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Email Address</td>
-                                                    <td>
-                                                        <input type="email" class="form-control input-sm" id="settingEmailAddress"
-                                                               name="settingEmailAddress" placeholder="<?=$user['user_email_address'];?>">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span class="glyphicon glyphicon-lock"></span>&nbsp;&nbsp;Current Password</td>
-                                                    <td>
-                                                        <input type="password" class="form-control input-sm" id="settingCurPass"
-                                                               name="settingCurPass" placeholder="Required" required>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span class="glyphicon glyphicon-lock"></span>&nbsp;&nbsp;New Password</td>
-                                                    <td>
-                                                        <input type="password" class="form-control input-sm" id="settingNewPass"
-                                                               name="settingNewPass" placeholder="Leave empty to not change the password">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td><span class="glyphicon glyphicon-lock"></span>&nbsp;&nbsp;Repeat New Password</td>
-                                                    <td>
-                                                        <input type="password" class="form-control input-sm" id="settingRepeatPass"
-                                                               name="settingRepeatPass" placeholder="Leave empty to not change the password">
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel-footer">
-                                <button type="submit" class="btn btn-primary space-right">Submit</button>
-                                <button type="reset" class="btn btn-warning">Reset Fields</button>
-                                <button type="button" class="btn btn-danger pull-right" disabled>Delete Account</button>
-                            </div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 main">
+        <form method="POST" action="/profile/edit" id="settingFrm" name="settingFrm" class="form">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="panel-title">Profile Settings</span>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-3 col-lg-3" align="center">
+                            <img class="img-rounded img-responsive" alt="" src="<?=$user['gravatar'];?>">
                         </div>
-                    </form>
+                        <div class="col-md-9 col-lg-9">
+                            <table class="table table-user-information">
+                                <tbody>
+                                    <tr>
+                                        <td><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Username</td>
+                                        <td>
+                                            <?=$user['user_name'];?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Email Address</td>
+                                        <td>
+                                            <input type="email" class="form-control input-sm" id="settingEmailAddress"
+                                                    name="settingEmailAddress" placeholder="<?=$user['user_email_address'];?>">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="glyphicon glyphicon-lock"></span>&nbsp;&nbsp;Current Password</td>
+                                        <td>
+                                            <input type="password" class="form-control input-sm" id="settingCurPass"
+                                                    name="settingCurPass" placeholder="Required" required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="glyphicon glyphicon-lock"></span>&nbsp;&nbsp;New Password</td>
+                                        <td>
+                                            <input type="password" class="form-control input-sm" id="settingNewPass"
+                                                    name="settingNewPass" placeholder="Leave empty to not change the password">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="glyphicon glyphicon-lock"></span>&nbsp;&nbsp;Repeat New Password</td>
+                                        <td>
+                                            <input type="password" class="form-control input-sm" id="settingRepeatPass"
+                                                    name="settingRepeatPass" placeholder="Leave empty to not change the password">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button type="submit" class="btn btn-primary space-right">Submit</button>
+                    <button type="reset" class="btn btn-warning">Reset Fields</button>
+                    <button type="button" class="btn btn-danger pull-right" disabled>Delete Account</button>
                 </div>
             </div>
+        </form>
+    </div>
+</div>

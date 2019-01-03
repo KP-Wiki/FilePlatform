@@ -1,125 +1,125 @@
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 main">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <span class="panel-title"><?=$mapName;?></span>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="rating-block">
-                                <h4>Average user rating</h4>
-                                <h2 id="ratingAvg" class="bold padding-bottom-7">
-                                    <?=$avgRating;?><small> / 5</small>
-                                </h2>
-                                <div class="starrr" id="ratingStarrr" kp-map-id="<?=$mapId;?>" kp-map-rating="<?=$avgRating;?>"></div><br />
-                                <div id="ratingResultSuccess" class="alert alert-success alert-dismissible spacersmall" role="alert"style="display: none;">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <span class="message"></span>
-                                </div>
-                                <div id="ratingResultError" class="alert alert-danger alert-dismissible spacersmall" role="alert" style="display: none;">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <span class="message"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <h4>Breakdown</h4>
-                            <div class="row" style="margin-left:2px;">
-                                5 <span class="glyphicon glyphicon-star"></span>
-                                <span id="ratingFive" style="margin-left:10px;"><?=$ratingFive;?> Vote(s)</span>
-                            </div>
-                            <div class="row" style="margin-left:2px;">
-                                4 <span class="glyphicon glyphicon-star"></span>
-                                <span id="ratingFour" style="margin-left:10px;"><?=$ratingFour;?> Vote(s)</span>
-                            </div>
-                            <div class="row" style="margin-left:2px;">
-                                3 <span class="glyphicon glyphicon-star"></span>
-                                <span id="ratingThree" style="margin-left:10px;"><?=$ratingThree;?> Vote(s)</span>
-                            </div>
-                            <div class="row" style="margin-left:2px;">
-                                2 <span class="glyphicon glyphicon-star"></span>
-                                <span id="ratingTwo" style="margin-left:10px;"><?=$ratingTwo;?> Vote(s)</span>
-                            </div>
-                            <div class="row" style="margin-left:2px;">
-                                1 <span class="glyphicon glyphicon-star"></span>
-                                <span id="ratingOne" style="margin-left:10px;"><?=$ratingOne;?> Vote(s)</span>
-                            </div>
-                        </div>
-                        <table class="table table-user-information">
-                            <tbody>
-                                <tr>
-                                    <td class="col-sm-3"><b>Author</b></td>
-                                    <td class="col-sm-9">
-                                        <a href="/profile/<?=$userId;?>"><?=$userName;?></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-sm-3"><b>Downloads</b></td>
-                                    <td class="col-sm-9"><?=$mapDownloads;?></td>
-                                </tr>
-                                <tr>
-                                    <td class="col-sm-3"><b>Version</b></td>
-                                    <td class="col-sm-9"><?=$revMapVersion;?></td>
-                                </tr>
-                                <tr>
-                                    <td class="col-sm-3"><b>Last change date</b></td>
-                                    <td class="col-sm-9"><?=$revUploadDate;?></td>
-                                </tr>
-                                <tr>
-                                    <td class="col-sm-3"><b>Description</b></td>
-                                    <td class="col-sm-9"><?=$revMapDescription;?></td>
-                                </tr>
-                                <tr>
-                                    <td class="col-lg-12" colspan="2">
-                                        <button class="btn btn-success" id="btnDownloadMap" title="Download this map" kp-rev-id="<?=$revId;?>">
-                                            <span class="glyphicon glyphicon-download-alt"></span>&nbsp;&nbsp;Download
-                                        </button>
-                                        <?php
-                                            if ($userId == $_SESSION['user']->id) {
-                                        ?>
-                                        &nbsp;&nbsp;
-                                        <a class="btn btn-primary" id="btnUpdateMapInfo" title="Edit Map Information"
-                                           href="/map/<?=$mapId;?>/updateinfo" role="button">
-                                            <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit Info
-                                        </a>
-                                        <?php
-                                            };
-                                        ?>
-                                        <button class="btn btn-danger pull-right" id="btnFlagMap" title="Flag this map" kp-rev-id="<?=$revId;?>">
-                                            <span class="glyphicon glyphicon-flag"></span>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3 main">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="panel-title"><?=$mapName;?></span>
+            </div>
+            <div class="col-sm-6">
+                <div class="rating-block">
+                    <h4>Average user rating</h4>
+                    <h2 id="ratingAvg" class="bold padding-bottom-7">
+                        <?=$avgRating;?><small> / 5</small>
+                    </h2>
+                    <div class="starrr" id="ratingStarrr" kp-map-id="<?=$mapId;?>" kp-map-rating="<?=$avgRating;?>"></div><br />
+                    <div id="ratingResultSuccess" class="alert alert-success alert-dismissible spacersmall" role="alert"style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <span class="message"></span>
+                    </div>
+                    <div id="ratingResultError" class="alert alert-danger alert-dismissible spacersmall" role="alert" style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <span class="message"></span>
                     </div>
                 </div>
             </div>
-            <div class="row spacer">
-                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3" style="margin-bottom: 25px;">
-                        <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-carousel">
-                            <div class="slides"></div>
-                            <h3 class="title"></h3>
-                            <a class="prev">‹</a>
-                            <a class="next">›</a>
-                            <a class="play-pause"></a>
-                            <ol class="indicator"></ol>
-                        </div>
-                        <script>
-                            $(document).ready(function() {
-                                blueimp.Gallery(
-                                    <?=$carouselItemsNew;?>,
-                                    {
-                                        container: '#blueimp-gallery',
-                                        slideshowInterval: 10000,
-                                        enableKeyboardNavigation: true,
-                                        carousel: true
-                                    }
-                                );
-                            });
-                        </script>
+            <div class="col-sm-6">
+                <h4>Breakdown</h4>
+                <div class="row" style="margin-left:2px;">
+                    5 <span class="glyphicon glyphicon-star"></span>
+                    <span id="ratingFive" style="margin-left:10px;"><?=$ratingFive;?> Vote(s)</span>
+                </div>
+                <div class="row" style="margin-left:2px;">
+                    4 <span class="glyphicon glyphicon-star"></span>
+                    <span id="ratingFour" style="margin-left:10px;"><?=$ratingFour;?> Vote(s)</span>
+                </div>
+                <div class="row" style="margin-left:2px;">
+                    3 <span class="glyphicon glyphicon-star"></span>
+                    <span id="ratingThree" style="margin-left:10px;"><?=$ratingThree;?> Vote(s)</span>
+                </div>
+                <div class="row" style="margin-left:2px;">
+                    2 <span class="glyphicon glyphicon-star"></span>
+                    <span id="ratingTwo" style="margin-left:10px;"><?=$ratingTwo;?> Vote(s)</span>
+                </div>
+                <div class="row" style="margin-left:2px;">
+                    1 <span class="glyphicon glyphicon-star"></span>
+                    <span id="ratingOne" style="margin-left:10px;"><?=$ratingOne;?> Vote(s)</span>
                 </div>
             </div>
+            <table class="table table-user-information">
+                <tbody>
+                    <tr>
+                        <td class="col-sm-3"><b>Author</b></td>
+                        <td class="col-sm-9">
+                            <a href="/profile/<?=$userId;?>"><?=$userName;?></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-sm-3"><b>Downloads</b></td>
+                        <td class="col-sm-9"><?=$mapDownloads;?></td>
+                    </tr>
+                    <tr>
+                        <td class="col-sm-3"><b>Version</b></td>
+                        <td class="col-sm-9"><?=$revMapVersion;?></td>
+                    </tr>
+                    <tr>
+                        <td class="col-sm-3"><b>Last change date</b></td>
+                        <td class="col-sm-9"><?=$revUploadDate;?></td>
+                    </tr>
+                    <tr>
+                        <td class="col-sm-3"><b>Description</b></td>
+                        <td class="col-sm-9"><?=$revMapDescription;?></td>
+                    </tr>
+                    <tr>
+                        <td class="col-lg-12" colspan="2">
+                            <button class="btn btn-success" id="btnDownloadMap" title="Download this map" kp-rev-id="<?=$revId;?>">
+                                <span class="glyphicon glyphicon-download-alt"></span>&nbsp;&nbsp;Download
+                            </button>
+                            <?php
+                                if ($userId == $_SESSION['user']->id) {
+                            ?>
+                            &nbsp;&nbsp;
+                            <a class="btn btn-primary" id="btnUpdateMapInfo" title="Edit Map Information"
+                                href="/map/<?=$mapId;?>/updateinfo" role="button">
+                                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit Info
+                            </a>
+                            <?php
+                                }
+                            ?>
+                            <button class="btn btn-danger pull-right" id="btnFlagMap" title="Flag this map" kp-rev-id="<?=$revId;?>">
+                                <span class="glyphicon glyphicon-flag"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row spacer">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-2 col-lg-offset-3" style="margin-bottom: 25px;">
+        <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-carousel">
+            <div class="slides"></div>
+            <h3 class="title"></h3>
+            <a class="prev">‹</a>
+            <a class="next">›</a>
+            <a class="play-pause"></a>
+            <ol class="indicator"></ol>
+        </div>
+        <script>
+            $(document).ready(() => {
+                blueimp.Gallery(
+                    <?=$carouselItemsNew;?>,
+                    {
+                        container: '#blueimp-gallery',
+                        slideshowInterval: 10000,
+                        enableKeyboardNavigation: true,
+                        carousel: true
+                    }
+                );
+            });
+        </script>
+    </div>
+</div>

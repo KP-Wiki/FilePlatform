@@ -1,73 +1,72 @@
-            <div class="row">
-                <div class="col-sm-9 col-sm-offset-2 col-md-10 col-md-offset-1 main">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <span class="panel-title">Flag Queue</span>
-                        </div>
-                        <div class="panel-body">
-                            <table id="homeTable" class="table table-striped table-bordered table-hover"
-                                   data-toggle="table"
-                                   data-search="true"
-                                   data-sort-name="flag_pk"
-                                   data-sort-order="asc"
-                                   data-show-toggle="true"
-                                   data-show-columns="true"
-                                   data-show-export="true"
-                                   data-minimum-count-columns="2"
-                                   data-url="/api/v1/flags/queue"
-                                   data-show-refresh="true"
-                                   data-show-pagination-switch="true"
-                                   data-pagination="true"
-                                   data-page-list="[25, 50, 100, ALL]"
-                                   data-page-size="25"
-                                   data-show-footer="false"
-                                   data-side-pagination="client">
-                                <thead>
-                                    <tr>
-                                        <th class="col-xs-2" data-field="rev_fk" data-sortable="true">Map Revision</th>
-                                        <th class="col-xs-2" data-field="user_fk" data-sortable="true">User ID</th>
-                                        <!-- Buttons here -->
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+<div class="row">
+    <div class="col-sm-9 col-sm-offset-2 col-md-10 col-md-offset-1 main">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="panel-title">Flag Queue</span>
             </div>
-            <div class="row spacer">
-                <div class="col-sm-9 col-sm-offset-2 col-md-10 col-md-offset-1 main">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <span class="panel-title">Assigned Flags</span>
-                        </div>
-                        <div class="panel-body">
-                            <table id="homeTable" class="table table-striped table-bordered table-hover"
-                                   data-toggle="table"
-                                   data-search="true"
-                                   data-sort-name="flag_pk"
-                                   data-sort-order="asc"
-                                   data-show-toggle="true"
-                                   data-show-columns="true"
-                                   data-show-export="true"
-                                   data-minimum-count-columns="2"
-                                   data-url="/api/v1/flags/mine"
-                                   data-show-refresh="true"
-                                   data-show-pagination-switch="true"
-                                   data-pagination="true"
-                                   data-page-list="[25, 50, 100, ALL]"
-                                   data-page-size="25"
-                                   data-show-footer="false"
-                                   data-side-pagination="client">
-                                <thead>
-                                    <tr>
-                                        <th class="col-xs-2" data-field="rev_fk" data-sortable="true">Map Revision</th>
-                                        <th class="col-xs-2" data-field="user_fk" data-sortable="true">User ID</th>
-                                        <th class="col-xs-2" data-field="flag_status" data-sortable="true">Flag Status</th>
-                                        <!-- Buttons here -->
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            <div class="panel-body">
+                <table id="homeTable" class="table table-striped table-bordered table-hover"
+                        data-toggle="table"
+                        data-search="true"
+                        data-sort-name="flag_pk"
+                        data-sort-order="asc"
+                        data-show-toggle="true"
+                        data-show-columns="true"
+                        data-minimum-count-columns="2"
+                        data-url="/api/v1/flags/queue"
+                        data-show-refresh="true"
+                        data-show-pagination-switch="true"
+                        data-pagination="true"
+                        data-page-list="[25, 50, 100, ALL]"
+                        data-page-size="25"
+                        data-show-footer="false"
+                        data-side-pagination="client">
+                    <thead>
+                        <tr>
+                            <th class="col-xs-2" data-field="rev_fk" data-sortable="true">Map Revision</th>
+                            <th class="col-xs-2" data-field="user_fk" data-sortable="true">User ID</th>
+                            <th class="col-xs-2" data-field="flag_assign" data-formatter="adminFlagAssignFormatter" data-sortable="false"></th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
+        </div>
+    </div>
+</div>
+<div class="row spacer">
+    <div class="col-sm-9 col-sm-offset-2 col-md-10 col-md-offset-1 main">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="panel-title">Assigned Flags</span>
+            </div>
+            <div class="panel-body">
+                <table id="homeTable" class="table table-striped table-bordered table-hover"
+                        data-toggle="table"
+                        data-search="true"
+                        data-sort-name="flag_pk"
+                        data-sort-order="asc"
+                        data-show-toggle="true"
+                        data-show-columns="true"
+                        data-minimum-count-columns="2"
+                        data-url="/api/v1/flags/mine"
+                        data-show-refresh="true"
+                        data-show-pagination-switch="true"
+                        data-pagination="true"
+                        data-page-list="[25, 50, 100, ALL]"
+                        data-page-size="25"
+                        data-show-footer="false"
+                        data-side-pagination="client">
+                    <thead>
+                        <tr>
+                            <th class="col-xs-2" data-field="rev_fk" data-sortable="true">Map Revision</th>
+                            <th class="col-xs-2" data-field="user_fk" data-sortable="true">User ID</th>
+                            <th class="col-xs-2" data-field="flag_status" data-sortable="true">Flag Status</th>
+                            <th class="col-xs-2" data-field="flag_close" data-formatter="adminFlagcloseFormatter" data-sortable="false"></th>
+                            <th class="col-xs-2" data-field="flag_reopen" data-formatter="adminFlagReopenFormatter" data-sortable="false"></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

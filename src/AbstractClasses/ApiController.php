@@ -35,7 +35,8 @@
          *
          * @param \Slim\Container $container
          */
-        public function __construct(Container $container) {
+        public function __construct(Container $container)
+        {
             $this->container = $container;
         }
 

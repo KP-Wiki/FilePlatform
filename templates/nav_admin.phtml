@@ -1,85 +1,85 @@
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/home">KP-Maps</a>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li role="presentation"<?=($PageID == 0 ? " class=\"active\"" : "");?>>
-                            <a href="/home" title="Home">
-                                <span class="glyphicon glyphicon-home"></span>
-                            </a>
-                        </li>
-                        <li role="presentation"<?=($PageID == 1 ? " class=\"active\"" : "");?>>
-                            <a href="/about" title="About">
-                                <span class="glyphicon glyphicon-info-sign"></span>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/home">KP-Maps</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li role="presentation"<?=($PageID == 0 ? " class=\"active\"" : "");?>>
+                    <a href="/home" title="Home">
+                        <span class="glyphicon glyphicon-home"></span>
+                    </a>
+                </li>
+                <li role="presentation"<?=($PageID == 1 ? " class=\"active\"" : "");?>>
+                    <a href="/about" title="About">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="http://knightsprovince.com" target="_blank" title="Go to the Knights Province website">
+                        <span class="glyphicon glyphicon-globe"></span>&nbsp;&nbsp;Knights Provice
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="https://kp-wiki.org" target="_blank" title="Go to the KP-Wiki website">
+                        <span class="glyphicon glyphicon-globe"></span>&nbsp;&nbsp;KP-Wiki
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown<?=(in_array($PageID, [4, 5, 6]) ? " active" : "");?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li role="presentation"<?=($PageID == 4 ? " class=\"active\"" : "");?>>
+                            <a href="/admin_queue">
+                                <span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Queue
                             </a>
                         </li>
                         <li role="presentation">
-                            <a href="http://knightsprovince.com" target="_blank" title="Go to the Knights Province website">
-                                <span class="glyphicon glyphicon-globe"></span>&nbsp;&nbsp;Knights Provice
+                            <a href="/admin_flags"<?=($PageID == 5 ? " class=\"active\"" : "");?>>
+                                <span class="glyphicon glyphicon-flag"></span>&nbsp;&nbsp;Flags
                             </a>
                         </li>
                         <li role="presentation">
-                            <a href="https://kp-wiki.org" target="_blank" title="Go to the KP-Wiki website">
-                                <span class="glyphicon glyphicon-globe"></span>&nbsp;&nbsp;KP-Wiki
+                            <a href="/admin_users"<?=($PageID == 6 ? " class=\"active\"" : "");?>>
+                                <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;User Management
                             </a>
                         </li>
                     </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown<?=(in_array($PageID, [4, 5, 6]) ? " active" : "");?>">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;<span class="caret"></span>
+                </li>
+                <li class="dropdown<?=(in_array($PageID, [2, 3]) ? " active" : "");?>">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li role="presentation"<?=($PageID == 3 ? " class=\"active\"" : "");?>>
+                            <a href="/dashboard">
+                                <span class="glyphicon glyphicon-dashboard"></span>&nbsp;&nbsp;Dashboard
                             </a>
-                            <ul class="dropdown-menu">
-                                <li role="presentation"<?=($PageID == 4 ? " class=\"active\"" : "");?>>
-                                    <a href="/admin_queue">
-                                        <span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Queue
-                                    </a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="/admin_flags"<?=($PageID == 5 ? " class=\"active\"" : "");?>>
-                                        <span class="glyphicon glyphicon-flag"></span>&nbsp;&nbsp;Flags
-                                    </a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="/admin_users"<?=($PageID == 6 ? " class=\"active\"" : "");?>>
-                                        <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;User Management
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
-                        <li class="dropdown<?=(in_array($PageID, [2, 3]) ? " active" : "");?>">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<span class="caret"></span>
+                        <li role="presentation"<?=($PageID == 2 ? " class=\"active\"" : "");?>>
+                            <a href="/profile/edit">
+                                <span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings
                             </a>
-                            <ul class="dropdown-menu">
-                                <li role="presentation"<?=($PageID == 3 ? " class=\"active\"" : "");?>>
-                                    <a href="/dashboard">
-                                        <span class="glyphicon glyphicon-dashboard"></span>&nbsp;&nbsp;Dashboard
-                                    </a>
-                                </li>
-                                <li role="presentation"<?=($PageID == 2 ? " class=\"active\"" : "");?>>
-                                    <a href="/profile/edit">
-                                        <span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings
-                                    </a>
-                                </li>
-                                <li role="separator" class="divider"></li>
-                                <li role="presentation">
-                                    <a href="/logout">
-                                        <span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout
-                                    </a>
-                                </li>
-                            </ul>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li role="presentation">
+                            <a href="/logout">
+                                <span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout
+                            </a>
                         </li>
                     </ul>
-                </div>
-            </div>
-        </nav>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

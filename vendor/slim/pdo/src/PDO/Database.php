@@ -29,7 +29,7 @@ class Database extends \PDO
      */
     public function __construct($dsn, $usr = null, $pwd = null, array $options = array())
     {
-        $options = $this->getDefaultOptions() + $options;
+        $options = $options + $this->getDefaultOptions();
 
         @parent::__construct($dsn, $usr, $pwd, $options);
     }
@@ -42,7 +42,8 @@ class Database extends \PDO
         return array(
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-            \PDO::ATTR_STATEMENT_CLASS => array('Slim\\PDO\\Statement', array($this))
+            \PDO::ATTR_EMULATE_PREPARES => false,
+            \PDO::ATTR_STATEMENT_CLASS => array('Slim\\PDO\\Statement', array($this)),
         );
     }
 

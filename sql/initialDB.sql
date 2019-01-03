@@ -130,16 +130,14 @@ CREATE TABLE `FlagStatus` (
 
 CREATE TABLE `Flags` (
     `flag_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `rev_fk` BIGINT UNSIGNED NULL DEFAULT NULL,
-    `user_fk` BIGINT UNSIGNED NULL DEFAULT NULL,
-    `flag_status_fk` TINYINT UNSIGNED NOT NULL DEFAULT '0',
-    `flag_assigned_user_fk` BIGINT UNSIGNED NULL DEFAULT NULL,
+    `rev_fk` BIGINT UNSIGNED NOT NULL,
+    `flag_status_fk` TINYINT UNSIGNED NOT NULL,
+    `flag_assigned_user_fk` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`flag_pk`),
     INDEX (`rev_fk`),
     INDEX (`flag_status_fk`),
     INDEX (`flag_assigned_user_fk`),
     CONSTRAINT `Flags_rev_fk` FOREIGN KEY (`rev_fk`) REFERENCES `Revisions` (`rev_pk`),
-    CONSTRAINT `Flags_user_fk` FOREIGN KEY (`user_fk`) REFERENCES `Users` (`user_pk`),
     CONSTRAINT `Flags_flag_status_fk` FOREIGN KEY (`flag_status_fk`) REFERENCES `FlagStatus` (`flag_status_pk`),
     CONSTRAINT `Flags_flag_assigned_user_fk` FOREIGN KEY (`flag_assigned_user_fk`) REFERENCES `Users` (`user_pk`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_unicode_ci;

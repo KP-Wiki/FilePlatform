@@ -43,7 +43,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function __invoke(Request $request, Response $response, $args) {
+        public function __invoke(Request $request, Response $response, $args)
+        {
             return $response;
         }
 
@@ -57,7 +58,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function getQueue(Request $request, Response $response, $args) {
+        public function getQueue(Request $request, Response $response, $args)
+        {
             $this->container->logger->info("MapPlatform '/api/v1/flags/queue' route");
             $this->container->security->checkRememberMe();
 
@@ -67,15 +69,12 @@
             $database = $this->container->dataBase->PDO;
 
             try {
-                $query    = $database->select(['flag_pk',
-                                               'rev_fk',
-                                               'user_fk'
-                                            ])
-                                     ->from('Flags')
-                                     ->whereNull('flag_assigned_user_fk')
-                                     ->where('flag_status_fk', '=', 0, 'AND');
-                $stmt     = $query->execute();
-                $flagArr  = $stmt->fetchall();
+                $query = $database->select(['flag_pk', 'rev_fk', 'user_fk'])
+                                  ->from('Flags')
+                                  ->whereNull('flag_assigned_user_fk')
+                                  ->where('flag_status_fk', '=', 0, 'AND');
+                $stmt = $query->execute();
+                $flagArr = $stmt->fetchall();
                 $responseArr = [
                     'status' => 'Ok',
                     'data' => []
@@ -86,16 +85,15 @@
 
                 foreach ($flagArr as $flagItem) {
                     $responseArr['data'][] = [
-                        'flag_pk' => IntVal($flagItem['flag_pk']),
-                        'rev_fk'  => $flagItem['rev_fk'] == null ? 'N/A' : IntVal($flagItem['rev_fk']),
-                        'user_fk' => $flagItem['user_fk'] == null ? 'N/A' : IntVal($flagItem['user_fk'])
+                        'flag_pk' => intval($flagItem['flag_pk']),
+                        'rev_fk' => $flagItem['rev_fk'] == null ? 'N/A' : intval($flagItem['rev_fk']),
+                        'user_fk' => $flagItem['user_fk'] == null ? 'N/A' : intval($flagItem['user_fk'])
                     ];
-                };
+                }
 
                 return $response->withJson($responseArr, 200, JSON_PRETTY_PRINT);
             } catch (Exception $ex) {
                 $this->container->logger->error('getQueue -> ex = ' . $ex);
-
                 return $response->withJson([
                     'status' => 'Error',
                     'message' => 'Unable to retrieve flags, please try again later.',
@@ -103,6 +101,7 @@
                 ], 500, JSON_PRETTY_PRINT);
             }
         }
+
         /**
          * FlagController Get flags assigned to current user.
          *
@@ -122,18 +121,19 @@
             $database = $this->container->dataBase->PDO;
 
             try {
-                $query    = $database->select(['Flags.flag_pk',
-                                               'Flags.rev_fk',
-                                               'Flags.user_fk',
-                                               'Flags.flag_status_fk',
-                                               'FlagStatus.status AS flag_status'
-                                            ])
-                                     ->from('Flags')
-                                     ->leftJoin('FlagStatus', 'FlagStatus.flag_status_pk', '=', 'Flags.flag_status_fk')
-                                     ->where('Flags.flag_assigned_user_fk', '=', $_SESSION['user']->id)
-                                     ->groupBy('Flags.flag_status_fk');
-                $stmt     = $query->execute();
-                $flagArr  = $stmt->fetchall();
+                $query = $database->select([
+                    'Flags.flag_pk',
+                    'Flags.rev_fk',
+                    'Flags.user_fk',
+                    'Flags.flag_status_fk',
+                    'FlagStatus.status AS flag_status'
+                ])
+                                  ->from('Flags')
+                                  ->leftJoin('FlagStatus', 'FlagStatus.flag_status_pk', '=', 'Flags.flag_status_fk')
+                                  ->where('Flags.flag_assigned_user_fk', '=', $_SESSION['user']->id)
+                                  ->groupBy('Flags.flag_status_fk');
+                $stmt = $query->execute();
+                $flagArr = $stmt->fetchall();
                 $responseArr = [
                     'status' => 'Ok',
                     'data' => []
@@ -144,18 +144,17 @@
 
                 foreach ($flagArr as $flagItem) {
                     $responseArr['data'][] = [
-                        'flag_pk'        => IntVal($flagItem['flag_pk']),
-                        'rev_fk'         => $flagItem['rev_fk'] == null ? 'N/A' : IntVal($flagItem['rev_fk']),
-                        'user_fk'        => $flagItem['user_fk'] == null ? 'N/A' : IntVal($flagItem['user_fk']),
-                        'flag_status_fk' => IntVal($flagItem['flag_status_fk']),
-                        'flag_status'    => $flagItem['flag_status']
+                        'flag_pk' => intval($flagItem['flag_pk']),
+                        'rev_fk' => $flagItem['rev_fk'] == null ? 'N/A' : intval($flagItem['rev_fk']),
+                        'user_fk' => $flagItem['user_fk'] == null ? 'N/A' : intval($flagItem['user_fk']),
+                        'flag_status_fk' => intval($flagItem['flag_status_fk']),
+                        'flag_status' => $flagItem['flag_status']
                     ];
-                };
+                }
 
                 return $response->withJson($responseArr, 200, JSON_PRETTY_PRINT);
             } catch (Exception $ex) {
                 $this->container->logger->error('getMine -> ex = ' . $ex);
-
                 return $response->withJson([
                     'status' => 'Error',
                     'message' => 'Unable to retrieve flags, please try again later.',
@@ -181,19 +180,19 @@
 
             try {
                 $database = $this->container->dataBase->PDO;
-                $revId    = filter_var($args['revId'], FILTER_SANITIZE_NUMBER_INT);
+                $revId = filter_var($args['revId'], FILTER_SANITIZE_NUMBER_INT);
 
                 if ($revId === null || $revId <= 0) {
                     return $response->withJson([
                         'result' => 'Error',
                         'message' => 'Invalid request, inputs missing'
                     ], 400, JSON_PRETTY_PRINT);
-                };
+                }
 
-                $query   = $database->select(['count(*) AS revCount'])
+                $query = $database->select(['count(*) AS revCount'])
                                     ->from('Revisions')
                                     ->where('rev_pk', '=', $revId);
-                $stmt    = $query->execute();
+                $stmt = $query->execute();
                 $mapItem = $stmt->fetch();
 
                 if (!array_key_exists('revCount', $mapItem) || $mapItem['revCount'] <= 0)
@@ -206,90 +205,25 @@
                                   ->into('Flags')
                                   ->values([$revId, 0]);
                 $database->beginTransaction();
-                $flagId = $query->execute(True);
+                $flagId = $query->execute(true);
 
                 if ($flagId <= 0) {
                     $database->rollBack();
                     throw new Exception('Could not add the flag to the database');
-                };
+                }
 
                 $database->commit();
-
                 return $response->withJson([
-                    'result'  => 'Success',
+                    'result' => 'Success',
                     'message' => 'Map has been flagged successfully!'
                 ], 200, JSON_PRETTY_PRINT);
             } catch (Exception $ex) {
                 $this->container->logger->error('flagMap -> Exception: ' . $ex->getMessage());
-
                 return $response->withJson([
-                    'result'  => 'Error',
+                    'result' => 'Error',
                     'message' => $ex->getMessage()
                 ], 500, JSON_PRETTY_PRINT);
-            };
-        }
-
-        /**
-         * FlagController Add user flag function.
-         *
-         * @param \Slim\Http\Request $request
-         * @param \Slim\Http\Response $response
-         * @param array $args
-         *
-         * @return \Slim\Http\Response
-         */
-         public function flagUser(Request $request, Response $response, $args) {
-            $this->container->logger->info("MapPlatform '/api/v1/flags/user/" . $args['userId'] . "' route");
-            $this->container->security->checkRememberMe();
-
-            try {
-                $database = $this->container->dataBase->PDO;
-                $userId   = filter_var($args['userId'], FILTER_SANITIZE_NUMBER_INT);
-
-                if ($userId === null || $userId <= 0) {
-                    return $response->withJson([
-                        'result' => 'Error',
-                        'message' => 'Invalid request, inputs missing'
-                    ], 400, JSON_PRETTY_PRINT);
-                };
-
-                $query   = $database->select(['count(*) AS userCount'])
-                                    ->from('Users')
-                                    ->where('user_pk', '=', $userId);
-                $stmt    = $query->execute();
-                $usrItem = $stmt->fetch();
-
-                if (!array_key_exists('userCount', $usrItem) || $usrItem['userCount'] <= 0)
-                    return $response->withJson([
-                        'result' => 'Error',
-                        'message' => 'User does not exists!'
-                    ], 400, JSON_PRETTY_PRINT);
-
-                $query = $database->insert(['user_fk', 'flag_status_fk'])
-                                  ->into('Flags')
-                                  ->values([$userId, 0]);
-                $database->beginTransaction();
-                $flagId = $query->execute(True);
-
-                if ($flagId <= 0) {
-                    $database->rollBack();
-                    throw new Exception('Could not add the flag to the database');
-                };
-
-                $database->commit();
-
-                return $response->withJson([
-                    'result'  => 'Success',
-                    'message' => 'Map has been flagged successfully!'
-                ], 200, JSON_PRETTY_PRINT);
-            } catch (Exception $ex) {
-                $this->container->logger->error('flagMap -> Exception: ' . $ex->getMessage());
-
-                return $response->withJson([
-                    'result'  => 'Error',
-                    'message' => $ex->getMessage()
-                ], 500, JSON_PRETTY_PRINT);
-            };
+            }
         }
 #endregion
 
@@ -312,9 +246,8 @@
 
             try {
                 $database = $this->container->dataBase->PDO;
-                $data     = $request->getParsedBody();
-                $flagId   = filter_var($args['flagId'], FILTER_SANITIZE_NUMBER_INT);
-
+                $data = $request->getParsedBody();
+                $flagId = filter_var($args['flagId'], FILTER_SANITIZE_NUMBER_INT);
                 return $response->withJson([
                     'result' => 'Success',
                     'message' => 'Updated the map successfully.'
@@ -324,7 +257,7 @@
                     'result' => 'Error',
                     'message' => $ex->getMessage()
                 ], 500, JSON_PRETTY_PRINT);
-            };
+            }
         }
 #endregion
 

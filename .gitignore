@@ -1,4 +1,4 @@
 /vendor/
 !/vendor/slim/pdo/*
 /logs/*
-/src/settings.php
+/src/settings*.php
