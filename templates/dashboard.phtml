@@ -16,27 +16,16 @@
                     }
                 ?>
                 </div>
-                <table id="personalTable" class="table table-striped table-bordered table-hover"
-                        data-toggle="table"
-                        data-search="true"
-                        data-sort-name="avg_rating"
-                        data-sort-order="desc"
-                        data-toolbar="#toolbar"
-                        data-show-toggle="true"
-                        data-show-columns="true"
-                        data-minimum-count-columns="2"
-                        data-url="/api/v1/maps/user/<?=$_SESSION['user']->id;?>"
-                        data-show-refresh="true"
-                        data-show-pagination-switch="true"
-                        data-pagination="true"
-                        data-page-list="[25, 50, 100, ALL]"
-                        data-page-size="25"
-                        data-show-footer="false"
-                        data-side-pagination="client">
+                <table id="personalTable" class="table table-striped table-bordered table-hover" data-toggle="table" data-search="true"
+                        data-sort-name="avg_rating" data-sort-order="desc" data-toolbar="#toolbar" data-show-toggle="true"
+                        data-show-columns="true" data-minimum-count-columns="2" data-url="/api/v1/maps/user/<?=$_SESSION['user']->id;?>"
+                        data-show-refresh="true" data-show-pagination-switch="true" data-pagination="true" data-page-list="[25, 50, 100, ALL]"
+                        data-page-size="25" data-show-footer="false" data-side-pagination="client">
                     <thead>
                         <tr>
-                            <th class="col-xs-2" data-field="map_type_name" data-sortable="true">Type</th>
+                            <th class="col-xs-1" data-field="map_type_name" data-sortable="true">Type</th>
                             <th class="col-xs-2" data-field="map_name" data-formatter="mapNameFormatter" data-sortable="true">Name</th>
+                            <th class="col-xs-1" data-field="rev_map_version" data-sortable="true">Version</th>
                             <th class="col-xs-5" data-field="rev_map_description_short" data-sortable="false">Description</th>
                             <th class="col-xs-1" data-field="avg_rating" data-sortable="true">Rating</th>
                             <th class="col-xs-1" data-field="map_downloads" data-sortable="true">Downloads</th>

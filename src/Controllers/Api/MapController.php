@@ -71,8 +71,7 @@
                         'Maps.map_downloads',
                         'Maps.user_fk',
                         'Revisions.rev_map_description_short',
-                        'Revisions.rev_map_description',
-                        'Revisions.rev_upload_date',
+                        'Revisions.rev_map_version',
                         'Users.user_name',
                         'MapTypes.map_type_name'
                     ])
@@ -99,14 +98,12 @@
                         ->where('map_fk', '=', $mapItem['map_pk']);
                     $stmt = $query->execute();
                     $avgRating = $stmt->fetch();
-                    $lastChangeDate = date_create($mapItem['rev_upload_date']);
                     $responseArr['data'][] = [
                         'map_pk' => intval($mapItem['map_pk']),
                         'map_name' => $mapItem['map_name'],
                         'map_downloads' => intval($mapItem['map_downloads']),
                         'rev_map_description_short' => $mapItem['rev_map_description_short'],
-                        'rev_map_description' => $mapItem['rev_map_description'],
-                        'rev_upload_date' => $lastChangeDate->format('Y-m-d H:i'),
+                        'rev_map_version' => $mapItem['rev_map_version'],
                         'user_pk' => $mapItem['user_fk'],
                         'user_name' => $mapItem['user_name'],
                         'map_type_name' => $mapItem['map_type_name'],
@@ -224,11 +221,8 @@
                         'Maps.map_pk',
                         'Maps.map_name',
                         'Maps.map_downloads',
-                        'Maps.user_fk',
                         'Revisions.rev_map_description_short',
-                        'Revisions.rev_map_description',
-                        'Revisions.rev_upload_date',
-                        'Users.user_name',
+                        'Revisions.rev_map_version',
                         'MapTypes.map_type_name'
                     ])
                     ->from('Maps')
@@ -260,10 +254,7 @@
                         'map_name' => $mapItem['map_name'],
                         'map_downloads' => intval($mapItem['map_downloads']),
                         'rev_map_description_short' => $mapItem['rev_map_description_short'],
-                        'rev_map_description' => $mapItem['rev_map_description'],
-                        'rev_upload_date' => $lastChangeDate->format('Y-m-d H:i'),
-                        'user_pk' => $mapItem['user_fk'],
-                        'user_name' => $mapItem['user_name'],
+                        'rev_map_version' => $mapItem['rev_map_version'],
                         'map_type_name' => $mapItem['map_type_name'],
                         'avg_rating' => ($avgRating['avg_rating'] === null ? 'n/a' : floatval($avgRating['avg_rating']))
                     ];
@@ -275,6 +266,72 @@
                 return $response->withJson([
                     'status' => 'Error',
                     'message' => 'Unable to retrieve maps for the specified user, please try again later.',
+                    'data' => []
+                ], 500, JSON_PRETTY_PRINT);
+            }
+        }
+
+        /**
+         * MapController Get all maps.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getQueue(Request $request, Response $response, $args)
+        {
+            $this->container->logger->info("MapPlatform '/api/v1/maps' route");
+            $this->container->security->checkRememberMe();
+            $database = $this->container->dataBase->PDO;
+
+            try {
+                $query = $database->select([
+                        'Maps.map_pk',
+                        'Maps.map_name',
+                        'Maps.user_fk',
+                        'Revisions.rev_pk',
+                        'Revisions.rev_map_description_short',
+                        'Revisions.rev_map_version',
+                        'Users.user_name',
+                        'MapTypes.map_type_name'
+                    ])
+                    ->from('Maps')
+                    ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                    ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
+                    ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                    ->where('Revisions.rev_status_fk', '=', 0)
+                    ->orderBy('Maps.map_name', 'ASC');
+                $stmt = $query->execute();
+                $mapItemArr = $stmt->fetchall();
+                $responseArr = [
+                    'status' => 'Ok',
+                    'data' => []
+                ];
+
+                if (count($mapItemArr) <= 0)
+                    return $response->withJson($responseArr, 200, JSON_PRETTY_PRINT);
+
+                foreach ($mapItemArr as $mapItem) {
+                    $responseArr['data'][] = [
+                        'map_pk' => intval($mapItem['map_pk']),
+                        'map_name' => $mapItem['map_name'],
+                        'rev_pk' => intval($mapItem['rev_pk']),
+                        'rev_map_description_short' => $mapItem['rev_map_description_short'],
+                        'rev_map_version' => $mapItem['rev_map_version'],
+                        'user_pk' => $mapItem['user_fk'],
+                        'user_name' => $mapItem['user_name'],
+                        'map_type_name' => $mapItem['map_type_name']
+                    ];
+                }
+
+                return $response->withJson($responseArr, 200, JSON_PRETTY_PRINT);
+            } catch (Exception $ex) {
+                $this->container->logger->error('getAllMaps -> ex = ' . $ex);
+                return $response->withJson([
+                    'status' => 'Error',
+                    'message' => 'Unable to retrieve maps, please try again later.',
                     'data' => []
                 ], 500, JSON_PRETTY_PRINT);
             }
@@ -313,12 +370,11 @@
                 ])
                 ->from('Revisions')
                 ->leftJoin('Maps', 'Maps.map_pk', '=', 'Revisions.map_fk')
-                ->where('Revisions.rev_pk', '=', $revId)
-                ->where('Revisions.rev_status_fk', '=', 1, 'AND');
+                ->where('Revisions.rev_pk', '=', $revId);
             $stmt = $query->execute();
-            $mapItemArr = $stmt->fetchall();
+            $mapItem = $stmt->fetch();
 
-            if (count($mapItemArr) < 1) {
+            if ($mapItem === null || $mapItem === false) {
                 $this->container->logger->error('downloadMap -> Map revision not found');
                 return $response->withJson([
                     'status' => 'Error',
@@ -326,7 +382,6 @@
                 ], 404, JSON_PRETTY_PRINT);
             }
 
-            $mapItem = $mapItemArr[0];
             $fullPath = $config['uploadDirFull'] . $mapItem['rev_map_file_path'] . $mapItem['rev_map_file_name'];
 
             if (!file_exists($fullPath)) {
@@ -488,7 +543,9 @@
                             $mapVersion,
                             $mapDescShort,
                             $mapDescFull,
-                            1 // 1 = Enabled and visible
+                            $_SESSION['user']->group < 5
+                                ? 0 // 0 = Queued for review
+                                : 1 // 1 = Active and visible
                         ]);
                     $database->beginTransaction();
                     $revId = $query->execute(true);
@@ -539,11 +596,11 @@
                     $database = $this->container->dataBase->PDO;
                     $data = $request->getParsedBody();
                     $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
-                    $this->container->logger->debug("data: " . print_r($data, True));
+                    $this->container->logger->debug("data: " . print_r($data, true));
 
-                    if (Empty($data['editMapDescShort']) ||
-                        Empty($data['editMapDescFull']) ||
-                        Empty($mapId)) {
+                    if (empty($data['editMapDescShort']) ||
+                        empty($data['editMapDescFull']) ||
+                        empty($mapId)) {
                         return $response->withJson([
                             'result' => 'Error',
                             'message' => 'Invalid request, inputs missing'
@@ -552,30 +609,32 @@
 
                     $editMapDescShort = filter_var($data['editMapDescShort'], FILTER_SANITIZE_STRING, Constants::STRING_FILTER_FLAGS);
                     $editMapDescFull = filter_var($data['editMapDescFull'], FILTER_SANITIZE_STRING, Constants::STRING_FILTER_FLAGS);
-                    $this->container->logger->debug("mapId: " . print_r($mapId, True));
+                    $this->container->logger->debug("mapId: " . print_r($mapId, true));
                     $mapItem = $this->getMinimalMapFromDB($database, $mapId);
 
                     if (($mapItem != null) && ($mapItem['map_name'] != null)) {
                         if ($mapItem['user_fk'] == $_SESSION['user']->id) {
-                            $query = $database->insert(['map_fk',
-                                                        'rev_map_file_name',
-                                                        'rev_map_file_path',
-                                                        'rev_map_version',
-                                                        'rev_map_description_short',
-                                                        'rev_map_description',
-                                                        'rev_status_fk'
-                                              ])
-                                              ->into('Revisions')
-                                              ->values([$mapId,
-                                                        $mapItem['rev_map_file_name'],
-                                                        $mapItem['rev_map_file_path'],
-                                                        $mapItem['rev_map_version'],
-                                                        $editMapDescShort,
-                                                        $editMapDescFull,
-                                                        1 // 1 = Enabled and visible
-                                              ]);
+                            $query = $database->insert([
+                                    'map_fk',
+                                    'rev_map_file_name',
+                                    'rev_map_file_path',
+                                    'rev_map_version',
+                                    'rev_map_description_short',
+                                    'rev_map_description',
+                                    'rev_status_fk'
+                                ])
+                                ->into('Revisions')
+                                ->values([
+                                    $mapId,
+                                    $mapItem['rev_map_file_name'],
+                                    $mapItem['rev_map_file_path'],
+                                    $mapItem['rev_map_version'],
+                                    $editMapDescShort,
+                                    $editMapDescFull,
+                                    $mapItem['rev_status_fk']
+                                ]);
                             $database->beginTransaction();
-                            $revId = $query->execute(True);
+                            $revId = $query->execute(true);
 
                             if ($revId <= 0) {
                                 $database->rollBack();
@@ -584,9 +643,9 @@
 
                             $database->commit();
                             $query = $database->update()
-                                              ->table('Revisions')
-                                              ->set(['rev_status_fk' => 3 /* Disabled */])
-                                              ->where('rev_pk', '=', $mapItem['rev_pk']);
+                                ->table('Revisions')
+                                ->set(['rev_status_fk' => 3 /* Disabled */])
+                                ->where('rev_pk', '=', $mapItem['rev_pk']);
                             $database->beginTransaction();
                             $affectedRows = $query->execute();
 
@@ -644,13 +703,13 @@
                     $config = $this->container->get('settings')['files'];
                     $data = $request->getParsedBody();
                     $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
-                    $this->container->logger->debug("data: " . print_r($data, True));
+                    $this->container->logger->debug("data: " . print_r($data, true));
 
                     if (
-                        Empty($data['editMapRevVersion']) ||
-                        Empty($_FILES['editMapMapFile']['name']) ||
-                        Empty($_FILES['editMapDatFile']['name']) ||
-                        Empty($mapId)
+                        empty($data['editMapRevVersion']) ||
+                        empty($_FILES['editMapMapFile']['name']) ||
+                        empty($_FILES['editMapDatFile']['name']) ||
+                        empty($mapId)
                     ) {
                         return $response->withJson([
                             'result' => 'Error',
@@ -682,11 +741,11 @@
                             $mapArchive->addFile($_FILES['editMapMapFile']['tmp_name'], $mapDirInArchive . $mapName . '.map');
                             $mapArchive->addFile($_FILES['editMapDatFile']['tmp_name'], $mapDirInArchive . $mapName . '.dat');
 
-                            if (!Empty($_FILES['editMapDcriptFile']['name']))
+                            if (!empty($_FILES['editMapDcriptFile']['name']))
                                 $mapArchive->addFile($_FILES['editMapScriptFile']['tmp_name'], $mapDirInArchive . $mapName . '.script');
 
                             // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
-                            if (!Empty($_FILES['editMapLibxFiles']['name'][0])) {
+                            if (!empty($_FILES['editMapLibxFiles']['name'][0])) {
                                 $libxFiles = $this->container->fileUtils->reArrayFiles($_FILES['editMapLibxFiles']);
 
                                 // Add the files
@@ -699,23 +758,25 @@
                             }
 
                             $mapArchive->close();
-                            $query = $database->insert(['map_fk',
-                                                        'rev_map_file_name',
-                                                        'rev_map_file_path',
-                                                        'rev_map_version',
-                                                        'rev_map_description_short',
-                                                        'rev_map_description',
-                                                        'rev_status_fk'
-                                              ])
-                                              ->into('Revisions')
-                                              ->values([$mapId,
-                                                        $mapItem['rev_map_file_name'],
-                                                        $mapDirForDB,
-                                                        $mapVersion,
-                                                        $mapItem['rev_map_description_short'],
-                                                        $mapItem['rev_map_description'],
-                                                        1 // 1 = Enabled and visible
-                                              ]);
+                            $query = $database->insert([
+                                    'map_fk',
+                                    'rev_map_file_name',
+                                    'rev_map_file_path',
+                                    'rev_map_version',
+                                    'rev_map_description_short',
+                                    'rev_map_description',
+                                    'rev_status_fk'
+                                ])
+                                ->into('Revisions')
+                                ->values([
+                                    $mapId,
+                                    $mapItem['rev_map_file_name'],
+                                    $mapDirForDB,
+                                    $mapVersion,
+                                    $mapItem['rev_map_description_short'],
+                                    $mapItem['rev_map_description'],
+                                    $mapItem['rev_status_fk']
+                                ]);
                             $database->beginTransaction();
                             $revId = $query->execute(true);
 
@@ -726,9 +787,9 @@
 
                             $database->commit();
                             $query = $database->update()
-                                              ->table('Revisions')
-                                              ->set(['rev_status_fk' => 3 /* Disabled */])
-                                              ->where('rev_pk', '=', $mapItem['rev_pk']);
+                                ->table('Revisions')
+                                ->set(['rev_status_fk' => 3 /* Disabled */])
+                                ->where('rev_pk', '=', $mapItem['rev_pk']);
                             $database->beginTransaction();
                             $affectedRows = $query->execute();
 
@@ -811,21 +872,20 @@
 
                 if ($oldRevId !== null) {
                     $query = $database->select(['*'])
-                                      ->from('Screenshots')
-                                      ->where('rev_fk', '=', $oldRevId)
-                                      ->orderBy('screen_order', 'ASC');
+                        ->from('Screenshots')
+                        ->where('rev_fk', '=', $oldRevId)
+                        ->orderBy('screen_order', 'ASC');
                     $stmt = $query->execute();
                     $oldScreenshotFiles = $stmt->fetchall();
                 } else {
                     $oldScreenshotFiles = [];
                 }
 
-                if (!Empty($_FILES['screenshotFileOne']['tmp_name'])) {
+                if (!empty($_FILES['screenshotFileOne']['tmp_name'])) {
                     $detectedType = exif_imagetype($_FILES['screenshotFileOne']['tmp_name']);
-                    $validFile = in_array($detectedType, $config['allowedTypes']);
 
-                    if ($validFile) {
-                        $_FILES['screenshotFileOne']['imageTitle'] = (Empty(filter_var($formData['screenshotTitleOne'],
+                    if (in_array($detectedType, $config['allowedTypes'])) {
+                        $_FILES['screenshotFileOne']['imageTitle'] = (empty(filter_var($formData['screenshotTitleOne'],
                                                                                        FILTER_SANITIZE_STRING,
                                                                                        Constants::STRING_FILTER_FLAGS))
                                                                         ? $mapName . '-' . $imageOrderNum
@@ -839,12 +899,11 @@
                     }
                 }
 
-                if (!Empty($_FILES['screenshotFileTwo']['tmp_name'])) {
+                if (!empty($_FILES['screenshotFileTwo']['tmp_name'])) {
                     $detectedType = exif_imagetype($_FILES['screenshotFileTwo']['tmp_name']);
-                    $validFile = in_array($detectedType, $config['allowedTypes']);
 
-                    if ($validFile) {
-                        $_FILES['screenshotFileTwo']['imageTitle'] = (Empty(filter_var($formData['screenshotTitleTwo'],
+                    if (in_array($detectedType, $config['allowedTypes'])) {
+                        $_FILES['screenshotFileTwo']['imageTitle'] = (empty(filter_var($formData['screenshotTitleTwo'],
                                                                                        FILTER_SANITIZE_STRING,
                                                                                        Constants::STRING_FILTER_FLAGS))
                                                                         ? $mapName . '-' . $imageOrderNum
@@ -858,12 +917,11 @@
                     }
                 }
 
-                if (!Empty($_FILES['screenshotFileThree']['tmp_name'])) {
+                if (!empty($_FILES['screenshotFileThree']['tmp_name'])) {
                     $detectedType = exif_imagetype($_FILES['screenshotFileThree']['tmp_name']);
-                    $validFile = in_array($detectedType, $config['allowedTypes']);
 
-                    if ($validFile) {
-                        $_FILES['screenshotFileThree']['imageTitle'] = (Empty(filter_var($formData['screenshotTitleThree'],
+                    if (in_array($detectedType, $config['allowedTypes'])) {
+                        $_FILES['screenshotFileThree']['imageTitle'] = (empty(filter_var($formData['screenshotTitleThree'],
                                                                                          FILTER_SANITIZE_STRING,
                                                                                          Constants::STRING_FILTER_FLAGS))
                                                                         ? $mapName . '-' . $imageOrderNum
@@ -877,12 +935,11 @@
                     }
                 }
 
-                if (!Empty($_FILES['screenshotFileFour']['tmp_name'])) {
+                if (!empty($_FILES['screenshotFileFour']['tmp_name'])) {
                     $detectedType = exif_imagetype($_FILES['screenshotFileFour']['tmp_name']);
-                    $validFile = in_array($detectedType, $config['allowedTypes']);
 
-                    if ($validFile) {
-                        $_FILES['screenshotFileFour']['imageTitle'] = (Empty(filter_var($formData['screenshotTitleFour'],
+                    if (in_array($detectedType, $config['allowedTypes'])) {
+                        $_FILES['screenshotFileFour']['imageTitle'] = (empty(filter_var($formData['screenshotTitleFour'],
                                                                                         FILTER_SANITIZE_STRING,
                                                                                         Constants::STRING_FILTER_FLAGS))
                                                                         ? $mapName . '-' . $imageOrderNum
@@ -896,12 +953,11 @@
                     }
                 }
 
-                if (!Empty($_FILES['screenshotFileFive']['tmp_name'])) {
+                if (!empty($_FILES['screenshotFileFive']['tmp_name'])) {
                     $detectedType = exif_imagetype($_FILES['screenshotFileFive']['tmp_name']);
-                    $validFile = in_array($detectedType, $config['allowedTypes']);
 
-                    if ($validFile) {
-                        $_FILES['screenshotFileFive']['imageTitle'] = (Empty(filter_var($formData['screenshotTitleFive'],
+                    if (in_array($detectedType, $config['allowedTypes'])) {
+                        $_FILES['screenshotFileFive']['imageTitle'] = (empty(filter_var($formData['screenshotTitleFive'],
                                                                                         FILTER_SANITIZE_STRING,
                                                                                         Constants::STRING_FILTER_FLAGS))
                                                                         ? $mapName . '-' . $imageOrderNum
@@ -929,15 +985,15 @@
                     $imageObject->writeImage($this->container->get('settings')['appRootDir'] . $mapDir . $imageFileName);
                     $imageObject->destroy();
                     $query = $database->insert(['rev_fk', 'screen_title', 'screen_alt', 'screen_file_name', 'screen_path', 'screen_order'])
-                                      ->into('Screenshots')
-                                      ->values([
-                                        $revId,
-                                        $screenshotFile['imageTitle'],
-                                        $imageFileName,
-                                        $imageFileName,
-                                        $mapDir,
-                                        $screenshotFile['imageOrderNum']
-                                    ]);
+                            ->into('Screenshots')
+                            ->values([
+                            $revId,
+                            $screenshotFile['imageTitle'],
+                            $imageFileName,
+                            $imageFileName,
+                            $mapDir,
+                            $screenshotFile['imageOrderNum']
+                        ]);
                     $database->beginTransaction();
                     $insertID = $query->execute(true);
 
@@ -951,15 +1007,15 @@
 
                 foreach ($oldScreenshotFiles as $oldScreenshotFile) { // Only append these to the revision but keep original location
                     $query = $database->insert(['rev_fk', 'screen_title', 'screen_alt', 'screen_file_name', 'screen_path', 'screen_order'])
-                                      ->into('Screenshots')
-                                      ->values([
-                                            $revId,
-                                            $oldScreenshotFile['screen_title'],
-                                            $oldScreenshotFile['screen_alt'],
-                                            $oldScreenshotFile['screen_file_name'],
-                                            $oldScreenshotFile['screen_path'],
-                                            $imageOrderNum
-                                        ]);
+                        ->into('Screenshots')
+                        ->values([
+                            $revId,
+                            $oldScreenshotFile['screen_title'],
+                            $oldScreenshotFile['screen_alt'],
+                            $oldScreenshotFile['screen_file_name'],
+                            $oldScreenshotFile['screen_path'],
+                            $imageOrderNum
+                        ]);
                     $database->beginTransaction();
                     $insertID = $query->execute(true);
 
@@ -994,31 +1050,32 @@
                 $stmt = $aDatabase->prepare($query);
                 $stmt->bindParam(':mapid', $aMapId);
                 $stmt->execute();
-                $query = $aDatabase->select(['Maps.map_name',
-                                             'Maps.map_downloads',
-                                             'Maps.user_fk',
-                                             'Revisions.rev_pk',
-                                             'Revisions.rev_map_description_short',
-                                             'Revisions.rev_map_description',
-                                             'Revisions.rev_upload_date',
-                                             'Revisions.rev_map_version',
-                                             'Users.user_name',
-                                             'MapTypes.map_type_name',
-                                             'ROUND(AVG(CAST(Ratings.rating_amount AS DECIMAL(12,2))), 1) AS avg_rating',
-                                             'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 1 AND map_fk = @mapid), 0) AS rating_one',
-                                             'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 2 AND map_fk = @mapid), 0) AS rating_two',
-                                             'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 3 AND map_fk = @mapid), 0) AS rating_three',
-                                             'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 4 AND map_fk = @mapid), 0) AS rating_four',
-                                             'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 5 AND map_fk = @mapid), 0) AS rating_five'
-                                        ])
-                                   ->from('Maps')
-                                   ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
-                                   ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
-                                   ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                                   ->leftJoin('Ratings', 'Ratings.map_fk', '=', 'Maps.map_pk')
-                                   ->where('Revisions.rev_status_fk', '=', 1)
-                                   ->where('Maps.map_visible', '=', 1, 'AND')
-                                   ->where('Maps.map_pk', '=', $aMapId, 'AND');
+                $query = $aDatabase->select([
+                        'Maps.map_name',
+                        'Maps.map_downloads',
+                        'Maps.user_fk',
+                        'Revisions.rev_pk',
+                        'Revisions.rev_map_description_short',
+                        'Revisions.rev_map_description',
+                        'Revisions.rev_upload_date',
+                        'Revisions.rev_map_version',
+                        'Users.user_name',
+                        'MapTypes.map_type_name',
+                        'ROUND(AVG(CAST(Ratings.rating_amount AS DECIMAL(12,2))), 1) AS avg_rating',
+                        'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 1 AND map_fk = @mapid), 0) AS rating_one',
+                        'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 2 AND map_fk = @mapid), 0) AS rating_two',
+                        'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 3 AND map_fk = @mapid), 0) AS rating_three',
+                        'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 4 AND map_fk = @mapid), 0) AS rating_four',
+                        'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 5 AND map_fk = @mapid), 0) AS rating_five'
+                    ])
+                    ->from('Maps')
+                    ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                    ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
+                    ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                    ->leftJoin('Ratings', 'Ratings.map_fk', '=', 'Maps.map_pk')
+                    ->where('Revisions.rev_status_fk', '=', 1)
+                    ->where('Maps.map_visible', '=', 1, 'AND')
+                    ->where('Maps.map_pk', '=', $aMapId, 'AND');
                 $stmt = $query->execute();
                 $mapItem = $stmt->fetch();
                 return $mapItem;
@@ -1029,21 +1086,22 @@
 
         private function getMinimalMapFromDB(&$aDatabase, $aMapId) {
             try {
-                $query = $aDatabase->select(['Maps.map_name',
-                                             'Maps.user_fk',
-                                             'Revisions.rev_pk',
-                                             'Revisions.rev_map_file_name',
-                                             'Revisions.rev_map_file_path',
-                                             'Revisions.rev_map_version',
-                                             'Revisions.rev_map_description_short',
-                                             'Revisions.rev_map_description'
-                                        ])
-                                   ->from('Maps')
-                                   ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
-                                   ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                                   ->where('Revisions.rev_status_fk', '=', 1)
-                                   /* ->where('Maps.map_visible', '=', 1, 'AND') // Disabled for possible use later on */
-                                   ->where('Maps.map_pk', '=', $aMapId, 'AND');
+                $query = $aDatabase->select([
+                        'Maps.map_name',
+                        'Maps.user_fk',
+                        'Revisions.rev_pk',
+                        'Revisions.rev_map_file_name',
+                        'Revisions.rev_map_file_path',
+                        'Revisions.rev_map_version',
+                        'Revisions.rev_map_description_short',
+                        'Revisions.rev_map_description'
+                    ])
+                    ->from('Maps')
+                    ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                    ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                    ->where('Revisions.rev_status_fk', '=', 1)
+                    /* ->where('Maps.map_visible', '=', 1, 'AND') // Disabled for possible use later on */
+                    ->where('Maps.map_pk', '=', $aMapId, 'AND');
                 $stmt = $query->execute();
                 $mapItem = $stmt->fetch();
                 return $mapItem;

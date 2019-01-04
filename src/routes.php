@@ -42,7 +42,9 @@
     });
 
     $app->group('/admin_', function () {
+        $this->get('queue', Controllers\MapController::class . ':getMapQueue')->setName('adminQueue');
         $this->get('flags', Controllers\FlagController::class . ':getFlags')->setName('adminFlags');
+        $this->get('users', Controllers\ProfileController::class . ':getUserManagement')->setName('adminUsers');
     });
 
     // Map routes
@@ -57,6 +59,7 @@
             $this->group('/maps', function () {
                 $this->post('', Controllers\Api\MapController::class . ':addMap');                      // C
                 $this->get('', Controllers\Api\MapController::class . ':getAllMaps');                   // R
+                $this->get('/queue', Controllers\Api\MapController::class . ':getQueue');               // R
                 $this->get('/download/{revId}', Controllers\Api\MapController::class . ':downloadMap'); // R
                 $this->get('/user/{userId}', Controllers\Api\MapController::class . ':getMapsByUser');  // R
 
@@ -69,9 +72,12 @@
             });
 
             $this->group('/flags', function () {
-                $this->post('/map/{revId}', Controllers\Api\FlagController::class . ':flagMap'); // C
-                $this->get('/queue', Controllers\Api\FlagController::class . ':getQueue');       // R
-                $this->get('/mine', Controllers\Api\FlagController::class . ':getMine');         // R
+                $this->post('/map/{revId}', Controllers\Api\FlagController::class . ':flagMap');          // C
+                $this->get('/queue', Controllers\Api\FlagController::class . ':getQueue');                // R
+                $this->get('/mine', Controllers\Api\FlagController::class . ':getMine');                  // R
+                $this->post('/{flagId}/pickup', Controllers\Api\FlagController::class . ':pickupFlag');   // U
+                $this->post('/{flagId}/close', Controllers\Api\FlagController::class . ':closeFlag');     // U
+                $this->post('/{flagId}/resolve', Controllers\Api\FlagController::class . ':resolveFlag'); // U
             });
 
             $this->group('/rating', function () {

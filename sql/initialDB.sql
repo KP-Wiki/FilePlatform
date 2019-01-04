@@ -131,7 +131,7 @@ CREATE TABLE `Flags` (
     `flag_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `rev_fk` BIGINT UNSIGNED NOT NULL,
     `flag_status_fk` TINYINT UNSIGNED NOT NULL,
-    `flag_assigned_user_fk` BIGINT UNSIGNED NOT NULL,
+    `flag_assigned_user_fk` BIGINT UNSIGNED NULL,
     PRIMARY KEY (`flag_pk`),
     INDEX (`rev_fk`),
     INDEX (`flag_status_fk`),

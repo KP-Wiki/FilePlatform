@@ -72,16 +72,16 @@
             $this->container->logger->info("MapPlatform '/admin_flags' route");
             $this->container->security->checkRememberMe();
 
-            if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 3)) {
+            if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group < 9)) {
                 $response->getBody()->write('Taking you back to the homepage');
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
-                $pageTitle = 'Map Details';
-                $pageID = 0;
-                $contentTemplate = 'flags.phtml';
+                $pageTitle = 'Flags';
+                $pageID = 5;
+                $contentTemplate = 'admin_flags.phtml';
                 $values['PageCrumbs'] = '<ol class="breadcrumb">
     <li><a href="/home">Home</a></li>
-    <li class="active">Map Details</li>
+    <li class="active">Flags</li>
 </ol>';
                 return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
             }

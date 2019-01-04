@@ -100,6 +100,35 @@
         }
 
         /**
+         * Show the map queue page.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getMapQueue(Request $request, Response $response, $args)
+        {
+            $this->container->logger->info("MapPlatform '/admin_queue' route");
+            $this->container->security->checkRememberMe();
+
+            if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group < 9)) {
+                $response->getBody()->write('Taking you back to the homepage');
+                return $response->withAddedHeader('Refresh', '1; url=/home');
+            } else {
+                $pageTitle = 'Queue';
+                $pageID = 4;
+                $contentTemplate = 'admin_queue.phtml';
+                $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li class="active">Queue</li>
+</ol>';
+                return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
+            }
+        }
+
+        /**
          * Show the new map page.
          *
          * @param \Slim\Http\Request $request

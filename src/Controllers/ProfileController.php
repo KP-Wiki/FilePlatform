@@ -97,6 +97,42 @@
         }
 
         /**
+         * Show the user management page.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function getUserManagement(Request $request, Response $response, $args)
+        {
+            $this->container->logger->info("ManagementTools '/admin_users' route");
+            $this->container->security->checkRememberMe();
+
+            if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group < 9)) {
+                $response->getBody()->write('Taking you back to the homepage');
+                return $response->withAddedHeader('Refresh', '1; url=/home');
+            } else {
+                $pageTitle = 'User Management';
+                $pageID = 6;
+                $contentTemplate = 'admin_users.phtml';
+                $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li class="active">User Management</li>
+</ol>';
+                $values['userId'] = $_SESSION['user']->id;
+                $values['user'] = $this->getUserProfile($_SESSION['user']->id);
+
+                if ($values['user'] == null)
+                    return $response->withAddedHeader('Refresh', '1; url=/home')
+                        ->withStatus(404, 'User not found.');
+
+                return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
+            }
+        }
+
+        /**
          * Show the edit user profile/settings page.
          *
          * @param \Slim\Http\Request $request
