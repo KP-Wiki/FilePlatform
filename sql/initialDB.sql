@@ -10,7 +10,6 @@ CREATE TABLE `Users` (
     `user_pk` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_name` VARCHAR(150) COLLATE utf8_unicode_ci NOT NULL,
     `user_password` VARCHAR(2048) COLLATE utf8_unicode_ci NOT NULL,
-    `user_salt` VARCHAR(256) COLLATE utf8_unicode_ci NOT NULL,
     `user_email_address` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
     `group_fk` BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (`user_pk`),

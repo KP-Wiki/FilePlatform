@@ -12,4 +12,4 @@
     // Application middleware
     use \Psr7Middlewares\Middleware\TrailingSlash;
 
-    $app->add((new TrailingSlash(False))->redirect(301));
+    $app->add((new TrailingSlash(false))->redirect(301));

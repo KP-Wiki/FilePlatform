@@ -65,23 +65,24 @@
             $database = $this->container->dataBase->PDO;
 
             try {
-                $query = $database->select(['Maps.map_pk',
-                                            'Maps.map_name',
-                                            'Maps.map_downloads',
-                                            'Maps.user_fk',
-                                            'Revisions.rev_map_description_short',
-                                            'Revisions.rev_map_description',
-                                            'Revisions.rev_upload_date',
-                                            'Users.user_name',
-                                            'MapTypes.map_type_name'
-                                        ])
-                                  ->from('Maps')
-                                  ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
-                                  ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
-                                  ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                                  ->where('Revisions.rev_status_fk', '=', 1)
-                                  ->where('Maps.map_visible', '=', 1, 'AND')
-                                  ->orderBy('Maps.map_name', 'ASC');
+                $query = $database->select([
+                        'Maps.map_pk',
+                        'Maps.map_name',
+                        'Maps.map_downloads',
+                        'Maps.user_fk',
+                        'Revisions.rev_map_description_short',
+                        'Revisions.rev_map_description',
+                        'Revisions.rev_upload_date',
+                        'Users.user_name',
+                        'MapTypes.map_type_name'
+                    ])
+                    ->from('Maps')
+                    ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                    ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
+                    ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                    ->where('Revisions.rev_status_fk', '=', 1)
+                    ->where('Maps.map_visible', '=', 1, 'AND')
+                    ->orderBy('Maps.map_name', 'ASC');
                 $stmt = $query->execute();
                 $mapItemArr = $stmt->fetchall();
                 $responseArr = [
@@ -94,8 +95,8 @@
 
                 foreach ($mapItemArr as $mapItem) {
                     $query = $database->select(['ROUND(AVG(CAST(rating_amount AS DECIMAL(12,2))), 1) AS avg_rating'])
-                                      ->from('Ratings')
-                                      ->where('map_fk', '=', $mapItem['map_pk']);
+                        ->from('Ratings')
+                        ->where('map_fk', '=', $mapItem['map_pk']);
                     $stmt = $query->execute();
                     $avgRating = $stmt->fetch();
                     $lastChangeDate = date_create($mapItem['rev_upload_date']);
@@ -219,23 +220,24 @@
             }
 
             try {
-                $query = $database->select(['Maps.map_pk',
-                                            'Maps.map_name',
-                                            'Maps.map_downloads',
-                                            'Maps.user_fk',
-                                            'Revisions.rev_map_description_short',
-                                            'Revisions.rev_map_description',
-                                            'Revisions.rev_upload_date',
-                                            'Users.user_name',
-                                            'MapTypes.map_type_name'
-                                        ])
-                                  ->from('Maps')
-                                  ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
-                                  ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
-                                  ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                                  ->whereIn('Revisions.rev_status_fk', [0, 1])
-                                  ->where('Maps.user_fk', '=', $userId, 'AND')
-                                  ->orderBy('Maps.map_name', 'ASC');
+                $query = $database->select([
+                        'Maps.map_pk',
+                        'Maps.map_name',
+                        'Maps.map_downloads',
+                        'Maps.user_fk',
+                        'Revisions.rev_map_description_short',
+                        'Revisions.rev_map_description',
+                        'Revisions.rev_upload_date',
+                        'Users.user_name',
+                        'MapTypes.map_type_name'
+                    ])
+                    ->from('Maps')
+                    ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                    ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
+                    ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                    ->whereIn('Revisions.rev_status_fk', [0, 1])
+                    ->where('Maps.user_fk', '=', $userId, 'AND')
+                    ->orderBy('Maps.map_name', 'ASC');
                 $stmt = $query->execute();
                 $mapItemArr = $stmt->fetchall();
                 $responseArr = [
@@ -248,8 +250,8 @@
 
                 foreach ($mapItemArr as $mapItem) {
                     $query = $database->select(['ROUND(AVG(CAST(rating_amount AS DECIMAL(12,2))), 1) AS avg_rating'])
-                                      ->from('Ratings')
-                                      ->where('map_fk', '=', $mapItem['map_pk']);
+                        ->from('Ratings')
+                        ->where('map_fk', '=', $mapItem['map_pk']);
                     $stmt = $query->execute();
                     $avgRating = $stmt->fetch();
                     $lastChangeDate = date_create($mapItem['rev_upload_date']);
@@ -270,7 +272,6 @@
                 return $response->withJson($responseArr, 200, JSON_PRETTY_PRINT);
             } catch (Exception $ex) {
                 $this->container->logger->error('getMapsByUser -> ex = ' . $ex);
-
                 return $response->withJson([
                     'status' => 'Error',
                     'message' => 'Unable to retrieve maps for the specified user, please try again later.',
@@ -304,14 +305,16 @@
 
             $database = $this->container->dataBase->PDO;
             $config = $this->container->get('settings')['files'];
-            $query = $database->select(['Maps.map_pk',
-                                             'Maps.map_downloads',
-                                             'Revisions.rev_map_file_name',
-                                             'Revisions.rev_map_file_path'])
-                                   ->from('Revisions')
-                                   ->leftJoin('Maps', 'Maps.map_pk', '=', 'Revisions.map_fk')
-                                   ->where('Revisions.rev_pk', '=', $revId)
-                                   ->where('Revisions.rev_status_fk', '=', 1, 'AND');
+            $query = $database->select([
+                    'Maps.map_pk',
+                    'Maps.map_downloads',
+                    'Revisions.rev_map_file_name',
+                    'Revisions.rev_map_file_path'
+                ])
+                ->from('Revisions')
+                ->leftJoin('Maps', 'Maps.map_pk', '=', 'Revisions.map_fk')
+                ->where('Revisions.rev_pk', '=', $revId)
+                ->where('Revisions.rev_status_fk', '=', 1, 'AND');
             $stmt = $query->execute();
             $mapItemArr = $stmt->fetchall();
 
@@ -336,9 +339,9 @@
 
             $mapDownloads = $mapItem['map_downloads'] + 1;
             $query = $database->update()
-                                     ->table('Maps')
-                                     ->set(['map_downloads' => $mapDownloads])
-                                     ->where('map_pk', '=', $mapItem['map_pk']);
+                ->table('Maps')
+                ->set(['map_downloads' => $mapDownloads])
+                ->where('map_pk', '=', $mapItem['map_pk']);
             $database->beginTransaction();
             $affectedRows = $query->execute();
 
@@ -356,15 +359,15 @@
             $fileHandle = fopen($fullPath, 'rb');
             $stream = new Stream($fileHandle); // Create a stream instance for the response body
             return $response->withHeader('Content-Type', 'application/force-download')
-                            ->withHeader('Content-Type', 'application/octet-stream')
-                            ->withHeader('Content-Type', 'application/download')
-                            ->withHeader('Content-Description', 'File Transfer')
-                            ->withHeader('Content-Transfer-Encoding', 'binary')
-                            ->withHeader('Content-Disposition', 'attachment; filename="' . $mapItem['rev_map_file_name'] . '"')
-                            ->withHeader('Expires', '0')
-                            ->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-                            ->withHeader('Pragma', 'public')
-                            ->withBody($stream); // All stream contents will be sent to the response
+                ->withHeader('Content-Type', 'application/octet-stream')
+                ->withHeader('Content-Type', 'application/download')
+                ->withHeader('Content-Description', 'File Transfer')
+                ->withHeader('Content-Transfer-Encoding', 'binary')
+                ->withHeader('Content-Disposition', 'attachment; filename="' . $mapItem['rev_map_file_name'] . '"')
+                ->withHeader('Expires', '0')
+                ->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+                ->withHeader('Pragma', 'public')
+                ->withBody($stream); // All stream contents will be sent to the response
         }
 #endregion
 
@@ -390,7 +393,8 @@
                     $config = $this->container->get('settings')['files'];
                     $data = $request->getParsedBody();
                     $files = $request->getUploadedFiles();
-                    $this->container->logger->debug("data: " . print_r($data, True));
+                    $this->container->logger->debug("data: " . print_r($data, true));
+                    $this->container->logger->debug("files: " . print_r($files, true));
                     $mapName = filter_var($data['mapName'], FILTER_SANITIZE_STRING, Constants::STRING_FILTER_FLAGS);
                     $mapVersion = filter_var($data['mapVersion'], FILTER_SANITIZE_STRING, Constants::STRING_FILTER_FLAGS);
                     $mapDescShort = filter_var($data['mapDescShort'], FILTER_SANITIZE_STRING, Constants::STRING_FILTER_FLAGS);
@@ -398,12 +402,12 @@
                     $mapType = filter_var($data['mapType'], FILTER_SANITIZE_NUMBER_INT);
 
                     if (
-                        Empty($_FILES['mapFile']['name']) ||
-                        Empty($_FILES['datFile']['name']) ||
-                        Empty($mapName) ||
-                        Empty($mapVersion) ||
-                        Empty($mapDescShort) ||
-                        Empty($mapDescFull) ||
+                        (!array_key_exists('mapFile', $files)) ||
+                        (!array_key_exists('datFile', $files)) ||
+                        empty($mapName) ||
+                        empty($mapVersion) ||
+                        empty($mapDescShort) ||
+                        empty($mapDescFull) ||
                         ($mapType < 0)
                     ) {
                         return $response->withJson([
@@ -416,8 +420,8 @@
                     $mapDirForDB = $mapDirInArchive . $mapVersion . '/';
                     $mapDirOnDisk = $config['uploadDirFull'] . $mapDirForDB;
                     $query = $database->select(['COUNT(*) AS map_count'])
-                                      ->from('Maps')
-                                      ->where('map_name', '=', $mapName);
+                        ->from('Maps')
+                        ->where('map_name', '=', $mapName);
                     $stmt = $query->execute();
                     $mapCount = $stmt->fetch();
 
@@ -432,35 +436,32 @@
                     $mapArchive = new ZipArchive();
 
                     // Try to create the new archive
-                    if (!$mapArchive->open($mapDirOnDisk . $mapName . '.zip', ZipArchive::CREATE))
+                    if (!$mapArchive->open(sprintf('%s%s.zip', $mapDirOnDisk, $mapName), ZipArchive::CREATE | ZipArchive::OVERWRITE))
                         throw new Exception('Unable to create the archive');
 
                     // Create a new directory
-                    $mapArchive-> addEmptyDir($mapDirInArchive);
+                    $mapArchive->addEmptyDir($mapDirInArchive);
                     // Add the required files
-                    $mapArchive->addFile($_FILES['mapFile']['tmp_name'], $mapDirInArchive . $mapName . '.map');
-                    $mapArchive->addFile($_FILES['datFile']['tmp_name'], $mapDirInArchive . $mapName . '.dat');
+                    $mapArchive->addFile($files['mapFile']->file, sprintf('%s%s.map', $mapDirInArchive, $mapName));
+                    $mapArchive->addFile($files['datFile']->file, sprintf('%s%s.dat', $mapDirInArchive, $mapName));
 
-                    if (!Empty($_FILES['scriptFile']['name']))
-                        $mapArchive->addFile($_FILES['scriptFile']['tmp_name'], $mapDirInArchive . $mapName . '.script');
+                    if (array_key_exists('scriptFile', $files))
+                        $mapArchive->addFile($files['scriptFile']->file, sprintf('%s%s.script', $mapDirInArchive, $mapName));
 
                     // Because PHP uses an odd manner of stacking multiple files into an array we will re-array them here
-                    if (!Empty($_FILES['libxFiles']['name'][0])) {
-                        $libxFiles = $this->container->fileUtils->reArrayFiles($_FILES['libxFiles']);
-
-                        // Add the files
-                        foreach ($libxFiles as $libxFile) {
-                            $fileBitsArr = explode('.', $libxFile['name']);
-                            $fileBitsCount = count($fileBitsArr);
-                            $fileExtention = '.' . $fileBitsArr[$fileBitsCount - 2] . '.libx'; // Get the language part as well
-                            $mapArchive->addFile($libxFile['tmp_name'], $mapDirInArchive . $mapName . $fileExtention);
+                    if (array_key_exists('libxFiles', $files) && count($files['libxFiles']) > 0) {
+                        foreach ($files['libxFiles'] as $item) {
+                            $fileBitsArr = explode('.', $item->getClientFilename());
+                            $this->container->logger->debug("fileBitsArr: " . print_r($fileBitsArr, true));
+                            $mapArchive->addFile($item->file, sprintf('%s%s.%s.libx', $mapDirInArchive, $mapName, $fileBitsArr[count($fileBitsArr) - 2]));
                         }
                     }
 
+                    $mapArchive->setArchiveComment('Find more maps on https://maps.kp-wiki.org/');
                     $mapArchive->close();
                     $query = $database->insert(['map_name', 'user_fk', 'map_Type_fk'])
-                                      ->into('Maps')
-                                      ->values([$mapName, $_SESSION['user']->id, $mapType]);
+                        ->into('Maps')
+                        ->values([$mapName, $_SESSION['user']->id, $mapType]);
                     $database->beginTransaction();
                     $mapId = $query->execute(true);
 
@@ -470,23 +471,25 @@
                     }
 
                     $database->commit();
-                    $query = $database->insert(['map_fk',
-                                                'rev_map_file_name',
-                                                'rev_map_file_path',
-                                                'rev_map_version',
-                                                'rev_map_description_short',
-                                                'rev_map_description',
-                                                'rev_status_fk'
-                                      ])
-                                      ->into('Revisions')
-                                      ->values([$mapId,
-                                                $mapName . '.zip',
-                                                $mapDirForDB,
-                                                $mapVersion,
-                                                $mapDescShort,
-                                                $mapDescFull,
-                                                1 // 1 = Enabled and visible
-                                      ]);
+                    $query = $database->insert([
+                            'map_fk',
+                            'rev_map_file_name',
+                            'rev_map_file_path',
+                            'rev_map_version',
+                            'rev_map_description_short',
+                            'rev_map_description',
+                            'rev_status_fk'
+                        ])
+                        ->into('Revisions')
+                        ->values([
+                            $mapId,
+                            $mapName . '.zip',
+                            $mapDirForDB,
+                            $mapVersion,
+                            $mapDescShort,
+                            $mapDescFull,
+                            1 // 1 = Enabled and visible
+                        ]);
                     $database->beginTransaction();
                     $revId = $query->execute(true);
 
@@ -803,7 +806,7 @@
             $config = $this->container->get('settings')['images'];
 
             try {
-                $imageOrderNum   = 0;
+                $imageOrderNum = 0;
                 $screenshotFiles = [];
 
                 if ($oldRevId !== null) {

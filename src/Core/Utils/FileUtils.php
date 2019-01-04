@@ -26,7 +26,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class FileUtils
+    final class FileUtils
     {
         /** @var \Slim\Container $container The framework container */
         private $container;
@@ -36,7 +36,8 @@
          *
          * @param \Slim\Container The application controller.
          */
-        public function __construct(Container &$aContainer) {
+        public function __construct(Container &$aContainer)
+        {
             $this->container = $aContainer;
         }
 
@@ -47,17 +48,18 @@
          *
          * @return string
          */
-        public function getFileText($aFile) {
+        public function getFileText($aFile)
+        {
             $fileHandle = fopen($aFile, 'r');
-            $result     = '';
+            $result = '';
 
-            if ($fileHandle !== False) {
+            if ($fileHandle !== false) {
                 while ($line = fgets($fileHandle)) {
                     $result .= $line;
-                };
+                }
 
                 fclose($fileHandle);
-            };
+            }
 
             return $result;
         }
@@ -68,16 +70,17 @@
          * @param array $arr
          * @param string $type
          */
-        private function minify($arr, $type) {
+        private function minify($arr, $type)
+        {
             $settings = $this->container->get('settings')['minifier'];
-            $hashArr  = file_exists($settings['hashFile']) ? json_decode(file_get_contents($settings['hashFile']), True) : array();
+            $hashArr = file_exists($settings['hashFile']) ? json_decode(file_get_contents($settings['hashFile']), true) : [];
 
             foreach ($arr as $inFile => $outFile) {
                 // Skip the file if the source does not exist
                 if (!file_exists($inFile)) {
                     $this->container->logger->err("Error: File '" . $inFile . "' does not exist, Skipping.");
                     continue;
-                };
+                }
 
                 // Skip the file if the source hashes are equal
                 if (array_key_exists($inFile, $hashArr) && $hashArr[$inFile] == sha1(file_get_contents($inFile)))
@@ -89,21 +92,21 @@
                 if (!$writeHandle) {
                     $this->container->logger->err("Error: Unable to open file '" . $outFile . "', Skipping.");
                     continue;
-                };
+                }
 
-                if ($type == 'CSS')
+                if ($type == 'CSS') {
                     $minifier = new Minify\CSS($inFile);
-                elseif ($type == 'JS')
+                } elseif ($type == 'JS') {
                     $minifier = new Minify\JS($inFile);
-                else // Completely ignore bad types
+                } else { // Completely ignore bad types
                     continue;
+                }
 
                 fwrite($writeHandle, $minifier->minify());
                 fclose($writeHandle);
-
                 $hashArr[$inFile] = sha1(file_get_contents($inFile));
                 $this->container->logger->info("Successfully minified file '" . $inFile . "' to '" . $outFile . "'.");
-            };
+            }
 
             file_put_contents($settings['hashFile'], json_encode($hashArr, JSON_PRETTY_PRINT));
         }
@@ -113,7 +116,8 @@
          *
          * @param array $arr
          */
-        public function minifyJS($arr){
+        public function minifyJS($arr)
+        {
             $this->minify($arr, 'JS');
         }
 
@@ -122,7 +126,8 @@
          *
          * @param array $arr
          */
-        public function minifyCSS($arr){
+        public function minifyCSS($arr)
+        {
             $this->minify($arr, 'CSS');
         }
 
@@ -133,20 +138,21 @@
          * @param int New image width
          * @param int New image height
          */
-        public function resizeImage(&$imageObject, $maxWidth, $maxHeight) {
+        public function resizeImage(&$imageObject, $maxWidth, $maxHeight)
+        {
             $format = $imageObject->getImageFormat();
 
             if ($format == 'GIF') { // If it's a GIF file we need to resize each frame one by one
                 $imageObject = $imageObject->coalesceImages();
 
                 foreach ($imageObject as $frame) { // Gaussian seems better for animations
-                    $frame->resizeImage($maxWidth , $maxHeight , Imagick::FILTER_GAUSSIAN, 1, True);
-                };
+                    $frame->resizeImage($maxWidth , $maxHeight , Imagick::FILTER_GAUSSIAN, 1, true);
+                }
 
                 $imageObject = $imageObject->deconstructImages();
             } else { // Lanczos seems better for static images
-                $imageObject->resizeImage($maxWidth , $maxHeight , Imagick::FILTER_LANCZOS, 1, True);
-            };
+                $imageObject->resizeImage($maxWidth , $maxHeight , Imagick::FILTER_LANCZOS, 1, true);
+            }
         }
 
         /**
@@ -155,16 +161,17 @@
          * @param &array File array to re-arrange
          * @return array Re-arranged array
          */
-        public function reArrayFiles(&$aFileArr) {
-            $resultArr = array();
+        public function reArrayFiles(&$aFileArr)
+        {
+            $resultArr = [];
             $fileCount = count($aFileArr['name']);
-            $fileKeys  = array_keys($aFileArr);
+            $fileKeys = array_keys($aFileArr);
 
             for ($i = 0; $i < $fileCount; $i++) {
                 foreach ($fileKeys as $key) {
                     $resultArr[$i][$key] = $aFileArr[$key][$i];
-                };
-            };
+                }
+            }
 
             return $resultArr;
         }
@@ -175,10 +182,11 @@
          * @param string $path The dir path
          * @param string $base The base
          */
-        function mkdirRecursive($path, $base) {
-            $path    = str_replace("\\", '/', $path);
-            $path    = Explode('/', $path);
-            $base    = str_replace("\\", '/', $base);
+        function mkdirRecursive($path, $base)
+        {
+            $path = str_replace("\\", '/', $path);
+            $path = explode('/', $path);
+            $base = str_replace("\\", '/', $base);
             $rebuild = $base;
 
             foreach ($path as $p) {
@@ -187,6 +195,6 @@
 
                 if (!is_dir($rebuild))
                     mkdir($rebuild);
-            };
+            }
         }
     }

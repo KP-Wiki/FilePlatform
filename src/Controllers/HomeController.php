@@ -27,7 +27,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class HomeController extends PageController
+    final class HomeController extends PageController
     {
         /**
          * HomeController invoker.
@@ -38,7 +38,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function __invoke(Request $request, Response $response, $args) {
+        public function __invoke(Request $request, Response $response, $args)
+        {
             return $response;
         }
 
@@ -51,17 +52,16 @@
          *
          * @return \Slim\Http\Response
          */
-        public function home(Request $request, Response $response, $args) {
-            $this->container->logger->info("MapPlatform '/" . (Empty($args['catchall']) ? "" : $args['catchall']) . "' route");
+        public function home(Request $request, Response $response, $args)
+        {
+            $this->container->logger->info("MapPlatform '/" . (empty($args['catchall']) ? "" : $args['catchall']) . "' route");
             $this->container->security->checkRememberMe();
-
-            $pageTitle            = 'Home Page';
-            $pageID               = 0;
-            $contentTemplate      = 'index.phtml';
-            $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                    "    <li class=\"active\">Home</li>" . PHP_EOL .
-                                    "</ol>";
-
+            $pageTitle = 'Home Page';
+            $pageID = 0;
+            $contentTemplate = 'index.phtml';
+            $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li class="active">Home</li>
+</ol>';
             return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
         }
 
@@ -74,25 +74,24 @@
          *
          * @return \Slim\Http\Response
          */
-        public function about(Request $request, Response $response, $args) {
-            $this->container->logger->info("MapPlatform '/about" . (Empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
+        public function about(Request $request, Response $response, $args)
+        {
+            $this->container->logger->info("MapPlatform '/about" . (empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
             $this->container->security->checkRememberMe();
-
-            $route                = $request->getAttribute('route');
-            $pageTitle            = 'About Map Platform';
-            $pageID               = 1;
-            $contentTemplate      = 'about.phtml';
-            $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                    "    <li class=\"active\">About</li>" . PHP_EOL .
-                                    "</ol>";
-            $values['request']    = [
+            $route = $request->getAttribute('route');
+            $pageTitle = 'About Map Platform';
+            $pageID = 1;
+            $contentTemplate = 'about.phtml';
+            $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li class="active">About</li>
+</ol>';
+            $values['request'] = [
                 'route' => [
                     'name' => $route->getName(),
                     'uri' => $request->getUri(),
                     'arguments' => $route->getArguments()
                 ]
             ];
-
             return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
         }
     }

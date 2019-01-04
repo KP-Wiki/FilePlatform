@@ -37,4 +37,16 @@
          * @var int STRING_FILTER_FLAGS_SHORT
          */
         const STRING_FILTER_FLAGS_SHORT = FILTER_FLAG_STRIP_LOW || FILTER_FLAG_STRIP_HIGH || FILTER_FLAG_STRIP_BACKTICK;
+        /**
+         * Hashing function algorithm
+         *
+         * @var int HASH_ALGO
+         */
+        const HASH_ALGO = PASSWORD_BCRYPT;
+        /**
+         * Hashing function options
+         *
+         * @var array HASH_OPTIONS
+         */
+        const HASH_OPTIONS = ['cost' => 12];
     }

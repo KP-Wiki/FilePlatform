@@ -24,7 +24,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class FormattingUtils
+    final class FormattingUtils
     {
         /** @var \Slim\Container $container The framework container */
         private $container;
@@ -34,7 +34,8 @@
          *
          * @param \Slim\Container The application controller.
          */
-        public function __construct(Container &$aContainer) {
+        public function __construct(Container &$aContainer)
+        {
             $this->container = $aContainer;
         }
 
@@ -49,15 +50,13 @@
          * @throws InvalidArgumentException
          * @throws RuntimeException
          */
-        public function arrayToOptions(&$aValues, $setValues = False) {
+        public function arrayToOptions(&$aValues, $setValues = false)
+        {
             $result = '';
 
             foreach ($aValues as $k => $v) {
-                if ($result == '')
-                    $result .="<option" . ($setValues ? " value=\"" . $k . "\"" : "") . ">" . $v . "</option>";
-                else
-                    $result .= PHP_EOL . "<option" . ($setValues ? " value=\"" . $k . "\"" : "") . ">" . $v . "</option>";
-            };
+                $result .= "<option" . ($setValues ? " value=\"" . $k . "\"" : "") . ">" . $v . "</option>";
+            }
 
             return $result;
         }
@@ -81,14 +80,14 @@
          *
          * @return string
          */
-        function dateDifference($aDate1, $aDate2, $outFormat = '%a') {
+        function dateDifference($aDate1, $aDate2, $outFormat = '%a')
+        {
             $diffObj = date_diff($aDate1, $aDate2);
-            $diff    = $diffObj->format($outFormat);
+            $diff = $diffObj->format($outFormat);
             $this->container->logger->debug('dateDifference -> aDate1 = ' . $aDate1->format('Y/m/d H:i:s') . PHP_EOL .
                                             'aDate2 = ' . $aDate2->format('Y/m/d H:i:s') . PHP_EOL .
                                             'outFormat = ' . $outFormat . PHP_EOL .
                                             'diff = ' . $diff);
-
             return $diff;
         }
     }

@@ -28,7 +28,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class FlagController extends PageController
+    final class FlagController extends PageController
     {
         /**
          * FlagController invoker.
@@ -39,7 +39,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function __invoke(Request $request, Response $response, $args) {
+        public function __invoke(Request $request, Response $response, $args)
+        {
             return $response;
         }
 
@@ -52,7 +53,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function home(Request $request, Response $response, $args) {
+        public function home(Request $request, Response $response, $args)
+        {
             return $response;
         }
 
@@ -65,23 +67,23 @@
          *
          * @return \Slim\Http\Response
          */
-        public function getFlags(Request $request, Response $response, $args) {
+        public function getFlags(Request $request, Response $response, $args)
+        {
             $this->container->logger->info("MapPlatform '/admin_flags' route");
             $this->container->security->checkRememberMe();
 
             if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 3)) {
                 $response->getBody()->write('Taking you back to the homepage');
-
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
-                $pageTitle            = 'Map Details';
-                $pageID               = 0;
-                $contentTemplate      = 'flags.phtml';
-                $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                        "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                        "    <li class=\"active\">Map Details</li>" . PHP_EOL .
-                                        "</ol>";
+                $pageTitle = 'Map Details';
+                $pageID = 0;
+                $contentTemplate = 'flags.phtml';
+                $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li class="active">Map Details</li>
+</ol>';
                 return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
-            };
+            }
         }
     }

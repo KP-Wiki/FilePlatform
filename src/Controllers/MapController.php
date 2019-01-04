@@ -81,10 +81,10 @@
                 $pageTitle = 'Map Details';
                 $pageID = 0;
                 $contentTemplate = 'map.phtml';
-                $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                        "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                        "    <li class=\"active\">Map Details</li>" . PHP_EOL .
-                                        "</ol>";
+                $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li class="active">Map Details</li>
+</ol>';
                 $values['mapId'] = $mapId;
                 $mapItem = $this->getMapItem($mapId);
 
@@ -118,12 +118,12 @@
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
                 $database = $this->container->dataBase->PDO;
-                $mapTypeArr = array();
+                $mapTypeArr = [];
 
                 try {
                     $query = $database->select(['map_type_pk', 'map_type_name'])
-                                           ->from('MapTypes')
-                                           ->orderBy('map_type_pk', 'ASC');
+                        ->from('MapTypes')
+                        ->orderBy('map_type_pk', 'ASC');
                     $stmt = $query->execute();
                     $resultArr = $stmt->fetchall();
 
@@ -137,10 +137,10 @@
                 $pageTitle = 'New Map';
                 $pageID = 3;
                 $contentTemplate = 'map_new.phtml';
-                $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                        "    <li><a href=\"/dashboard\">Dashboard</a></li>" . PHP_EOL .
-                                        "    <li class=\"active\">New Map</li>" . PHP_EOL .
-                                        "</ol>";
+                $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li class="active">New Map</li>
+</ol>';
                 $values['mapTypes'] = $this->container->formattingUtils->arrayToOptions($mapTypeArr, True);
                 return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
             }
@@ -174,11 +174,11 @@
                     $pageTitle = 'Update Map Files';
                     $pageID = 3;
                     $contentTemplate = 'map_update_files.phtml';
-                    $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                            "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                            "    <li><a href=\"/map/" . $mapId . "\">Map Details</a></li>" . PHP_EOL .
-                                            "    <li class=\"active\">Update Map Files</li>" . PHP_EOL .
-                                            "</ol>";
+                    $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li><a href="/map/' . $mapId . '">Map Details</a></li>
+    <li class="active">Update Map Files</li>
+</ol>';
                     $values['mapId'] = $args['mapId'];
                     $values = array_merge($values, $mapItem);
                     return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
@@ -214,11 +214,11 @@
                     $pageTitle = 'Update Map Info';
                     $pageID = 3;
                     $contentTemplate = 'map_update_info.phtml';
-                    $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                            "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                            "    <li><a href=\"/map/" . $mapId . "\">Map Details</a></li>" . PHP_EOL .
-                                            "    <li class=\"active\">Update Map Info</li>" . PHP_EOL .
-                                            "</ol>";
+                    $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li><a href="/map/' . $mapId . '">Map Details</a></li>
+    <li class="active">Update Map Info</li>
+</ol>';
                     $values['mapId'] = $mapId;
                     $values = array_merge($values, $mapItem);
                     return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
@@ -232,31 +232,32 @@
             $stmt = $database->prepare($query);
             $stmt->bindParam(':mapid', $aMapId);
             $stmt->execute();
-            $query = $database->select(['Maps.map_name',
-                                          'Maps.map_downloads',
-                                          'Revisions.rev_pk',
-                                          'Revisions.rev_map_description_short',
-                                          'Revisions.rev_map_description',
-                                          'Revisions.rev_upload_date',
-                                          'Revisions.rev_map_version',
-                                          'Users.user_pk',
-                                          'Users.user_name',
-                                          'MapTypes.map_type_name',
-                                          'ROUND(AVG(CAST(Ratings.rating_amount AS DECIMAL(12,2))), 1) AS avg_rating',
-                                          'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 1 AND map_fk = @mapid), 0) AS rating_one',
-                                          'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 2 AND map_fk = @mapid), 0) AS rating_two',
-                                          'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 3 AND map_fk = @mapid), 0) AS rating_three',
-                                          'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 4 AND map_fk = @mapid), 0) AS rating_four',
-                                          'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 5 AND map_fk = @mapid), 0) AS rating_five'
-                                        ])
-                                ->from('Maps')
-                                ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
-                                ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
-                                ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                                ->leftJoin('Ratings', 'Ratings.map_fk', '=', 'Maps.map_pk')
-                                ->where('Revisions.rev_status_fk', '=', 1)
-                                ->where('Maps.map_visible', '=', 1, 'AND')
-                                ->where('Maps.map_pk', '=', $aMapId, 'AND');
+            $query = $database->select([
+                    'Maps.map_name',
+                    'Maps.map_downloads',
+                    'Revisions.rev_pk',
+                    'Revisions.rev_map_description_short',
+                    'Revisions.rev_map_description',
+                    'Revisions.rev_upload_date',
+                    'Revisions.rev_map_version',
+                    'Users.user_pk',
+                    'Users.user_name',
+                    'MapTypes.map_type_name',
+                    'ROUND(AVG(CAST(Ratings.rating_amount AS DECIMAL(12,2))), 1) AS avg_rating',
+                    'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 1 AND map_fk = @mapid), 0) AS rating_one',
+                    'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 2 AND map_fk = @mapid), 0) AS rating_two',
+                    'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 3 AND map_fk = @mapid), 0) AS rating_three',
+                    'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 4 AND map_fk = @mapid), 0) AS rating_four',
+                    'IFNULL((SELECT COUNT(*) FROM Ratings WHERE rating_amount = 5 AND map_fk = @mapid), 0) AS rating_five'
+                ])
+                ->from('Maps')
+                ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
+                ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                ->leftJoin('Ratings', 'Ratings.map_fk', '=', 'Maps.map_pk')
+                ->where('Revisions.rev_status_fk', '=', 1)
+                ->where('Maps.map_visible', '=', 1, 'AND')
+                ->where('Maps.map_pk', '=', $aMapId, 'AND');
             $stmt = $query->execute();
             $mapItem = $stmt->fetch();
 
@@ -287,22 +288,23 @@
 
         private function getMapItemMinimal($aMapId) {
             $database = $this->container->dataBase->PDO;
-            $query = $database->select(['Maps.map_name',
-                                          'Revisions.rev_pk',
-                                          'Revisions.rev_map_description_short',
-                                          'Revisions.rev_map_description',
-                                          'Revisions.rev_upload_date',
-                                          'Revisions.rev_map_version',
-                                          'Users.user_pk',
-                                          'MapTypes.map_type_name'
-                                        ])
-                                ->from('Maps')
-                                ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
-                                ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
-                                ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                                ->where('Revisions.rev_status_fk', '=', 1)
-                                /* ->where('Maps.map_visible', '=', 1, 'AND') // Disabled for possible use later on */
-                                ->where('Maps.map_pk', '=', $aMapId, 'AND');
+            $query = $database->select([
+                    'Maps.map_name',
+                    'Revisions.rev_pk',
+                    'Revisions.rev_map_description_short',
+                    'Revisions.rev_map_description',
+                    'Revisions.rev_upload_date',
+                    'Revisions.rev_map_version',
+                    'Users.user_pk',
+                    'MapTypes.map_type_name'
+                ])
+                ->from('Maps')
+                ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
+                ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
+                ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
+                ->where('Revisions.rev_status_fk', '=', 1)
+                /* ->where('Maps.map_visible', '=', 1, 'AND') // Disabled for possible use later on */
+                ->where('Maps.map_pk', '=', $aMapId, 'AND');
             $stmt = $query->execute();
             $mapItem = $stmt->fetch();
 
@@ -325,43 +327,36 @@
 
         private function getScreenshots($aRevId) {
             $database = $this->container->dataBase->PDO;
-            $query = $database->select(['screen_pk',
-                                                  'screen_title',
-                                                  'screen_alt',
-                                                  'screen_order'
-                                                ])
-                                        ->from('Screenshots')
-                                        ->where('rev_fk', '=', $aRevId)
-                                        ->orderBy('screen_order', 'ASC');
+            $query = $database->select([
+                    'screen_pk',
+                    'screen_title',
+                    'screen_alt',
+                    'screen_order'
+                ])
+                ->from('Screenshots')
+                ->where('rev_fk', '=', $aRevId)
+                ->orderBy('screen_order', 'ASC');
             $stmt = $query->execute();
             $screenshotItems = $stmt->fetchall();
             $carouselItemsNew = [];
 
             if (is_array($screenshotItems) && count($screenshotItems) > 0) {
-                $firstItem = True;
+                $firstItem = true;
 
                 foreach ($screenshotItems as $screenshotItem) {
                     if ($firstItem) {
-                        $carouselIndicators = '<li data-target="#screenshot_carousel" data-slide-to="' . $screenshotItem['screen_order'] .
-                                              '" class="active"></li>' . PHP_EOL;
-                        $carouselItems = '<div class="item active">' . PHP_EOL .
-                                              '    <img src="/images/' . $aRevId . '/' . $screenshotItem['screen_pk'] .
-                                              '" alt="' . $screenshotItem['screen_alt'] . '">' . PHP_EOL .
-                                              '    <div class="carousel-caption">' . PHP_EOL .
-                                              '        ' . $screenshotItem['screen_title'] . PHP_EOL .
-                                              '    </div>' . PHP_EOL .
-                                              '</div>' . PHP_EOL;
-                        $firstItem = False;
+                        $carouselIndicators = '<li data-target="#screenshot_carousel" data-slide-to="' . $screenshotItem['screen_order'] . '" class="active"></li>';
+                        $carouselItems = '<div class="item active">
+    <img src="/images/' . $aRevId . '/' . $screenshotItem['screen_pk'] . '" alt="' . $screenshotItem['screen_alt'] . '" />
+    <div class="carousel-caption">' . $screenshotItem['screen_title'] . '</div>
+</div>';
+                        $firstItem = false;
                     } else {
-                        $carouselIndicators .= '<li data-target="#screenshot_carousel" data-slide-to="' . $screenshotItem['screen_order'] .
-                                               '"></li>' . PHP_EOL;
-                        $carouselItems .= '<div class="item">' . PHP_EOL .
-                                               '    <img src="/images/' . $aRevId . '/' . $screenshotItem['screen_pk'] .
-                                               '" alt="' . $screenshotItem['screen_alt'] . '">' . PHP_EOL .
-                                               '    <div class="carousel-caption">' . PHP_EOL .
-                                               '        ' . $screenshotItem['screen_title'] . PHP_EOL .
-                                               '    </div>' . PHP_EOL .
-                                               '</div>' . PHP_EOL;
+                        $carouselIndicators .= '<li data-target="#screenshot_carousel" data-slide-to="' . $screenshotItem['screen_order'] . '"></li>';
+                        $carouselItems .= '<div class="item">
+    <img src="/images/' . $aRevId . '/' . $screenshotItem['screen_pk'] . '" alt="' . $screenshotItem['screen_alt'] . '" />
+    <div class="carousel-caption">' . $screenshotItem['screen_title'] . '</div>
+</div>';
                     }
 
                     $carouselItemsNew[] = (object)[
@@ -371,20 +366,16 @@
                     ];
                 }
             } else {
-                $carouselIndicators = '<li data-target="#screenshot_carousel" data-slide-to="0" class="active"></li>' . PHP_EOL .
-                                      '<li data-target="#screenshot_carousel" data-slide-to="1"></li>' . PHP_EOL;
-                $carouselItems = '<div class="item active">' . PHP_EOL .
-                                      '    <img src="/images/default/kp_2016-08-30_21-29-44.png" alt="Knights Province Image 1">' . PHP_EOL .
-                                      '    <div class="carousel-caption">' . PHP_EOL .
-                                      '        A first look at combat' . PHP_EOL .
-                                      '    </div>' . PHP_EOL .
-                                      '</div>' . PHP_EOL .
-                                      '<div class="item">' . PHP_EOL .
-                                      '    <img src="/images/default/kp_2016-09-03_18-34-31.png" alt="Knights Province Image 2">' . PHP_EOL .
-                                      '    <div class="carousel-caption">' . PHP_EOL .
-                                      '        A basic village' . PHP_EOL .
-                                      '    </div>' . PHP_EOL .
-                                      '</div>' . PHP_EOL;
+                $carouselIndicators = '<li data-target="#screenshot_carousel" data-slide-to="0" class="active"></li>' .
+                                      '<li data-target="#screenshot_carousel" data-slide-to="1"></li>';
+                $carouselItems = '<div class="item active">
+    <img src="/images/default/kp_2016-08-30_21-29-44.png" alt="Knights Province Image 1">
+    <div class="carousel-caption">A first look at combat</div>
+</div>
+<div class="item">
+    <img src="/images/default/kp_2016-09-03_18-34-31.png" alt="Knights Province Image 2">
+    <div class="carousel-caption">A basic village</div>
+</div>';
                 $carouselItemsNew[] = (object)[
                     'title' => 'A first look at combat',
                     'href' => '/images/default/kp_2016-08-30_21-29-44.png',

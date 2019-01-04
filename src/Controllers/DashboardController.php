@@ -27,7 +27,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class DashboardController extends PageController
+    final class DashboardController extends PageController
     {
         /**
          * DashboardController invoker.
@@ -38,7 +38,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function __invoke(Request $request, Response $response, $args) {
+        public function __invoke(Request $request, Response $response, $args)
+        {
             return $response;
         }
 
@@ -51,23 +52,22 @@
          *
          * @return \Slim\Http\Response
          */
-        public function home(Request $request, Response $response, $args) {
+        public function home(Request $request, Response $response, $args)
+        {
             $this->container->logger->info("MapPlatform '/dashboard' route");
             $this->container->security->checkRememberMe();
 
             if ($_SESSION['user']->id == -1) {
                 $response->getBody()->write('Taking you back to the homepage');
-
                 return $response->withAddedHeader('Refresh', '1; url=/home');
             } else {
-                $pageTitle            = 'Dashboard';
-                $pageID               = 3;
-                $contentTemplate      = 'dashboard.phtml';
-                $values['PageCrumbs'] = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                        "    <li class=\"active\">Dashboard</li>" . PHP_EOL .
-                                        "</ol>";
-
+                $pageTitle = 'Dashboard';
+                $pageID = 3;
+                $contentTemplate = 'dashboard.phtml';
+                $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li class="active">Dashboard</li>
+</ol>';
                 return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values);
-            };
+            }
         }
     }

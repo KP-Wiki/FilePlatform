@@ -1,9 +1,9 @@
 --
 -- Dumping data for table `Users`
 --
-INSERT INTO `Users` (`user_pk`, `user_name`, `user_password`, `user_salt`, `user_email_address`, `group_fk`) VALUES
-(1, 'Admin', '123', '123', 'admin@test.nl', 10),
-(2, 'Contributor', '123', '123', 'contrib@test.nl', 5);
+INSERT INTO `Users` (`user_pk`, `user_name`, `user_password`, `user_email_address`, `group_fk`) VALUES
+(1, 'Admin', '123', 'admin@test.nl', 10),
+(2, 'Contributor', '123', 'contrib@test.nl', 5);
 
 --
 -- Dumping data for table `Maps`

@@ -27,7 +27,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class AAAController extends PageController
+    final class AAAController extends PageController
     {
         /**
          * AAAController invoker.
@@ -38,7 +38,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function __invoke(Request $request, Response $response, $args) {
+        public function __invoke(Request $request, Response $response, $args)
+        {
             return $response;
         }
 
@@ -51,7 +52,8 @@
          *
          * @return \Slim\Http\Response
          */
-        public function home(Request $request, Response $response, $args) {
+        public function home(Request $request, Response $response, $args)
+        {
             return $response;
         }
 
@@ -64,23 +66,22 @@
          *
          * @return \Slim\Http\Response
          */
-        public function register(Request $request, Response $response, $args) {
+        public function register(Request $request, Response $response, $args)
+        {
             $this->container->logger->info("MapPlatform '/register' route");
             $data = $request->getParsedBody();
             $result = $this->container->security->register($data);
-
-            $pageTitle               = 'Register';
-            $pageID                  = 0;
-            $contentTemplate         = 'result.phtml';
-            $values['PageCrumbs']    = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                       "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                       "    <li class=\"active\">Register</li>" . PHP_EOL .
-                                       "</ol>";
-            $values['resultType']    = $result['status'];
+            $pageTitle = 'Register';
+            $pageID = 0;
+            $contentTemplate = 'result.phtml';
+            $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li class="active">Register</li>
+</ol>';
+            $values['resultType'] = $result['status'];
             $values['resultMessage'] = $result['message'];
-
             return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values)
-                                                ->withAddedHeader('Refresh', '5; url=/home');
+                ->withAddedHeader('Refresh', '5; url=/home');
         }
 
         /**
@@ -92,23 +93,22 @@
          *
          * @return \Slim\Http\Response
          */
-        public function login(Request $request, Response $response, $args) {
+        public function login(Request $request, Response $response, $args)
+        {
             $this->container->logger->info("MapPlatform '/login' route");
             $data = $request->getParsedBody();
             $result = $this->container->security->login($data);
-
-            $pageTitle               = 'Login';
-            $pageID                  = 0;
-            $contentTemplate         = 'result.phtml';
-            $values['PageCrumbs']    = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                       "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                       "    <li class=\"active\">Login</li>" . PHP_EOL .
-                                       "</ol>";
-            $values['resultType']    = $result['status'];
+            $pageTitle = 'Login';
+            $pageID = 0;
+            $contentTemplate = 'result.phtml';
+            $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li class="active">Login</li>
+</ol>';
+            $values['resultType'] = $result['status'];
             $values['resultMessage'] = $result['message'];
-
             return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values)
-                                                ->withAddedHeader('Refresh', '5; url=/home');
+                ->withAddedHeader('Refresh', '5; url=/home');
         }
 
         /**
@@ -120,21 +120,20 @@
          *
          * @return \Slim\Http\Response
          */
-        public function logout(Request $request, Response $response, $args) {
+        public function logout(Request $request, Response $response, $args)
+        {
             $this->container->logger->info("MapPlatform '/register' route");
             $result = $this->container->security->logout();
-
-            $pageTitle               = 'Logout';
-            $pageID                  = 0;
-            $contentTemplate         = 'result.phtml';
-            $values['PageCrumbs']    = "<ol class=\"breadcrumb\">" . PHP_EOL .
-                                       "    <li><a href=\"/home\">Home</a></li>" . PHP_EOL .
-                                       "    <li class=\"active\">Logout</li>" . PHP_EOL .
-                                       "</ol>";
-            $values['resultType']    = $result['status'];
+            $pageTitle = 'Logout';
+            $pageID = 0;
+            $contentTemplate = 'result.phtml';
+            $values['PageCrumbs'] = '<ol class="breadcrumb">
+    <li><a href="/home">Home</a></li>
+    <li class="active">Logout</li>
+</ol>';
+            $values['resultType'] = $result['status'];
             $values['resultMessage'] = $result['message'];
-
             return $this->container->renderUtils->render($pageTitle, $pageID, $contentTemplate, $response, $values)
-                                                ->withAddedHeader('Refresh', '5; url=/home');
+                ->withAddedHeader('Refresh', '5; url=/home');
         }
     }

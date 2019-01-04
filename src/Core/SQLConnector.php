@@ -30,7 +30,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class SQLConnector
+    final class SQLConnector
     {
         /** @var \Slim\Container $container The framework container */
         protected $container;
@@ -44,7 +44,8 @@
          *
          * @param \Slim\Container The application controller.
          */
-        public function __construct(Container &$aConstainer) {
+        public function __construct(Container &$aConstainer)
+        {
             $this->container = $aConstainer;
         }
 
@@ -53,19 +54,15 @@
          *
          * @param array The database settings.
          */
-        protected function buildDSN($aConfig) {
-            if ($aConfig['engine'] == "sqlite")
-                $this->DSN = $aConfig['engine'] .
-                             ":" . $aConfig['host'];
-            elseif (in_array($aConfig['engine'], ["dblib", "sqlsrv"]))
-                $this->DSN = $aConfig['engine'] .
-                             ":Server=" . $aConfig['host'] .
-                             ";Database=" . $aConfig['database'];
-            else
-                $this->DSN = $aConfig['engine'] .
-                             ":host=" . $aConfig['host'] .
-                             ";dbname=" . $aConfig['database'] .
-                             ";charset=utf8";
+        protected function buildDSN($aConfig)
+        {
+            if ($aConfig['engine'] === 'sqlite') {
+                $this->DSN = $aConfig['engine'] . ':' . $aConfig['host'];
+            } elseif (in_array($aConfig['engine'], ['dblib', 'sqlsrv'])) {
+                $this->DSN = $aConfig['engine'] . ':Server=' . $aConfig['host'] . ';Database=' . $aConfig['database'];
+            } else {
+                $this->DSN = $aConfig['engine'] . ':host=' . $aConfig['host'] . ';dbname=' . $aConfig['database'] . ';charset=utf8';
+            }
         }
 
         /**
@@ -73,29 +70,29 @@
          *
          * @return bool Indicator wether the connection succeeded or not.
          */
-        public function connect() {
+        public function connect()
+        {
             $config = $this->container->get('settings')['database'];
             $this::buildDSN($config);
 
             try {
-                $this->PDO = new Database($this->DSN, $config['user'], $config['password'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
+                $this->PDO = new Database($this->DSN, $config['user'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING]);
             } catch (Exception $ex) {
-                $this->container->logger->error("Unable to connect to the target database: " . print_r($ex, True));
+                $this->container->logger->error('Unable to connect to the target database: ' . print_r($ex, true));
+                return false;
+            }
 
-                return False;
-            };
-
-            $this->PDO->setAttribute(PDO::ATTR_ERRMODE,            PDO::ERRMODE_EXCEPTION);
+            $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $this->PDO->setAttribute(PDO::ATTR_EMULATE_PREPARES,   False);
-
-            return True;
+            $this->PDO->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            return true;
         }
 
         /**
          * Close the database connection.
          */
-        public function close() {
+        public function close()
+        {
             $this->PDO = null;
         }
     }

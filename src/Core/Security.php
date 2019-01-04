@@ -27,7 +27,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class Security
+    final class Security
     {
         /** @var \Slim\Container $container The framework container */
         private $container;
@@ -37,14 +37,16 @@
          *
          * @param \Slim\Container The application controller.
          */
-        public function __construct(Container &$aContainer) {
+        public function __construct(Container &$aContainer)
+        {
             $this->container = $aContainer;
         }
 
         /**
          * Initialize the user session
          */
-        private function initSession() {
+        private function initSession()
+        {
             $_SESSION['user'] = (object)[];
             $_SESSION['user']->group = 0;
             $_SESSION['user']->id = -1;
@@ -53,7 +55,8 @@
         /**
          * Destroy the user session
          */
-        private function destroySession() {
+        private function destroySession()
+        {
             setcookie('userId', '', time() - 3600, '/');
             setcookie('token', '', time() - 3600, '/');
             session_unset();
@@ -63,81 +66,75 @@
         /**
          * Restart the user session
          */
-        private function restartSession() {
+        private function restartSession()
+        {
             $this->destroySession();
             session_start();
             $this->initSession();
         }
 
         /**
-         * PBKDF2 key derivation function as defined by RSA's PKCS #5: https://www.ietf.org/rfc/rfc2898.txt
-         * Test vectors can be found here: https://www.ietf.org/rfc/rfc6070.txt
+         * Determine if the provided password checks up with the hash in the database
          *
-         * @param string The hash algorithm to use. Recommended: SHA256
-         * @param string The password.
-         * @param string A salt that is unique to the password.
-         * @param int Iteration count. Higher is better, but slower. Recommended: At least 1000.
-         * @param int The length of the derived key in bytes.
-         * @param boolean If true, the key is returned in raw binary format. Hex encoded otherwise.
+         * @param int $aUserId The user ID
+         * @param string $aPassword The user provided password
+         * @param string $aHash The hash to compare against
          *
-         * @return mixed A $keyLength-byte key derived from the password and salt.
+         * @return boolean
+         *
+         * @author  Thimo (thibmoRozier) Braker <thibmorozier@gmail.com>
+         * @version 1.0.0
          */
-        public function pbkdf2($algorithm, $password, $salt, $count, $keyLength, $rawOutput = False) {
-            $algorithm = strtolower($algorithm);
+        public function verifyPassword($aUserId, string $aPassword, string $aHash)
+        {
+            if ($this->container->miscUtils->isNullOrEmpty($aPassword) || $this->container->miscUtils->isNullOrEmpty($aHash))
+                return false;
 
-            if (!in_array($algorithm, hash_algos(), True))
-                trigger_error('PBKDF2 ERROR: Invalid hash algorithm.', E_USER_ERROR);
+            if (password_verify($aPassword, $aHash)) {
+                if (password_needs_rehash($aHash, Constants::HASH_ALGO, Constants::HASH_OPTIONS)) {
+                    $database = $this->container->dataBase->PDO;
 
-            if ($count <= 0 || $keyLength <= 0)
-                trigger_error('PBKDF2 ERROR: Invalid parameters.', E_USER_ERROR);
+                    try {
+                        $query = $database->update()
+                            ->table('Users')
+                            ->set(['user_password' => $this->setPassword($password)])
+                            ->where('user_pk', '=', $aUserId);
+                        $database->beginTransaction();
+                        $affectedRows = $query->execute();
 
-            if (function_exists('hash_pbkdf2')) {
-                // The output length is in NIBBLES (4-bits) if $rawOutput is false!
-                if (!$rawOutput)
-                    $keyLength = $keyLength * 2;
-
-                return hash_pbkdf2($algorithm, $password, $salt, $count, $keyLength, $rawOutput);
-            }
-
-            $hashLength = StrLen(hash($algorithm, "", True));
-            $blockCount = ceil($keyLength / $hashLength);
-            $output = "";
-
-            for ($i = 1; $i <= $blockCount; $i++) {
-                // $i encoded as 4 bytes, big endian.
-                $last = $salt . pack('N', $i);
-                // first iteration
-                $last = $xorSum = hash_hmac($algorithm, $last, $password, True);
-
-                // perform the other $count - 1 iterations
-                for ($j = 1; $j < $count; $j++) {
-                    $xorSum ^= ($last = hash_hmac($algorithm, $last, $password, True));
+                        if ($affectedRows === 1) {
+                            $database->commit();
+                        } else {
+                            $database->rollBack();
+                        }
+                    } catch (Exception $ex) {
+                        $this->container->logger->error('verifyPassword -> ' . $ex->getMessage());
+                    }
                 }
 
-                $output .= $xorSum;
+                return true;
             }
 
-            return ($rawOutput ? SubStr($output, 0, $keyLength) : bin2hex(SubStr($output, 0, $keyLength)));
+            return false;
         }
 
         /**
-         * Compare the given password and salt with the given hash
+         * Set a new password and save it to the database
          *
-         * @param string The raw password to compare with
-         * @param string The salt to use for the comparison
-         * @param string The hash to compare against
+         * @param string $aPassword The user provided password
          *
-         * @return boolean
+         * @return string
+         *
+         * @author  Thimo (thibmoRozier) Braker <thibmorozier@gmail.com>
+         * @version 1.0.0
          */
-        public function isValidPassword($password, $salt, $hash) {
-            $this->container->logger->debug('isValidPassword -> start( salt = ' . $salt . ' )');
-            $algorithm = 'sha512';
-            $iterationCount = 1024;
-            $keyLength = 1024;
-            $outputRaw = false;
-            $hashVal = $this->pbkdf2($algorithm, $password, $salt, $iterationCount, $keyLength, $outputRaw);
-            // We can't use Levenshtein because our hashes are too large. :-(
-            return ($hashVal === $hash);
+        public function setPassword(string $aPassword)
+        {
+            if ($this->container->miscUtils->isNullOrEmpty($aPassword))
+                return '';
+
+            $hash = password_hash($aPassword, Constants::HASH_ALGO, Constants::HASH_OPTIONS);
+            return $this->container->miscUtils->isNullOrEmpty($hash) ? '' : $hash;
         }
 
         /**
@@ -147,21 +144,23 @@
          *
          * @return boolean
          */
-        private function isValidReCaptcha($reCaptchaResponse) {
+        private function isValidReCaptcha($reCaptchaResponse)
+        {
             $this->container->logger->debug('isValidReCaptcha -> start( reCaptchaResponse = ' . $reCaptchaResponse . ' )');
             $config = $this->container->get('settings')['reCaptcha'];
 
-            if (Empty($reCaptchaResponse))
+            if (empty($reCaptchaResponse))
                 return false;
 
             $secret = $config['secretKey'];
             $curl = curl_init(); // Create curl resource
-            curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => 1, // Return the server's response data as a string rather then a boolean
-                                      CURLOPT_URL => 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret .
-                                                     '&response=' . $reCaptchaResponse .
-                                                     '&remoteip=' . $_SERVER['REMOTE_ADDR'],
-                                      CURLOPT_USERAGENT => 'Maps_Platform/v' . APP_VERSION]);
-            $response = json_decode(curl_exec($curl), True);
+            curl_setopt_array($curl, [
+                CURLOPT_RETURNTRANSFER => 1, // Return the server's response data as a string rather then a boolean
+                CURLOPT_URL => 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret . '&response=' . $reCaptchaResponse .
+                               '&remoteip=' . $_SERVER['REMOTE_ADDR'],
+                CURLOPT_USERAGENT => 'Maps_Platform/v' . APP_VERSION
+            ]);
+            $response = json_decode(curl_exec($curl), true);
             curl_close($curl); // Close curl resource to free up system resources
             $this->container->logger->debug('isValidReCaptcha -> response = ' . print_r($response, true));
             return $response['success'];
@@ -174,39 +173,33 @@
          *
          * @return array The status repsresented as an array
          */
-        public function register($aDataArray) {
+        public function register($aDataArray)
+        {
             $database = $this->container->dataBase->PDO;
-            $algorithm = 'sha512';
-            $iterationCount = 1024;
-            $keyLength = 1024;
-            $outputRaw = false;
             $defaultGroup = 1;
 
             try {
                 $username = filter_var($aDataArray['username'], FILTER_SANITIZE_STRING, Constants::STRING_FILTER_FLAGS_SHORT);
                 $emailAddress = filter_var($aDataArray['emailAddress'], FILTER_SANITIZE_EMAIL);
-                $password = filter_var($aDataArray['password'], FILTER_UNSAFE_RAW);             // Don't clean this, passwords should be left untouched as they are hashed
-                $confirmPassword = filter_var($aDataArray['confirmPassword'], FILTER_UNSAFE_RAW);      // Don't clean this, passwords should be left untouched as they are hashed
+                $password = filter_var($aDataArray['password'], FILTER_UNSAFE_RAW);                      // Don't clean this, passwords should be left untouched as they are hashed
+                $confirmPassword = filter_var($aDataArray['confirmPassword'], FILTER_UNSAFE_RAW);        // Don't clean this, passwords should be left untouched as they are hashed
                 $reCaptchaResponse = filter_var($aDataArray['g-recaptcha-response'], FILTER_UNSAFE_RAW); // Don't clean this, it's provided by Google
-                $this->container->logger->debug('Register -> start( username = ' . $username .
-                                                ', emailAddress = '. $emailAddress .
+                $this->container->logger->debug('Register -> start( username = ' . $username . ', emailAddress = '. $emailAddress .
                                                 ', reCaptchaResponse = '. $reCaptchaResponse . ' )');
                 $query = $database->select()
-                                  ->count('*', 'user_count')
-                                  ->from('Users')
-                                  ->where('user_name', '=', $username)
-                                  ->where('user_email_address', '=', $emailAddress, 'OR');
+                    ->count('*', 'user_count')
+                    ->from('Users')
+                    ->where('user_name', '=', $username)
+                    ->where('user_email_address', '=', $emailAddress, 'OR');
                 $stmt = $query->execute();
                 $userCount = $stmt->fetch();
-                $LevenshteinForpasswords = Levenshtein($password, $confirmPassword);
+                $LevenshteinForpasswords = levenshtein($password, $confirmPassword);
                 $googleResponse = $this->isValidReCaptcha($reCaptchaResponse);
-                $this->container->logger->debug('Register -> userCount = ' . print_r($userCount, True) .
-                                                ', LevenshteinForpasswords = ' . $LevenshteinForpasswords .
+                $this->container->logger->debug('Register -> userCount = ' . print_r($userCount, true) . ', LevenshteinForpasswords = ' . $LevenshteinForpasswords .
                                                 ', googleResponse = ' . $googleResponse);
 
                 if ($userCount['user_count'] != 0) {
                     $this->container->logger->debug('Register -> User already exists');
-
                     return [
                         'status' => 'Error',
                         'message' => 'User already exists'
@@ -221,12 +214,14 @@
                     ];
                 }
 
-                $bytes = openssl_random_pseudo_bytes(128, $crypto_strong);
-                $salt = bin2hex($bytes);
-                $hashVal = $this->pbkdf2($algorithm, $password, $salt, $iterationCount, $keyLength, $outputRaw);
-                $query = $database->insert(['user_name', 'user_password', 'user_salt', 'user_email_address', 'group_fk'])
-                                  ->into('Users')
-                                  ->values([$username, $hashVal, $salt, $emailAddress, $defaultGroup]);
+                $query = $database->insert(['user_name', 'user_password', 'user_email_address', 'group_fk'])
+                    ->into('Users')
+                    ->values([
+                        $username,
+                        $this->setPassword($password),
+                        $emailAddress,
+                        $defaultGroup
+                    ]);
                 $database->beginTransaction();
                 $insertID = $query->execute(true);
 
@@ -262,21 +257,22 @@
          *
          * @return array The status repsresented as an array
          */
-        public function login($aDataArray) {
+        public function login($aDataArray)
+        {
             $database = $this->container->dataBase->PDO;
             $config = $this->container->get('settings')['security'];
             $this->initSession();
 
             try {
-                $this->container->logger->debug(print_r($aDataArray, True));
+                $this->container->logger->debug(print_r($aDataArray, true));
                 $username = filter_var($aDataArray['username'], FILTER_SANITIZE_STRING, Constants::STRING_FILTER_FLAGS_SHORT);
                 $password = filter_var($aDataArray['password'], FILTER_DEFAULT);
                 $ipAddress = $this->container->miscUtils->getClientIp();
                 $this->container->logger->debug('Login -> start( username = ' . $username . ', ipAddress = ' . $ipAddress . ' )');
-                $query = $database->select(['user_pk', 'user_name', 'user_password', 'user_salt', 'user_email_address', 'group_fk'])
-                                    ->from('Users')
-                                    ->where('user_name', '=', $username)
-                                    ->where('user_email_address', '=', $username, 'OR');
+                $query = $database->select(['user_pk', 'user_name', 'user_password', 'user_email_address', 'group_fk'])
+                    ->from('Users')
+                    ->where('user_name', '=', $username)
+                    ->where('user_email_address', '=', $username, 'OR');
                 $stmt = $query->execute();
                 $userArr = $stmt->fetchall();
 
@@ -289,8 +285,8 @@
                 }
 
                 $user = $userArr[0];
-                $this->container->logger->debug('Login -> user : ' . print_r($user, True));
-                $passwordCheck = $this->isValidPassword($password, $user['user_salt'], $user['user_password']);
+                $this->container->logger->debug('Login -> user : ' . print_r($user, true));
+                $passwordCheck = $this->verifyPassword($user['user_pk'], $password, $user['user_password']);
 
                 if (!$passwordCheck) {
                     $this->container->logger->debug('Login -> Invalid credentials');
@@ -303,10 +299,10 @@
                 $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
                 $token = bin2hex($bytes);
                 $query = $database->insert(['user_fk', 'token', 'ip_address'])
-                                  ->into('RememberMe')
-                                  ->values([$user['user_pk'], $token, $ipAddress]);
+                    ->into('RememberMe')
+                    ->values([$user['user_pk'], $token, $ipAddress]);
                 $database->beginTransaction();
-                $insertID = $query->execute(True);
+                $insertID = $query->execute(true);
                 $this->container->logger->debug('Login -> insertId : ' . $insertID);
 
                 if ($insertID <= 0) {
@@ -338,7 +334,8 @@
         /**
          * Check existance and validity of a user's remember-me cookie
          */
-        public function checkRememberMe() {
+        public function checkRememberMe()
+        {
             $database = $this->container->dataBase->PDO;
             $config = $this->container->get('settings')['security'];
             $this->initSession();
@@ -347,14 +344,13 @@
                 $userId = filter_input(INPUT_COOKIE, 'userId', FILTER_SANITIZE_NUMBER_INT);
                 $token = filter_input(INPUT_COOKIE, 'token', FILTER_SANITIZE_STRING, Constants::STRING_FILTER_FLAGS_SHORT);
                 $ipAddress = $this->container->miscUtils->getClientIp();
-                $this->container->logger->debug('checkRememberMe -> start( userId = ' . $userId .
-                                                ', token = ' . $token .
+                $this->container->logger->debug('checkRememberMe -> start( userId = ' . $userId . ', token = ' . $token .
                                                 ', ipAddress = ' . $ipAddress . ' )');
 
                 try {
                     $query = $database->select(['user_pk', 'user_name', 'user_email_address', 'group_fk'])
-                                        ->from('Users')
-                                        ->where('user_pk', '=', $userId);
+                        ->from('Users')
+                        ->where('user_pk', '=', $userId);
                     $stmt = $query->execute();
                     $userArr = $stmt->fetchall();
 
@@ -365,13 +361,12 @@
                     }
 
                     $user = $userArr[0];
-                    $this->container->logger->debug('checkRememberMe -> user = ' . print_r($user, True));
-
+                    $this->container->logger->debug('checkRememberMe -> user = ' . print_r($user, true));
                     $query = $database->select(['rememberme_pk', 'date'])
-                                              ->from('RememberMe')
-                                              ->where('user_fk', '=', $userId)
-                                              ->where('token', '=', $token, 'AND')
-                                              ->where('ip_address', '=', $ipAddress, 'AND');
+                        ->from('RememberMe')
+                        ->where('user_fk', '=', $userId)
+                        ->where('token', '=', $token, 'AND')
+                        ->where('ip_address', '=', $ipAddress, 'AND');
                     $stmt = $query->execute();
                     $rememberMeArr = $stmt->fetchall();
 
@@ -382,7 +377,7 @@
                     }
 
                     $rememberMe = $rememberMeArr[0];
-                    $this->container->logger->debug('checkRememberMe -> rememberMe = ' . print_r($rememberMe, True));
+                    $this->container->logger->debug('checkRememberMe -> rememberMe = ' . print_r($rememberMe, true));
                     $then = date_create($rememberMe['date']);
                     $now = date_create();
                     $dateDiff = intval($this->container->formattingUtils->dateDifference($then, $now, '%a'));
@@ -391,9 +386,9 @@
                         $bytes = openssl_random_pseudo_bytes(32, $crypto_strong);
                         $token = bin2hex($bytes);
                         $query = $database->update()
-                                          ->table('RememberMe')
-                                          ->set(['token' => $token])
-                                          ->where('rememberme_pk', '=', $rememberMe['rememberme_pk']);
+                            ->table('RememberMe')
+                            ->set(['token' => $token])
+                            ->where('rememberme_pk', '=', $rememberMe['rememberme_pk']);
                         $database->beginTransaction();
                         $affectedRows = $query->execute();
 
@@ -411,7 +406,7 @@
                     $_SESSION['user']->emailAddress = $user['user_email_address'];
                     $_SESSION['user']->group = $user['group_fk'];
                     $_SESSION['user']->token = $token;
-                    $this->container->logger->debug('checkRememberMe -> _SESSION[user] = ' . print_r($_SESSION['user'], True));
+                    $this->container->logger->debug('checkRememberMe -> _SESSION[user] = ' . print_r($_SESSION['user'], true));
                     setcookie('userId', $user['user_pk'], time() + $config['cookieLifetime'], '/');
                     setcookie('token', $token, time() + $config['cookieLifetime'], '/');
                 } catch (Exception $ex) {
@@ -429,19 +424,20 @@
          *
          * @return array The status repsresented as an array
          */
-        public function logout() {
+        public function logout()
+        {
             $database = $this->container->dataBase->PDO;
 
             try {
                 $userId = $_SESSION['user']->id;
                 $token = $_SESSION['user']->token;
                 $ipAddress = $this->container->miscUtils->getClientIp();
-                $this->container->logger->debug("MapPlatform 'MapPlatform\Core\Security\logout' data: " . print_r($data, True));
+                $this->container->logger->debug("MapPlatform 'MapPlatform\Core\Security\logout' data: " . print_r($data, true));
                 $stmt = $database->delete()
-                                 ->from('RememberMe')
-                                 ->where('user_fk', '=', $userId)
-                                 ->where('token', '=', $token, 'AND')
-                                 ->where('ip_address', '=', $ipAddress, 'AND');
+                    ->from('RememberMe')
+                    ->where('user_fk', '=', $userId)
+                    ->where('token', '=', $token, 'AND')
+                    ->where('ip_address', '=', $ipAddress, 'AND');
                 $database->beginTransaction();
                 $affectedRows = $stmt->execute();
 
@@ -467,7 +463,7 @@
                 $this->destroySession();
                 return [
                     'status' => 'Error',
-                    'message' => 'Exception while trying to logout' . PHP_EOL . print_r($ex, True)
+                    'message' => 'Exception while trying to logout' . PHP_EOL . print_r($ex, true)
                 ];
             }
         }

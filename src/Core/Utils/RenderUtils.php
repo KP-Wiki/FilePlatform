@@ -25,7 +25,7 @@
      * @version    1.0.0
      * @since      First available since Release 1.0.0
      */
-    class RenderUtils
+    final class RenderUtils
     {
         /** @var \Slim\Container $container The framework container */
         protected $container;
@@ -35,7 +35,8 @@
          *
          * @param \Slim\Container The application controller.
          */
-        public function __construct(Container &$aConstainer) {
+        public function __construct(Container &$aConstainer)
+        {
             $this->container = $aConstainer;
         }
 
@@ -54,18 +55,19 @@
          * @throws InvalidArgumentException
          * @throws RuntimeException
          */
-        public function render($aPageTitle, $aPageId, $aContentTemplate, Response &$aResponse, &$aValueArray) {
-            $navFile                    = $this->getNavFile();
-            $aValueArray['PageTitle']   = $aPageTitle;
-            $aValueArray['PageID']      = $aPageId;
-            $aValueArray['PageNav']     = $this->container->renderer->fetch($navFile, $aValueArray);
+        public function render($aPageTitle, $aPageId, $aContentTemplate, Response &$aResponse, &$aValueArray)
+        {
+            $navFile = $this->getNavFile();
+            $aValueArray['PageTitle'] = $aPageTitle;
+            $aValueArray['PageID'] = $aPageId;
+            $aValueArray['PageNav'] = $this->container->renderer->fetch($navFile, $aValueArray);
             $aValueArray['PageContent'] = $this->container->renderer->fetch($aContentTemplate, $aValueArray);
-            $aValueArray['PageFooter']  = $this->container->renderer->fetch('footer.phtml', $aValueArray);
-
+            $aValueArray['PageFooter'] = $this->container->renderer->fetch('footer.phtml', $aValueArray);
             return $this->container->renderer->render($aResponse, 'frame.phtml', $aValueArray);
         }
 
-        private function getNavFile() {
+        private function getNavFile()
+        {
             switch ($_SESSION['user']->group) {
                 case 1:
                     return 'nav_user.phtml';
@@ -76,6 +78,6 @@
                     return 'nav_admin.phtml';
                 default:
                     return 'nav_guest.phtml';
-            };
+            }
         }
     }
