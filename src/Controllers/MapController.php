@@ -265,6 +265,7 @@
                     'Maps.map_name',
                     'Maps.map_downloads',
                     'Revisions.rev_pk',
+                    'Revisions.rev_status_fk',
                     'Revisions.rev_map_description_short',
                     'Revisions.rev_map_description',
                     'Revisions.rev_upload_date',
@@ -284,13 +285,24 @@
                 ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
                 ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
                 ->leftJoin('Ratings', 'Ratings.map_fk', '=', 'Maps.map_pk')
-                ->where('Revisions.rev_status_fk', '=', 1)
+                //->where('Revisions.rev_status_fk', '=', 1) // Made a better version :)
+                ->whereNull('Revisions.rev_superseded_by_rev_fk', 'AND')
                 ->where('Maps.map_visible', '=', 1, 'AND')
                 ->where('Maps.map_pk', '=', $aMapId, 'AND');
             $stmt = $query->execute();
             $mapItem = $stmt->fetch();
 
-            if ($mapItem != null && $mapItem['map_name'] != null) {
+            if (
+                $mapItem != null &&
+                $mapItem['map_name'] != null &&
+                (
+                    $mapItem['rev_status_fk'] == 1 ||
+                    (
+                        $_SESSION['user']->id == $mapItem['user_pk'] ||
+                        $_SESSION['user']->group >= 9
+                    )
+                )
+            ) {
                 $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
                 return [
                     'mapName' => $mapItem['map_name'],
@@ -320,6 +332,7 @@
             $query = $database->select([
                     'Maps.map_name',
                     'Revisions.rev_pk',
+                    'Revisions.rev_status_fk',
                     'Revisions.rev_map_description_short',
                     'Revisions.rev_map_description',
                     'Revisions.rev_upload_date',
@@ -331,13 +344,24 @@
                 ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
                 ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
                 ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                ->where('Revisions.rev_status_fk', '=', 1)
+                //->where('Revisions.rev_status_fk', '=', 1) // Made a better version :)
+                ->whereNull('Revisions.rev_superseded_by_rev_fk', 'AND')
                 /* ->where('Maps.map_visible', '=', 1, 'AND') // Disabled for possible use later on */
                 ->where('Maps.map_pk', '=', $aMapId, 'AND');
             $stmt = $query->execute();
             $mapItem = $stmt->fetch();
 
-            if ($mapItem != null && $mapItem['map_name'] != null) {
+            if (
+                $mapItem != null &&
+                $mapItem['map_name'] != null &&
+                (
+                    $mapItem['rev_status_fk'] == 1 ||
+                    (
+                        $_SESSION['user']->id == $mapItem['user_pk'] ||
+                        $_SESSION['user']->group >= 9
+                    )
+                )
+            ) {
                 $lastChangeDate = new DateTime($mapItem['rev_upload_date']);
                 return [
                     'mapName' => $mapItem['map_name'],

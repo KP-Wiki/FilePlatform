@@ -55,7 +55,7 @@
          */
         public function resizeDefault(Request $request, Response $response, $args)
         {
-            $this->container->logger->info("MapPlatform '/api/v1/resizedefault" . (Empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
+            $this->container->logger->info("MapPlatform '/api/v1/resizedefault" . (empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
             $config = $this->container->get('settings')['images'];
             $images = [
                 $config['defaultImageDir'] . 'kp_2016-08-30_21-29-44.png',
@@ -84,7 +84,7 @@
         public function testScript(Request $request, Response $response, $args)
         {
             $data = $request->getParsedBody();
-            $this->container->logger->info("MapPlatform '/api/v1/testscript" . (Empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
+            $this->container->logger->info("MapPlatform '/api/v1/testscript" . (empty($args['catchall']) ? "" : "/" . $args['catchall']) . "' route");
             $this->container->logger->debug("MapPlatform '/api/v1/testscript' data: " . print_r($data, True));
             $config = $this->container->get('settings');
 

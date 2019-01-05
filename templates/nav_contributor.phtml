@@ -14,12 +14,12 @@
             <ul class="nav navbar-nav">
                 <li role="presentation"<?=($PageID == 0 ? " class=\"active\"" : "");?>>
                     <a href="/home" title="Home">
-                        <span class="glyphicon glyphicon-home"></span>
+                        <span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Home
                     </a>
                 </li>
                 <li role="presentation"<?=($PageID == 1 ? " class=\"active\"" : "");?>>
                     <a href="/about" title="About">
-                        <span class="glyphicon glyphicon-info-sign"></span>
+                        <span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;About
                     </a>
                 </li>
                 <li role="presentation">
@@ -34,16 +34,16 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown<?=(in_array($PageID, [2, 3]) ? " active" : "");?>">
+                <li role="presentation"<?=($PageID == 3 ? " class=\"active\"" : "");?>>
+                    <a href="/dashboard">
+                        <span class="glyphicon glyphicon-dashboard"></span>&nbsp;&nbsp;Dashboard
+                    </a>
+                </li>
+                <li class="dropdown<?=(in_array($PageID, [2]) ? " active" : "");?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;<span class="caret"></span>
+                        <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Account&nbsp;<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li role="presentation"<?=($PageID == 3 ? " class=\"active\"" : "");?>>
-                            <a href="/dashboard">
-                                <span class="glyphicon glyphicon-dashboard"></span>&nbsp;&nbsp;Dashboard
-                            </a>
-                        </li>
                         <li role="presentation"<?=($PageID == 2 ? " class=\"active\"" : "");?>>
                             <a href="/profile/edit">
                                 <span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;Settings

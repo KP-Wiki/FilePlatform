@@ -79,7 +79,8 @@
                     ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
                     ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
                     ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                    ->where('Revisions.rev_status_fk', '=', 1)
+                    ->where('Revisions.rev_status_fk', '=', 1, 'AND')
+                    ->whereNull('Revisions.rev_superseded_by_rev_fk', 'AND')
                     ->where('Maps.map_visible', '=', 1, 'AND')
                     ->orderBy('Maps.map_name', 'ASC');
                 $stmt = $query->execute();
@@ -223,13 +224,16 @@
                         'Maps.map_downloads',
                         'Revisions.rev_map_description_short',
                         'Revisions.rev_map_version',
+                        'RevisionStatus.status',
                         'MapTypes.map_type_name'
                     ])
                     ->from('Maps')
                     ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
                     ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
                     ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                    ->whereIn('Revisions.rev_status_fk', [0, 1])
+                    ->leftJoin('RevisionStatus', 'RevisionStatus.rev_status_pk', '=', 'Revisions.rev_status_fk')
+                    //->whereIn('Revisions.rev_status_fk', [0, 1]) // Made a better version :)
+                    ->whereNull('Revisions.rev_superseded_by_rev_fk', 'AND')
                     ->where('Maps.user_fk', '=', $userId, 'AND')
                     ->orderBy('Maps.map_name', 'ASC');
                 $stmt = $query->execute();
@@ -255,6 +259,7 @@
                         'map_downloads' => intval($mapItem['map_downloads']),
                         'rev_map_description_short' => $mapItem['rev_map_description_short'],
                         'rev_map_version' => $mapItem['rev_map_version'],
+                        'status' => $mapItem['status'],
                         'map_type_name' => $mapItem['map_type_name'],
                         'avg_rating' => ($avgRating['avg_rating'] === null ? 'n/a' : floatval($avgRating['avg_rating']))
                     ];
@@ -291,7 +296,6 @@
                         'Maps.map_pk',
                         'Maps.map_name',
                         'Maps.user_fk',
-                        'Revisions.rev_pk',
                         'Revisions.rev_map_description_short',
                         'Revisions.rev_map_version',
                         'Users.user_name',
@@ -317,7 +321,6 @@
                     $responseArr['data'][] = [
                         'map_pk' => intval($mapItem['map_pk']),
                         'map_name' => $mapItem['map_name'],
-                        'rev_pk' => intval($mapItem['rev_pk']),
                         'rev_map_description_short' => $mapItem['rev_map_description_short'],
                         'rev_map_version' => $mapItem['rev_map_version'],
                         'user_pk' => $mapItem['user_fk'],
@@ -644,7 +647,10 @@
                             $database->commit();
                             $query = $database->update()
                                 ->table('Revisions')
-                                ->set(['rev_status_fk' => 3 /* Disabled */])
+                                ->set([
+                                    'rev_status_fk' => 3, /* Disabled */
+                                    'rev_superseded_by_rev_fk' => $revId
+                                ])
                                 ->where('rev_pk', '=', $mapItem['rev_pk']);
                             $database->beginTransaction();
                             $affectedRows = $query->execute();
@@ -788,7 +794,10 @@
                             $database->commit();
                             $query = $database->update()
                                 ->table('Revisions')
-                                ->set(['rev_status_fk' => 3 /* Disabled */])
+                                ->set([
+                                    'rev_status_fk' => 3, /* Disabled */
+                                    'rev_superseded_by_rev_fk' => $revId
+                                ])
                                 ->where('rev_pk', '=', $mapItem['rev_pk']);
                             $database->beginTransaction();
                             $affectedRows = $query->execute();
@@ -812,6 +821,132 @@
                         }
                     } else {
                         $this->container->logger->error('updateMapFiles -> Map with ID ' . $mapId . ' does not exist.');
+                        return $response->withJson([
+                            'status' => 'Error',
+                            'message' => 'Map with ID ' . $mapId . ' does not exist.'
+                        ], 404, JSON_PRETTY_PRINT);
+                    }
+                } catch (Exception $ex) {
+                    return $response->withJson([
+                        'result' => 'Error',
+                        'message' => $ex->getMessage()
+                    ], 500, JSON_PRETTY_PRINT);
+                }
+            }
+        }
+
+        /**
+         * MapController map acceptance function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function acceptMap(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps/" . $args['mapId'] . "/accept' route");
+            $this->container->security->checkRememberMe();
+
+            if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 9)) {
+                return $response->withJson(['result' => 'Nope'], 400, JSON_PRETTY_PRINT);
+            } else {
+                try {
+                    $database = $this->container->dataBase->PDO;
+                    $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
+
+                    if (empty($mapId)) {
+                        return $response->withJson([
+                            'result' => 'Error',
+                            'message' => 'Invalid request, inputs missing'
+                        ], 400, JSON_PRETTY_PRINT);
+                    }
+
+                    $mapItem = $this->getMinimalMapFromDB($database, $mapId);
+
+                    if (($mapItem != null) && ($mapItem['map_name'] != null)) {
+                        $query = $database->update()
+                            ->table('Revisions')
+                            ->set(['rev_status_fk' => 1 /* Current */])
+                            ->where('rev_pk', '=', $mapItem['rev_pk']);
+                        $database->beginTransaction();
+                        $affectedRows = $query->execute();
+
+                        if ($affectedRows <= 0) {
+                            $database->rollBack();
+                            throw new Exception('Could not update the revision');
+                        }
+
+                        $database->commit();
+                        return $response->withJson([
+                            'result' => 'Success',
+                            'message' => 'Accepted the revision successfully.'
+                        ], 200, JSON_PRETTY_PRINT);
+                    } else {
+                        $this->container->logger->error('acceptMap -> Map with ID ' . $mapId . ' does not exist.');
+                        return $response->withJson([
+                            'status' => 'Error',
+                            'message' => 'Map with ID ' . $mapId . ' does not exist.'
+                        ], 404, JSON_PRETTY_PRINT);
+                    }
+                } catch (Exception $ex) {
+                    return $response->withJson([
+                        'result' => 'Error',
+                        'message' => $ex->getMessage()
+                    ], 500, JSON_PRETTY_PRINT);
+                }
+            }
+        }
+
+        /**
+         * MapController map rejection function.
+         *
+         * @param \Slim\Http\Request $request
+         * @param \Slim\Http\Response $response
+         * @param array $args
+         *
+         * @return \Slim\Http\Response
+         */
+        public function rejectMap(Request $request, Response $response, $args) {
+            $this->container->logger->info("MapPlatform '/api/v1/maps/" . $args['mapId'] . "/reject' route");
+            $this->container->security->checkRememberMe();
+
+            if (($_SESSION['user']->id == -1) || ($_SESSION['user']->group <= 9)) {
+                return $response->withJson(['result' => 'Nope'], 400, JSON_PRETTY_PRINT);
+            } else {
+                try {
+                    $database = $this->container->dataBase->PDO;
+                    $mapId = filter_var($args['mapId'], FILTER_SANITIZE_NUMBER_INT);
+
+                    if (empty($mapId)) {
+                        return $response->withJson([
+                            'result' => 'Error',
+                            'message' => 'Invalid request, inputs missing'
+                        ], 400, JSON_PRETTY_PRINT);
+                    }
+
+                    $mapItem = $this->getMinimalMapFromDB($database, $mapId);
+
+                    if (($mapItem != null) && ($mapItem['map_name'] != null)) {
+                        $query = $database->update()
+                            ->table('Revisions')
+                            ->set(['rev_status_fk' => 2 /* Rejected */])
+                            ->where('rev_pk', '=', $mapItem['rev_pk']);
+                        $database->beginTransaction();
+                        $affectedRows = $query->execute();
+
+                        if ($affectedRows <= 0) {
+                            $database->rollBack();
+                            throw new Exception('Could not update the revision');
+                        }
+
+                        $database->commit();
+                        return $response->withJson([
+                            'result' => 'Success',
+                            'message' => 'Rejected the revision successfully.'
+                        ], 200, JSON_PRETTY_PRINT);
+                    } else {
+                        $this->container->logger->error('rejectMap -> Map with ID ' . $mapId . ' does not exist.');
                         return $response->withJson([
                             'status' => 'Error',
                             'message' => 'Map with ID ' . $mapId . ' does not exist.'
@@ -1073,7 +1208,8 @@
                     ->leftJoin('Users', 'Users.user_pk', '=', 'Maps.user_fk')
                     ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
                     ->leftJoin('Ratings', 'Ratings.map_fk', '=', 'Maps.map_pk')
-                    ->where('Revisions.rev_status_fk', '=', 1)
+                    //->where('Revisions.rev_status_fk', '=', 1, 'AND') // Made a better version :)
+                    ->whereNull('Revisions.rev_superseded_by_rev_fk', 'AND')
                     ->where('Maps.map_visible', '=', 1, 'AND')
                     ->where('Maps.map_pk', '=', $aMapId, 'AND');
                 $stmt = $query->execute();
@@ -1084,12 +1220,21 @@
             }
         }
 
+        /**
+         * Minimal map info retrieval function.
+         *
+         * @param \Slim\PDO\Database $aDatabase
+         * @param int $aMapId
+         *
+         * @return array|null
+         */
         private function getMinimalMapFromDB(&$aDatabase, $aMapId) {
             try {
                 $query = $aDatabase->select([
                         'Maps.map_name',
                         'Maps.user_fk',
                         'Revisions.rev_pk',
+                        'Revisions.rev_status_fk',
                         'Revisions.rev_map_file_name',
                         'Revisions.rev_map_file_path',
                         'Revisions.rev_map_version',
@@ -1099,7 +1244,8 @@
                     ->from('Maps')
                     ->leftJoin('Revisions', 'Revisions.map_fk', '=', 'Maps.map_pk')
                     ->leftJoin('MapTypes', 'MapTypes.map_type_pk', '=', 'Maps.map_type_fk')
-                    ->where('Revisions.rev_status_fk', '=', 1)
+                    //->where('Revisions.rev_status_fk', '=', 1, 'AND') // Made a better version :)
+                    ->whereNull('Revisions.rev_superseded_by_rev_fk', 'AND')
                     /* ->where('Maps.map_visible', '=', 1, 'AND') // Disabled for possible use later on */
                     ->where('Maps.map_pk', '=', $aMapId, 'AND');
                 $stmt = $query->execute();

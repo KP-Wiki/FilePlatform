@@ -67,6 +67,8 @@
                     $this->get('', Controllers\Api\MapController::class . ':getMap');                      // R
                     $this->post('/updateinfo', Controllers\Api\MapController::class . ':updateMapInfo');   // U
                     $this->post('/updatefiles', Controllers\Api\MapController::class . ':updateMapFiles'); // U
+                    $this->post('/accept', Controllers\Api\MapController::class . ':acceptMap');           // U
+                    $this->post('/reject', Controllers\Api\MapController::class . ':rejectMap');           // U
                     $this->delete('', Controllers\Api\MapController::class . ':deleteMap');                // D
                 });
             });

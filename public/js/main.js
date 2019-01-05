@@ -30,11 +30,11 @@ window.adminFlagFileNameFormatter = (value, row, index) => {
 }
 
 window.adminMapAcceptFormatter = (value, row, index) => {
-    return `<center><button onclick="adminQueueBtnClick('accept', ${row.rev_pk})" class="btn btn-success" role="button">Accept</button></center>`;
+    return `<center><button onclick="adminQueueBtnClick('accept', ${row.map_pk})" class="btn btn-success" role="button">Accept</button></center>`;
 }
 
 window.adminMapRejectFormatter = (value, row, index) => {
-    return `<center><button onclick="adminQueueBtnClick('reject', ${row.rev_pk})" class="btn btn-danger" role="button">Reject</button></center>`;
+    return `<center><button onclick="adminQueueBtnClick('reject', ${row.map_pk})" class="btn btn-danger" role="button">Reject</button></center>`;
 }
 
 window.toggleForgot = () => {
@@ -46,6 +46,7 @@ window.adminFlagBtnClick = (action, flagId) => {
         $("#flagQueueTable").bootstrapTable("refresh");
         $("#flagTable").bootstrapTable("refresh");
     };
+
     switch(action) {
         case "pickup": {
             $.post(`${urlBase}/api/v1/flags/${flagId}/pickup`, refreshFunc);
@@ -63,17 +64,18 @@ window.adminFlagBtnClick = (action, flagId) => {
     }
 }
 
-window.adminQueueBtnClick = (action, revId) => {
+window.adminQueueBtnClick = (action, mapId) => {
     const refreshFunc = (data) => {
         $("#mapQueueTable").bootstrapTable("refresh");
     };
+
     switch(action) {
         case "accept": {
-            $.post(`${urlBase}/api/v1/maps/${revId}/accept`, refreshFunc);
+            $.post(`${urlBase}/api/v1/maps/${mapId}/accept`, refreshFunc);
             break;
         }
         case "reject": {
-            $.post(`${urlBase}/api/v1/maps/${revId}/reject`, refreshFunc);
+            $.post(`${urlBase}/api/v1/maps/${mapId}/reject`, refreshFunc);
             break;
         }
         default: alert("Invalid use of this function.");

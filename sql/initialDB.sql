@@ -72,13 +72,15 @@ CREATE TABLE `Revisions` (
     `rev_map_description` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
     `rev_upload_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `rev_status_fk` TINYINT UNSIGNED NOT NULL DEFAULT '0',
+    `rev_superseded_by_rev_fk` BIGINT UNSIGNED NULL,
     PRIMARY KEY (`rev_pk`),
     INDEX (`map_fk`),
     INDEX (`rev_map_version`),
     INDEX (`rev_upload_date`),
     INDEX (`rev_status_fk`),
     CONSTRAINT `Revisions_map_fk` FOREIGN KEY (`map_fk`) REFERENCES `Maps` (`map_pk`),
-    CONSTRAINT `Revisions_rev_status_fk` FOREIGN KEY (`rev_status_fk`) REFERENCES `RevisionStatus` (`rev_status_pk`)
+    CONSTRAINT `Revisions_rev_status_fk` FOREIGN KEY (`rev_status_fk`) REFERENCES `RevisionStatus` (`rev_status_pk`),
+    CONSTRAINT `Revisions_rev_superseded_by_rev_fk` FOREIGN KEY (`rev_superseded_by_rev_fk`) REFERENCES `Revisions` (`rev_pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `Screenshots` (
@@ -166,9 +168,9 @@ VALUES
 INSERT INTO
     `RevisionStatus` (`rev_status_pk`, `status`)
 VALUES
-    (0, 'Queued'),
-    (1, 'Current'),
-    (2, 'Refused'),
+    (0, 'Queued for review'),
+    (1, 'Public'),
+    (2, 'Rejected'),
     (3, 'Disabled'),
     (4, 'Removed');
 
